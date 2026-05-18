@@ -1,106 +1,173 @@
 <p align="center">
-  <img src="KScout_AppIcon_180.png" width="120" height="120" alt="K-Scout App Icon">
+  <img src="docs/KScout_AppIcon_180.png" width="120" height="120" alt="K-Scout App Icon">
 </p>
 
 <h1 align="center">⚽ K-Scout</h1>
-<p align="center"><b>K-League Match & Player Data Analytics iOS App</b></p>
 
-K-Scout은 API-Football 데이터를 활용하여 K리그의 경기 일정, 실시간 정보 및 선수 스탯을 시각화하고 분석하는 iOS 애플리케이션입니다.
+<p align="center">
+  <b>K League Player Stats & Match Schedule iOS App</b>
+</p>
 
-사용자는 실시간으로 K리그1/K리그2 순위표와 경기 스코어를 확인할 수 있으며, 관심 경기 시작 1시간 전에 알림을 받아 일정을 효율적으로 관리할 수 있습니다. 
-또한 SwiftUI Charts를 활용한 오각형 레이더 차트를 통해 선수들의 핵심 능력을 직관적으로 비교·분석할 수 있도록 도와줍니다.
-
----
-
-# 📱 Project Overview
-
-- **Project Name** : K-Scout
-- **Platform** : iOS
-- **Development Environment** : Xcode 15+ (iOS 16+)
-- **Language** : Swift 5.9+
-- **Framework** : SwiftUI
-
-K-Scout은 K리그 팬과 축구 분석에 관심 있는 사용자들을 위한 모바일 애플리케이션입니다. 
-외부 스포츠 데이터 API 연동, 레이더 차트 시각화, 경기 시작 푸시 알림 기능을 통해 모바일 환경에 최적화된 축구 데이터 분석 경험을 제공하는 것을 목표로 합니다.
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-5.9+-F05138?style=flat&logo=swift&logoColor=white"/>
+  <img src="https://img.shields.io/badge/SwiftUI-blue?style=flat&logo=swift&logoColor=white"/>
+  <img src="https://img.shields.io/badge/iOS-16%2B-black?style=flat&logo=apple&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Xcode-15%2B-147EFB?style=flat&logo=xcode&logoColor=white"/>
+  <img src="https://img.shields.io/badge/API-Football-00A651?style=flat"/>
+</p>
 
 ---
 
-# ✨ Features
+K-Scout은 API-Football 데이터를 활용하여 K리그 선수 스탯을 레이더 차트로 시각화하고,
+경기 일정·결과·팀 순위·선수 득점 순위를 한눈에 확인할 수 있는 iOS 애플리케이션입니다.
 
-## 📊 League Standings
-- K리그1 및 K리그2 최신 순위 정보 제공 (탭 구조)
-- 팀 로고, 승점, 득실차 및 순위 변동 상황 실시간 업데이트
-
-## 🗓 Match Schedule & Live Score
-- 주간 캘린더 뷰를 통한 라운드별 경기 일정 확인
-- 실시간 진행 중인 경기의 스코어 및 `LIVE` 배지 표시
-
-## 🔔 Kick-off Notification
-- 관심 팀 및 경기 즐겨찾기 기능
-- 경기 시작 1시간 전 푸시 알림 수신 (`UserNotifications`)
-
-## 📈 Player Stats Comparison
-- K리그 등록 선수 검색 및 시즌 누적 스탯 상세 프로필 제공
-- 두 선수의 데이터(득점, 도움, 슛, 패스, 수비)를 동시 선택하여 비교
-
-## 🕸 Radar Chart Visualization
-- `SwiftUI Charts`를 활용한 능력치 오각형 시각화
-- 선수별 강점과 약점을 한눈에 파악할 수 있는 대시보드 제공
+선수 검색 및 시즌 누적 스탯 확인, 팀 순위표, 득점·도움 랭킹,
+관심 선수 즐겨찾기 저장, K리그1·K리그2 경기 일정 및 실시간 스코어 조회 기능을 제공합니다.
 
 ---
 
-# 🏗 App Architecture
+## 📱 Project Overview
 
-K-Scout은 유지보수성과 테스트 용이성을 위해 **MVVM (Model-View-ViewModel)** 패턴 및 **Swift Concurrency** 아키텍처로 설계되었습니다.
+| 항목 | 내용 |
+|------|------|
+| Project Name | K-Scout |
+| Platform | iOS (iPhone) |
+| Language | Swift 5.9+ |
+| Framework | SwiftUI |
+| IDE | Xcode 15+ (iOS 16+) |
+| API | API-Football (api-sports.io) |
+| Developer | 권오현 (2171053) |
+| Course | iOS Programming — Hansung University |
+| Track | 빅데이터트랙 |
+
+---
+
+## ✨ Features
+
+### 🔍 선수 검색 & 스탯 시각화
+- K리그 등록 선수 이름 검색
+- 선수 프로필 및 시즌 누적 스탯 제공
+- SwiftUI Charts 오각형 레이더 차트 시각화
+  (득점 / 도움 / 슛 / 패스 / 수비)
+
+### 🏆 팀 순위표
+- K리그1 / K리그2 탭 구조로 팀 순위 제공
+- 팀 로고 · 승점 · 득실차 · 순위 변동 표시
+- 실시간 업데이트
+
+### 👑 선수 순위
+- 득점 순위 (Top Scorers) 상위 선수 목록
+- 도움 순위 (Top Assists) 상위 선수 목록
+- 선수 카드 탭 시 상세 스탯 확인 가능
+
+### 📅 경기 일정 & 결과
+- K리그1 / K리그2 탭 구조
+- 주간 캘린더 뷰로 경기 일정 확인
+- 실시간 진행 중 경기 스코어 및 LIVE 배지 표시
+- 지난 경기 결과 조회
+
+### ⭐ 즐겨찾기 선수 관리
+- 관심 선수 즐겨찾기 추가 / 삭제
+- UserDefaults 로컬 저장
+- 즐겨찾기 탭에서 빠른 조회 및 스탯 확인
+
+---
+
+## 🏗 App Architecture
+
+MVVM 패턴 및 Swift Concurrency 기반으로 설계되었습니다.
 
 ```text
 iOS App (MVVM)
- ├─ Models (Codable Data Structures)
+ ├─ Models
+ │   ├─ Player, Stats (선수·스탯 데이터)
+ │   ├─ Match, Fixture (경기 일정·결과)
+ │   └─ Standing, Ranking (순위·랭킹)
  ├─ Views (SwiftUI Declarative UI)
- │   ├─ Standings View (리그 순위표)
- │   ├─ Schedule View (경기 일정 및 라이브 스코어)
- │   └─ Scout/Compare View (선수 스탯 비교)
- └─ ViewModels (async/await Async Networking & State Management)
+ │   ├─ SearchView     (선수 검색 & 레이더 차트)
+ │   ├─ RankingView    (팀 순위 & 선수 랭킹)
+ │   ├─ ScheduleView   (경기 일정 & 스코어)
+ │   └─ FavoriteView   (즐겨찾기 선수 목록)
+ └─ ViewModels (async/await & @ObservableObject)
 ```
+
 ---
 
-# 🛠 Tech Stack
+## 🛠 Tech Stack
 
 | Technology | Description |
 |-----------|-------------|
-| Swift | iOS 앱 개발 언어 (Swift Concurrency 활용) |
-| SwiftUI | 사용자 인터페이스 개발 및 선언형 UI 구현 |
-| Xcode | iOS 개발 환경 |
-| API-Football | K리그 경기·순위·선수 데이터 수집 (REST API) |
-| SwiftUI Charts | 선수 스탯 비교를 위한 레이더 차트 구현 |
-| UserNotifications | 경기 시작 1시간 전 로컬/서버 푸시 알림 기능 |
+| Swift 5.9+ | iOS 앱 개발 언어 (Swift Concurrency 활용) |
+| SwiftUI | 선언형 UI 프레임워크 |
+| Xcode 15+ | iOS 개발 환경 |
+| API-Football | K리그 경기·순위·선수 데이터 (REST API) |
+| SwiftUI Charts | 선수 스탯 레이더 차트 구현 |
+| UserDefaults | 즐겨찾기 선수 로컬 저장 |
 
 ---
 
-# 🎯 Project Goals
+## 🌐 API 정보
 
-- 복잡한 축구 데이터를 모바일 화면에 직관적으로 시각화하는 시스템 구축
-- 외부 REST API 연동 및 비동기 네트워크 처리(`async/await`) 숙달
-- 다양한 iOS 내장 프레임워크(`Charts`, `Notifications`)의 실무 활용 능력 향상
-- MVVM 아키텍처 패턴 가이드라인을 준수하는 깔끔한 코드 작성 경험 축적
+```
+Base URL  : https://v3.football.api-sports.io
+K리그1    : league=292, season=2025
+K리그2    : league=293, season=2025
 
----
-
-# 📷 App Screenshots
-
-추후 앱 화면 스크린샷 추가 예정
-
----
-
-# 🎥 Demo Video
-
-유튜브 시연 영상 링크 (추후 추가 예정)
+사용 엔드포인트
+/players            → 선수 검색 및 시즌 스탯
+/players/topscorers → 득점 순위 상위 20명
+/players/topassists → 도움 순위 상위 20명
+/standings          → 팀 순위표
+/fixtures           → 경기 일정 및 결과
+```
 
 ---
 
-# 👨‍💻 Developer
+## ⚙️ 설치 방법
 
-- **Name** : 권오현  
-- **Student ID** : 2171053  
-- **University** : Hansung University  
-- **Course** : iOS Programming
+```bash
+# 1. 레포지토리 클론
+git clone https://github.com/ohyun0628/K-Scout.git
+
+# 2. Xcode로 열기
+open K-Scout.xcodeproj
+
+# 3. APIService.swift에 API 키 입력
+let apiKey = "YOUR_API_KEY_HERE"
+# api-sports.io 에서 무료 발급 가능 (100calls/day)
+
+# 4. 빌드 & 실행 (iOS 16+ 시뮬레이터)
+```
+
+---
+
+## 🎯 Project Goals
+
+- K리그 선수·팀 데이터를 레이더 차트 및 순위표로 시각화하는 모바일 앱 구축
+- API-Football REST API 연동 및 async/await 비동기 처리 숙달
+- SwiftUI Charts 프레임워크 실무 활용 경험 습득
+- MVVM 아키텍처 기반 클린 코드 작성
+
+---
+
+## 📷 App Screenshots
+
+> 추후 앱 화면 스크린샷 추가 예정
+
+---
+
+## 🎥 Demo Video
+
+> 유튜브 시연 영상 링크 (추후 추가 예정)
+
+---
+
+## 👨‍💻 Developer
+
+| | |
+|---|---|
+| Name | 권오현 |
+| Student ID | 2171053 |
+| University | Hansung University |
+| Course | iOS Programming |
+| Track | 빅데이터트랙 |
