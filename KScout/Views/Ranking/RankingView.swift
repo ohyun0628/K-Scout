@@ -25,9 +25,7 @@ struct RankingView: View {
             }
             .navigationTitle("팀 및 선수 랭킹")
             .onAppear {
-                Task {
-                    await viewModel.fetchStandings()
-                }
+                viewModel.fetchStandings()
             }
         }
     }

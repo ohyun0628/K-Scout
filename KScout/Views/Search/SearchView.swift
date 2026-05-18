@@ -11,8 +11,15 @@ struct SearchView: View {
                     .padding()
                 
                 Spacer()
-                Text("검색 결과 및 스탯 레이더 차트 화면")
-                    .foregroundColor(.secondary)
+                
+                // 더미 데이터를 활용한 레이더 차트
+                Text("선수 능력치 분석")
+                    .font(.headline)
+                    .padding(.bottom, 20)
+                
+                RadarChartView(data: [0.8, 0.6, 0.9, 0.5, 0.3])
+                    .frame(width: 250, height: 250)
+                
                 Spacer()
             }
             .navigationTitle("선수 검색")
