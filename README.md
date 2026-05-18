@@ -1,6 +1,14 @@
-# K-Scout (K리그 경기·선수 데이터 분석 iOS 앱)
+<p align="center">
+  <img src="KScout_AppIcon_180.png" width="120" height="120" alt="K-Scout App Icon">
+</p>
 
-> **2026학년도 한성대학교 iOS 프로그래밍 수업 미니 프로젝트** > API-Football 데이터를 활용하여 K리그의 경기 일정, 실시간 정보 및 선수 스탯을 시각화하고 분석하는 SwiftUI 애플리케이션입니다.
+<h1 align="center">K-Scout</h1>
+<p align="center"><b>K리그 경기·선수 데이터 분석 iOS 애플리케이션</b></p>
+
+> [cite_start]**2026학년도 한성대학교 iOS 프로그래밍 수업 미니 프로젝트** [cite: 5]
+> [cite_start]API-Football 데이터를 활용하여 K리그의 경기 일정, 실시간 정보 및 선수 스탯을 시각화하고 분석하는 SwiftUI 애플리케이션입니다[cite: 13, 43].
+
+---
 
 ---
 
