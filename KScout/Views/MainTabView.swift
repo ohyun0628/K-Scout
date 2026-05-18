@@ -3,7 +3,13 @@ import SwiftUI
 struct MainTabView: View {
     var body: some View {
         TabView {
-            StandingsView()
+            SearchView()
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                    Text("검색")
+                }
+            
+            RankingView()
                 .tabItem {
                     Image(systemName: "list.number")
                     Text("순위")
@@ -15,13 +21,13 @@ struct MainTabView: View {
                     Text("일정")
                 }
             
-            PlayerCompareView()
+            FavoriteView()
                 .tabItem {
-                    Image(systemName: "chart.xyaxis.line")
-                    Text("선수 비교")
+                    Image(systemName: "star.fill")
+                    Text("즐겨찾기")
                 }
         }
-        .accentColor(.green) // K리그 연상 색상
+        .accentColor(.green)
     }
 }
 

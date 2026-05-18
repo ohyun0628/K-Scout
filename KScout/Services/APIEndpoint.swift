@@ -4,6 +4,8 @@ enum APIEndpoint {
     case standings(league: Int, season: Int)
     case fixtures(league: Int, season: Int)
     case players(team: Int, season: Int)
+    case topScorers(league: Int, season: Int)
+    case topAssists(league: Int, season: Int)
     
     var baseURL: String {
         return "https://v3.football.api-sports.io"
@@ -14,17 +16,17 @@ enum APIEndpoint {
         case .standings: return "/standings"
         case .fixtures: return "/fixtures"
         case .players: return "/players"
+        case .topScorers: return "/players/topscorers"
+        case .topAssists: return "/players/topassists"
         }
     }
     
     var queryItems: [URLQueryItem] {
         switch self {
-        case .standings(let league, let season):
-            return [
-                URLQueryItem(name: "league", value: String(league)),
-                URLQueryItem(name: "season", value: String(season))
-            ]
-        case .fixtures(let league, let season):
+        case .standings(let league, let season),
+             .fixtures(let league, let season),
+             .topScorers(let league, let season),
+             .topAssists(let league, let season):
             return [
                 URLQueryItem(name: "league", value: String(league)),
                 URLQueryItem(name: "season", value: String(season))

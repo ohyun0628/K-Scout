@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct StandingsView: View {
-    @StateObject private var viewModel = StandingsViewModel()
+struct RankingView: View {
+    @StateObject private var viewModel = RankingViewModel()
     
     var body: some View {
         NavigationView {
@@ -23,7 +23,7 @@ struct StandingsView: View {
                     }
                 }
             }
-            .navigationTitle("K리그 순위")
+            .navigationTitle("팀 및 선수 랭킹")
             .onAppear {
                 Task {
                     await viewModel.fetchStandings()
@@ -34,5 +34,5 @@ struct StandingsView: View {
 }
 
 #Preview {
-    StandingsView()
+    RankingView()
 }
