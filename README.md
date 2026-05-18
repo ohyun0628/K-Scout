@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/KScout_AppIcon_180.png" width="120" height="120" alt="K-Scout App Icon">
+  <img src="KScout_AppIcon_1024.png" width="120" height="120" alt="K-Scout App Icon">
 </p>
 
 <h1 align="center">⚽ K-Scout</h1>
