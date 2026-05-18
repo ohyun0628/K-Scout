@@ -30,7 +30,3 @@ struct RankingView: View {
         }
     }
 }
-
-#Preview {
-    RankingView()
-}

@@ -13,7 +13,3 @@ struct ScheduleView: View {
         }
     }
 }
-
-#Preview {
-    ScheduleView()
-}

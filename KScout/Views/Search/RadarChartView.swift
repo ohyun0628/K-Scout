@@ -7,38 +7,48 @@ struct RadarChartView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
-            let radius = min(geometry.size.width, geometry.size.height) / 2
-            
-            ZStack {
-                // 1. 배경 오각형 거미줄 그리기
-                ForEach(1...5, id: \.self) { step in
-                    PolygonShape(sides: 5, scale: CGFloat(step) / 5.0)
-                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                }
-                
-                // 2. 배경 중심에서 꼭짓점으로 뻗어나가는 선
-                ForEach(0..<5) { i in
-                    let angle = CGFloat(i) * (2.0 * .pi / 5.0) - .pi / 2
-                    Path { path in
-                        path.move(to: center)
-                        path.addLine(to: CGPoint(
-                            x: center.x + radius * cos(angle),
-                            y: center.y + radius * sin(angle)
-                        ))
-                    }
+            makeRadar(size: geometry.size)
+        }
+    }
+    
+    private func makeRadar(size: CGSize) -> some View {
+        ZStack {
+            // 1. 배경 오각형 거미줄 그리기
+            ForEach(1...5, id: \.self) { step in
+                let scale = CGFloat(step) / 5.0
+                PolygonShape(sides: 5, scale: scale)
                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                }
-                
-                // 3. 실제 능력치 색칠 영역
-                RadarDataShape(data: data, sides: 5)
-                    .fill(Color.green.opacity(0.4))
-                    .animation(.easeInOut(duration: 1.0), value: data)
-                
-                RadarDataShape(data: data, sides: 5)
-                    .stroke(Color.green, lineWidth: 2)
-                    .animation(.easeInOut(duration: 1.0), value: data)
             }
+            
+            // 2. 뻗어나가는 선
+            drawLines(size: size)
+            
+            // 3. 실제 능력치
+            RadarDataShape(data: data, sides: 5)
+                .fill(Color.green.opacity(0.4))
+                .animation(.easeInOut(duration: 1.0))
+            
+            RadarDataShape(data: data, sides: 5)
+                .stroke(Color.green, lineWidth: 2)
+                .animation(.easeInOut(duration: 1.0))
+        }
+    }
+    
+    private func drawLines(size: CGSize) -> some View {
+        let center = CGPoint(x: size.width / 2, y: size.height / 2)
+        let radius = min(size.width, size.height) / 2
+        
+        return ForEach(0..<5) { i in
+            let angle: CGFloat = CGFloat(i) * (CGFloat(2.0) * CGFloat.pi / CGFloat(5.0)) - (CGFloat.pi / CGFloat(2.0))
+            let endX: CGFloat = center.x + radius * cos(angle)
+            let endY: CGFloat = center.y + radius * sin(angle)
+            let endPoint = CGPoint(x: endX, y: endY)
+            
+            Path { path in
+                path.move(to: center)
+                path.addLine(to: endPoint)
+            }
+            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
         }
     }
 }

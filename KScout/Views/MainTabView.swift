@@ -30,7 +30,3 @@ struct MainTabView: View {
         .accentColor(.green)
     }
 }
-
-#Preview {
-    MainTabView()
-}

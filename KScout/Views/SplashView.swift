@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SplashView: View {
     @State private var isActive = false
-    @State private var size = 0.7
-    @State private var opacity = 0.4
+    @State private var size: CGFloat = 0.7
+    @State private var opacity: Double = 0.4
     
     var body: some View {
         if isActive {
@@ -12,7 +12,7 @@ struct SplashView: View {
         } else {
             VStack {
                 VStack(spacing: 20) {
-                    Image("KScout_AppIcon_1024")
+                    Image("SplashIcon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 120, height: 120)
@@ -52,6 +52,3 @@ struct SplashView: View {
     }
 }
 
-#Preview {
-    SplashView()
-}

@@ -1,6 +1,5 @@
 import Foundation
 
-@MainActor
 class RankingViewModel: ObservableObject {
     @Published var standings: [Standing] = []
     @Published var isLoading = false
