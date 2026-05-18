@@ -34,7 +34,7 @@ K-Scout은 API-Football 데이터를 활용하여 K리그 선수 스탯을 레�
 | Platform | iOS (iPhone) |
 | Language | Swift 5.9+ |
 | Framework | SwiftUI |
-| IDE | Xcode 15+ (iOS 16+) |
+| IDE | Xcode 12.5+ (iOS 14+) |
 | API | API-Football (api-sports.io) |
 | Developer | 권오현 (2171053) |
 | Course | iOS Programming — Hansung University |
@@ -136,7 +136,7 @@ open K-Scout.xcodeproj
 let apiKey = "YOUR_API_KEY_HERE"
 # api-sports.io 에서 무료 발급 가능 (100calls/day)
 
-# 4. 빌드 & 실행 (iOS 16+ 시뮬레이터)
+# 4. 빌드 & 실행 (iOS 14+ 시뮬레이터)
 ```
 
 ---
