@@ -12,8 +12,12 @@ struct SplashView: View {
         } else {
             VStack {
                 VStack(spacing: 20) {
-                    Text("⚽")
-                        .font(.system(size: 80))
+                    Image("KScout_AppIcon_1024")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .shadow(radius: 5)
                     
                     Text("K-Scout")
                         .font(.largeTitle)
