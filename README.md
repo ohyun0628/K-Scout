@@ -2,11 +2,8 @@
   <img src="KScout_AppIcon_180.png" width="120" height="120" alt="K-Scout App Icon">
 </p>
 
-<h1 align="center">K-Scout</h1>
-<p align="center"><b>K리그 경기·선수 데이터 분석 iOS 애플리케이션</b></p>
-
-# ⚽ K-Scout
-### K-League Match & Player Data Analytics iOS App
+<h1 align="center">⚽ K-Scout</h1>
+<p align="center"><b>K-League Match & Player Data Analytics iOS App</b></p>
 
 K-Scout은 API-Football 데이터를 활용하여 K리그의 경기 일정, 실시간 정보 및 선수 스탯을 시각화하고 분석하는 iOS 애플리케이션입니다.
 
@@ -56,6 +53,7 @@ K-Scout은 K리그 팬과 축구 분석에 관심 있는 사용자들을 위한 
 
 K-Scout은 유지보수성과 테스트 용이성을 위해 **MVVM (Model-View-ViewModel)** 패턴 및 **Swift Concurrency** 아키텍처로 설계되었습니다.
 
+```text
 iOS App (MVVM)
  ├─ Models (Codable Data Structures)
  ├─ Views (SwiftUI Declarative UI)
@@ -63,9 +61,7 @@ iOS App (MVVM)
  │   ├─ Schedule View (경기 일정 및 라이브 스코어)
  │   └─ Scout/Compare View (선수 스탯 비교)
  └─ ViewModels (async/await Async Networking & State Management)
-
-본 프로젝트는 외부 REST API인 `API-Football`을 연동하여 실시간에 준하는 데이터를 파싱하고 앱의 상태(State)를 관리하도록 구현되었습니다.
-
+```
 ---
 
 # 🛠 Tech Stack
