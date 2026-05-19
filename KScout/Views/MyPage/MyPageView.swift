@@ -88,55 +88,63 @@ struct MyPageView: View {
             }
             // 단일 얼럿 처리로 컴파일 부하 최적화
             .alert(item: $activeAlert) { alertType in
-                switch alertType {
-                case .general(let message):
-                    return Alert(
-                        title: Text("안내"),
-                        message: Text(message),
-                        dismissButton: .default(Text("확인"))
-                    )
-                case .resetPassword:
-                    return Alert(
-                        title: Text("비밀번호 재설정"),
-                        message: Text("등록된 이메일(\(authManager.currentUser?.email ?? ""))로 비밀번호 재설정 링크를 보내시겠습니까?"),
-                        primaryButton: .default(Text("보내기"), action: {
-                            if let email = authManager.currentUser?.email {
-                                Auth.auth().sendPasswordReset(withEmail: email) { error in
-                                    if let error = error {
-                                        activeAlert = .general(message: "오류가 발생했습니다: \(error.localizedDescription)")
-                                    } else {
-                                        activeAlert = .general(message: "비밀번호 재설정 메일이 전송되었습니다.")
-                                    }
-                                }
-                            }
-                        }),
-                        secondaryButton: .cancel(Text("취소"))
-                    )
-                case .logout:
-                    return Alert(
-                        title: Text("로그아웃"),
-                        message: Text("정말 로그아웃 하시겠습니까?"),
-                        primaryButton: .destructive(Text("로그아웃"), action: {
-                            authManager.logout()
-                        }),
-                        secondaryButton: .cancel(Text("취소"))
-                    )
-                case .deleteAccount:
-                    return Alert(
-                        title: Text("회원 탈퇴"),
-                        message: Text("정말 계정을 탈퇴하시겠습니까? 이 작업은 취소할 수 없습니다."),
-                        primaryButton: .destructive(Text("탈퇴하기"), action: {
-                            authManager.currentUser?.delete { error in
-                                if let error = error {
-                                    activeAlert = .general(message: "보안상 재인증이 필요합니다. 다시 로그인 후 시도해주세요. (\(error.localizedDescription))")
-                                } else {
-                                    authManager.checkLoginState()
-                                }
-                            }
-                        }),
-                        secondaryButton: .cancel(Text("취소"))
-                    )
-                }
+                makeAlert(for: alertType)
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods for Alerts (컴파일러 부하 경감)
+    
+    private func makeAlert(for type: MyPageAlert) -> Alert {
+        switch type {
+        case .general(let message):
+            return Alert(
+                title: Text("안내"),
+                message: Text(message),
+                dismissButton: .default(Text("확인"))
+            )
+        case .resetPassword:
+            let email = authManager.currentUser?.email ?? ""
+            return Alert(
+                title: Text("비밀번호 재설정"),
+                message: Text("등록된 이메일(\(email))로 비밀번호 재설정 링크를 보내시겠습니까?"),
+                primaryButton: .default(Text("보내기"), action: sendPasswordReset),
+                secondaryButton: .cancel(Text("취소"))
+            )
+        case .logout:
+            return Alert(
+                title: Text("로그아웃"),
+                message: Text("정말 로그아웃 하시겠습니까?"),
+                primaryButton: .destructive(Text("로그아웃"), action: authManager.logout),
+                secondaryButton: .cancel(Text("취소"))
+            )
+        case .deleteAccount:
+            return Alert(
+                title: Text("회원 탈퇴"),
+                message: Text("정말 계정을 탈퇴하시겠습니까? 이 작업은 취소할 수 없습니다."),
+                primaryButton: .destructive(Text("탈퇴하기"), action: deleteAccount),
+                secondaryButton: .cancel(Text("취소"))
+            )
+        }
+    }
+    
+    private func sendPasswordReset() {
+        guard let email = authManager.currentUser?.email else { return }
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                activeAlert = .general(message: "오류가 발생했습니다: \(error.localizedDescription)")
+            } else {
+                activeAlert = .general(message: "비밀번호 재설정 메일이 전송되었습니다.")
+            }
+        }
+    }
+    
+    private func deleteAccount() {
+        authManager.currentUser?.delete { error in
+            if let error = error {
+                activeAlert = .general(message: "보안상 재인증이 필요합니다. 다시 로그인 후 시도해주세요. (\(error.localizedDescription))")
+            } else {
+                authManager.checkLoginState()
             }
         }
     }
