@@ -6,6 +6,7 @@ struct LoginView: View {
     
     @State private var email = ""
     @State private var password = ""
+    @State private var nickname = "" // 닉네임 필드 추가
     @State private var isSignUpMode = false // 로그인 모드인지 회원가입 모드인지 구분
     @State private var errorMessage = ""
     @State private var showError = false
@@ -41,6 +42,15 @@ struct LoginView: View {
                     
                     // 2. 입력 폼 영역
                     VStack(spacing: 15) {
+                        if isSignUpMode {
+                            TextField("닉네임", text: $nickname)
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(12)
+                                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                                .autocapitalization(.none)
+                        }
+                        
                         TextField("이메일 주소", text: $email)
                             .padding()
                             .background(Color.white)
@@ -124,14 +134,29 @@ struct LoginView: View {
     }
     
     private func handleSignUp() {
+        guard !nickname.isEmpty else {
+            self.errorMessage = "닉네임을 입력해주세요."
+            self.showError = true
+            return
+        }
+        
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
                 self.showError = true
                 return
             }
-            // 회원가입 성공 시 자동으로 로그인 처리됨
-            authManager.checkLoginState()
+            
+            // 회원가입 성공 시 프로필에 닉네임 설정
+            let changeRequest = result?.user.createProfileChangeRequest()
+            changeRequest?.displayName = nickname
+            changeRequest?.commitChanges { error in
+                if let error = error {
+                    print("닉네임 설정 에러: \(error.localizedDescription)")
+                }
+                // 최종 로그인 상태 업데이트
+                authManager.checkLoginState()
+            }
         }
     }
 }
