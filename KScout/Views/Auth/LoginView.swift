@@ -6,167 +6,218 @@ struct LoginView: View {
     
     @State private var email = ""
     @State private var password = ""
-    @State private var nickname = "" // 닉네임 필드 추가
-    @State private var isNicknameChecked = false // 중복 확인 완료 여부
-    @State private var isErrorText = true // 메시지 색상 구분용 (빨강/초록)
-    @State private var isSignUpMode = false // 로그인 모드인지 회원가입 모드인지 구분
+    @State private var isPasswordVisible = false
+    
     @State private var errorMessage = ""
     @State private var showError = false
+    @State private var isErrorText = true
     
     var body: some View {
         NavigationView {
             ZStack {
-                // 밝은 느낌의 배경색 (연한 회색 바탕에 하얀 입력칸이 돋보이도록)
-                Color(UIColor.systemGroupedBackground)
+                Color.white
                     .edgesIgnoringSafeArea(.all)
                 
-                VStack(spacing: 30) {
-                    Spacer()
-                    
-                    // 1. 로고 및 타이틀 영역
-                    VStack(spacing: 15) {
-                        Image("SplashIcon") // 아까 등록한 앱 내부용 아이콘
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 25) {
+                        // 1. 로고 및 플랫폼 타이틀 영역
+                        VStack(spacing: 12) {
+                            Image("SplashIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 85, height: 85)
+                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                                .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 3)
+                            
+                            Text("K-SCOUT")
+                                .font(.system(size: 26, weight: .black, design: .default))
+                                .foregroundColor(.brandNavy)
+                            
+                            Text("K리그 데이터 분석 플랫폼")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.top, 40)
                         
-                        Text("K-SCOUT")
-                            .font(.system(size: 32, weight: .black, design: .default))
-                            .foregroundColor(.brandNavy)
+                        // 2. 타이틀 헤더 영역 (좌측 정렬)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("안녕하세요 👋")
+                                .font(.system(size: 28, weight: .bold))
+                                .foregroundColor(.brandNavy)
+                            
+                            Text("계속하려면 로그인하세요")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 24)
+                        .padding(.top, 15)
                         
-                        Text(isSignUpMode ? "새로운 계정을 만들어보세요!" : "환영합니다! 이메일로 로그인해주세요.")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    .padding(.bottom, 20)
-                    
-                    // 2. 입력 폼 영역
-                    VStack(spacing: 15) {
-                        if isSignUpMode {
-                            HStack(spacing: 10) {
-                                TextField("닉네임", text: $nickname)
-                                    .padding()
-                                    .background(Color.white)
-                                    .cornerRadius(12)
-                                    .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-                                    .autocapitalization(.none)
-                                    .onChange(of: nickname) { _ in
-                                        isNicknameChecked = false
-                                    }
-                                
-                                Button(action: {
-                                    checkNicknameUniqueness()
-                                }) {
-                                    Text(isNicknameChecked ? "확인 완료" : "중복 확인")
-                                        .font(.footnote)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 15)
-                                        .padding(.vertical, 14)
-                                        .background(isNicknameChecked ? Color.gray : Color.brandAccent)
-                                        .cornerRadius(10)
+                        // 3. 입력 폼 영역
+                        VStack(spacing: 14) {
+                            TextField("이메일 주소", text: $email)
+                                .padding()
+                                .background(Color(.systemGray6))
+                                .cornerRadius(12)
+                                .keyboardType(.emailAddress)
+                                .autocapitalization(.none)
+                            
+                            HStack {
+                                if isPasswordVisible {
+                                    TextField("비밀번호", text: $password)
+                                        .autocapitalization(.none)
+                                } else {
+                                    SecureField("비밀번호", text: $password)
                                 }
-                                .disabled(isNicknameChecked)
+                                
+                                Button(action: { isPasswordVisible.toggle() }) {
+                                    Image(systemName: isPasswordVisible ? "eye.fill" : "eye.slash.fill")
+                                        .foregroundColor(.gray)
+                                }
                             }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(12)
+                            
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    self.errorMessage = "비밀번호 찾기 기능은 아직 준비 중입니다."
+                                    self.isErrorText = false
+                                    self.showError = true
+                                }) {
+                                    Text("비밀번호 찾기")
+                                        .font(.footnote)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .padding(.top, 2)
+                        }
+                        .padding(.horizontal, 24)
+                        
+                        // 4. 에러 또는 안내 메시지 표시
+                        if showError {
+                            Text(errorMessage)
+                                .foregroundColor(isErrorText ? .red : .brandLightNavy)
+                                .font(.footnote)
+                                .padding(.horizontal, 24)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         
-                        TextField("이메일 주소", text: $email)
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-                            .keyboardType(.emailAddress)
-                            .autocapitalization(.none) // 첫 글자 대문자 자동변환 방지
-                        
-                        SecureField("비밀번호", text: $password)
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-                    }
-                    .padding(.horizontal, 30)
-                    
-                    // 3. 에러 또는 안내 메시지 표시
-                    if showError {
-                        Text(errorMessage)
-                            .foregroundColor(isErrorText ? .red : .brandLightNavy)
-                            .font(.footnote)
-                            .padding(.horizontal, 30)
-                    }
-                    
-                    // 4. 메인 버튼 (로그인 또는 회원가입)
-                    Button(action: {
-                        if isSignUpMode {
-                            handleSignUp()
-                        } else {
-                            handleLogin()
-                        }
-                    }) {
-                        Text(isSignUpMode ? "회원가입 하기" : "로그인")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.brandAccent)
-                            .cornerRadius(12)
-                            .shadow(color: Color.brandAccent.opacity(0.3), radius: 10, x: 0, y: 5)
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.top, 10)
-                    
-                    Spacer()
-                    
-                    // 5. 모드 전환 링크
-                    HStack {
-                        Text(isSignUpMode ? "이미 계정이 있으신가요?" : "아직 계정이 없으신가요?")
-                            .foregroundColor(.gray)
+                        // 5. 로그인 버튼
                         Button(action: {
-                            withAnimation {
-                                isSignUpMode.toggle()
-                                showError = false
-                            }
+                            handleLogin()
                         }) {
-                            Text(isSignUpMode ? "로그인" : "회원가입")
+                            Text("로그인")
+                                .font(.headline)
                                 .fontWeight(.bold)
-                                .foregroundColor(.brandLightNavy)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.brandNavy)
+                                .cornerRadius(12)
                         }
+                        .padding(.horizontal, 24)
+                        .padding(.top, 5)
+                        
+                        // 6. '또는' 구분선
+                        HStack {
+                            VStack { Divider().background(Color.gray.opacity(0.3)) }
+                            Text("또는")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                                .padding(.horizontal, 10)
+                            VStack { Divider().background(Color.gray.opacity(0.3)) }
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 5)
+                        
+                        // 7. 소셜 로그인 버튼들
+                        VStack(spacing: 12) {
+                            Button(action: {
+                                self.errorMessage = "구글 소셜 로그인은 다음 단계에서 연동될 예정입니다."
+                                self.isErrorText = false
+                                self.showError = true
+                            }) {
+                                HStack(spacing: 10) {
+                                    Text("G")
+                                        .font(.system(size: 18, weight: .black))
+                                        .foregroundColor(.blue)
+                                    
+                                    Text("Google로 계속하기")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.black)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                                )
+                            }
+                            
+                            Button(action: {
+                                self.errorMessage = "애플 소셜 로그인은 다음 단계에서 연동될 예정입니다."
+                                self.isErrorText = false
+                                self.showError = true
+                            }) {
+                                HStack(spacing: 10) {
+                                    Image(systemName: "applelogo")
+                                        .font(.title3)
+                                        .foregroundColor(.white)
+                                    
+                                    Text("Apple로 계속하기")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.black)
+                                .cornerRadius(12)
+                            }
+                        }
+                        .padding(.horizontal, 24)
+                        
+                        // 8. 하단 회원가입 이동 링크 (NavigationLink 사용)
+                        NavigationLink(destination: SignUpView()) {
+                            HStack(spacing: 5) {
+                                Text("아직 계정이 없으신가요?")
+                                    .foregroundColor(.gray)
+                                Text("회원가입")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.brandNavy)
+                            }
+                            .font(.footnote)
+                        }
+                        .padding(.top, 10)
+                        .padding(.bottom, 30)
                     }
-                    .padding(.bottom, 20)
                 }
             }
             .navigationBarHidden(true)
         }
-    }
-    
-    // MARK: - Firebase Auth Functions
-    
-    private func checkNicknameUniqueness() {
-        guard !nickname.isEmpty else {
-            self.errorMessage = "닉네임을 입력해주세요."
-            self.isErrorText = true
-            self.showError = true
-            return
-        }
-        
-        if nickname.count < 2 {
-            self.errorMessage = "닉네임은 2글자 이상이어야 합니다."
-            self.isErrorText = true
-            self.showError = true
-            return
-        }
-        
-        // 향후 Firestore 연동 시 실시간 데이터베이스 중복 체크 예정
-        withAnimation {
-            self.isNicknameChecked = true
-            self.errorMessage = "'\(nickname)'은(는) 사용 가능한 닉네임입니다."
-            self.isErrorText = false // 초록색 안내 메시지
-            self.showError = true
-        }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     private func handleLogin() {
+        guard !email.isEmpty else {
+            self.errorMessage = "이메일을 입력해주세요."
+            self.isErrorText = true
+            self.showError = true
+            return
+        }
+        
+        guard !password.isEmpty else {
+            self.errorMessage = "비밀번호를 입력해주세요."
+            self.isErrorText = true
+            self.showError = true
+            return
+        }
+        
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
@@ -174,44 +225,7 @@ struct LoginView: View {
                 self.showError = true
                 return
             }
-            // 로그인 성공 시 AuthManager 상태 업데이트
             authManager.checkLoginState()
-        }
-    }
-    
-    private func handleSignUp() {
-        guard !nickname.isEmpty else {
-            self.errorMessage = "닉네임을 입력해주세요."
-            self.isErrorText = true
-            self.showError = true
-            return
-        }
-        
-        guard isNicknameChecked else {
-            self.errorMessage = "닉네임 중복 확인을 진행해주세요."
-            self.isErrorText = true
-            self.showError = true
-            return
-        }
-        
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let error = error {
-                self.errorMessage = error.localizedDescription
-                self.isErrorText = true
-                self.showError = true
-                return
-            }
-            
-            // 회원가입 성공 시 프로필에 닉네임 설정
-            let changeRequest = result?.user.createProfileChangeRequest()
-            changeRequest?.displayName = nickname
-            changeRequest?.commitChanges { error in
-                if let error = error {
-                    print("닉네임 설정 에러: \(error.localizedDescription)")
-                }
-                // 최종 로그인 상태 업데이트
-                authManager.checkLoginState()
-            }
         }
     }
 }

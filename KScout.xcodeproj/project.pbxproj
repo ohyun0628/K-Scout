@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */; };
+		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
+		CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */; };
+		CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055022FBC2EDB00147E7E /* MyPageView.swift */; };
 		CEA59B9E2FBB1F0F0028046D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */; };
 		CEA59BA12FBB1F0F0028046D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */; };
 		CEA59C692FBB26730028046D /* RankingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA59C532FBB26730028046D /* RankingViewModel.swift */; };
@@ -29,6 +33,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
+		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		CE7055022FBC2EDB00147E7E /* MyPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		CEA59B962FBB1F0B0028046D /* KScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KScout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -63,6 +71,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE7055012FBC2EDB00147E7E /* MyPage */ = {
+			isa = PBXGroup;
+			children = (
+				CE7055022FBC2EDB00147E7E /* MyPageView.swift */,
+			);
+			path = MyPage;
+			sourceTree = "<group>";
+		};
 		CEA59B8D2FBB1F0B0028046D = {
 			isa = PBXGroup;
 			children = (
@@ -115,6 +131,7 @@
 		CEA59C542FBB26730028046D /* App */ = {
 			isa = PBXGroup;
 			children = (
+				CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */,
 				CEA59C552FBB26730028046D /* KScoutApp.swift */,
 			);
 			name = App;
@@ -135,6 +152,7 @@
 		CEA59C5A2FBB26730028046D /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				CE7054FD2FBC2EC300147E7E /* AuthManager.swift */,
 				CEA59C5B2FBB26730028046D /* NetworkManager.swift */,
 				CEA59C5C2FBB26730028046D /* APIEndpoint.swift */,
 			);
@@ -145,6 +163,7 @@
 		CEA59C5D2FBB26730028046D /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CE7055012FBC2EDB00147E7E /* MyPage */,
 				CEA59C772FBB49340028046D /* Auth */,
 				CEA59C5E2FBB26730028046D /* MainTabView.swift */,
 				CEA59C5F2FBB26730028046D /* Ranking */,
@@ -193,6 +212,7 @@
 		CEA59C772FBB49340028046D /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */,
 				CEA59C782FBB49340028046D /* LoginView.swift */,
 			);
 			path = Auth;
@@ -281,14 +301,18 @@
 				CEA59C6E2FBB26730028046D /* NetworkManager.swift in Sources */,
 				CEA59C6A2FBB26730028046D /* KScoutApp.swift in Sources */,
 				CEA59C742FBB26730028046D /* SearchView.swift in Sources */,
+				CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */,
 				CEA59C702FBB26730028046D /* MainTabView.swift in Sources */,
 				CEA59C732FBB26730028046D /* FavoriteView.swift in Sources */,
+				CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */,
 				CEA59C722FBB26730028046D /* ScheduleView.swift in Sources */,
 				CEA59C6C2FBB26730028046D /* Standing.swift in Sources */,
 				CEA59C692FBB26730028046D /* RankingViewModel.swift in Sources */,
 				CEA59C6D2FBB26730028046D /* Player.swift in Sources */,
 				CEA59C6B2FBB26730028046D /* Match.swift in Sources */,
+				CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */,
 				CEA59C762FBB26730028046D /* SplashView.swift in Sources */,
+				CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
