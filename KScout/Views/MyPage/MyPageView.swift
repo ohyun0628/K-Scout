@@ -16,7 +16,7 @@ struct MyPageView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 80, height: 80)
-                            .foregroundColor(.green)
+                            .foregroundColor(.brandAccent)
                             .padding(.top, 10)
                         
                         VStack(spacing: 5) {
@@ -43,7 +43,7 @@ struct MyPageView: View {
                         NavigationLink(destination: Text("설정 화면 준비 중입니다.")) {
                             HStack {
                                 Image(systemName: "gearshape.fill")
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.brandAccent)
                                 Text("설정")
                                     .foregroundColor(.primary)
                                 Spacer()
@@ -60,7 +60,7 @@ struct MyPageView: View {
                         NavigationLink(destination: Text("고객센터 준비 중입니다.")) {
                             HStack {
                                 Image(systemName: "questionmark.circle.fill")
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.brandAccent)
                                 Text("고객센터")
                                     .foregroundColor(.primary)
                                 Spacer()

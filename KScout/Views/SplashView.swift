@@ -26,7 +26,7 @@ struct SplashView: View {
                     Text("K-Scout")
                         .font(.largeTitle)
                         .fontWeight(.black)
-                        .foregroundColor(.green)
+                        .foregroundColor(.brandNavy)
                     
                     Text("K-League Player Stats & Match Schedule")
                         .font(.caption)

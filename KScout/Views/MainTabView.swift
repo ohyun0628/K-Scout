@@ -33,6 +33,6 @@ struct MainTabView: View {
                     Text("마이페이지")
                 }
         }
-        .accentColor(.green)
+        .accentColor(.brandAccent)
     }
 }

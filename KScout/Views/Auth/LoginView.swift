@@ -34,7 +34,7 @@ struct LoginView: View {
                         
                         Text("K-SCOUT")
                             .font(.system(size: 32, weight: .black, design: .default))
-                            .foregroundColor(.green)
+                            .foregroundColor(.brandNavy)
                         
                         Text(isSignUpMode ? "새로운 계정을 만들어보세요!" : "환영합니다! 이메일로 로그인해주세요.")
                             .font(.subheadline)
@@ -65,7 +65,7 @@ struct LoginView: View {
                                         .foregroundColor(.white)
                                         .padding(.horizontal, 15)
                                         .padding(.vertical, 14)
-                                        .background(isNicknameChecked ? Color.gray : Color.green)
+                                        .background(isNicknameChecked ? Color.gray : Color.brandAccent)
                                         .cornerRadius(10)
                                 }
                                 .disabled(isNicknameChecked)
@@ -91,7 +91,7 @@ struct LoginView: View {
                     // 3. 에러 또는 안내 메시지 표시
                     if showError {
                         Text(errorMessage)
-                            .foregroundColor(isErrorText ? .red : .green)
+                            .foregroundColor(isErrorText ? .red : .brandLightNavy)
                             .font(.footnote)
                             .padding(.horizontal, 30)
                     }
@@ -109,9 +109,9 @@ struct LoginView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green)
+                            .background(Color.brandAccent)
                             .cornerRadius(12)
-                            .shadow(color: Color.green.opacity(0.3), radius: 10, x: 0, y: 5)
+                            .shadow(color: Color.brandAccent.opacity(0.3), radius: 10, x: 0, y: 5)
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
@@ -130,7 +130,7 @@ struct LoginView: View {
                         }) {
                             Text(isSignUpMode ? "로그인" : "회원가입")
                                 .fontWeight(.bold)
-                                .foregroundColor(.green)
+                                .foregroundColor(.brandLightNavy)
                         }
                     }
                     .padding(.bottom, 20)

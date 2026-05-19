@@ -25,11 +25,11 @@ struct RadarChartView: View {
             
             // 3. 실제 능력치
             RadarDataShape(data: data, sides: 5)
-                .fill(Color.green.opacity(0.4))
+                .fill(Color.brandSecondary.opacity(0.45))
                 .animation(.easeInOut(duration: 1.0))
             
             RadarDataShape(data: data, sides: 5)
-                .stroke(Color.green, lineWidth: 2)
+                .stroke(Color.brandLightNavy, lineWidth: 2)
                 .animation(.easeInOut(duration: 1.0))
         }
     }
