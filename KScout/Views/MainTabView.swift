@@ -3,36 +3,36 @@ import SwiftUI
 struct MainTabView: View {
     var body: some View {
         TabView {
-            SearchView()
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                    Text("검색")
-                }
-            
-            RankingView()
-                .tabItem {
-                    Image(systemName: "list.number")
-                    Text("순위")
-                }
-            
             ScheduleView()
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("일정")
                 }
             
+            RankingView()
+                .tabItem {
+                    Image(systemName: "trophy")
+                    Text("순위")
+                }
+            
+            SearchView()
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                    Text("선수")
+                }
+            
             FavoriteView()
                 .tabItem {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "star")
                     Text("즐겨찾기")
                 }
             
             MyPageView()
                 .tabItem {
-                    Image(systemName: "person.fill")
-                    Text("마이페이지")
+                    Image(systemName: "person")
+                    Text("마이")
                 }
         }
-        .accentColor(.brandAccent)
+        .accentColor(.brandNavy) // 브랜드 메인 컬러인 brandNavy로 액센트 컬러 설정
     }
 }
