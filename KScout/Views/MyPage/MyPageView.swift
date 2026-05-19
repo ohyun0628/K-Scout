@@ -352,7 +352,7 @@ struct MyPageView: View {
                             if favoriteClub == club {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.brandNavy)
-                                    .fontWeight(.bold)
+                                    .font(.system(size: 14, weight: .bold))
                             }
                         }
                     }
