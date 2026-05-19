@@ -329,6 +329,7 @@
 				CEA59C6B2FBB26730028046D /* Match.swift in Sources */,
 				CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */,
 				CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */,
+				CEA59C762FBB26730028046D /* SplashView.swift in Sources */,
 				CE70550D2FBC2EDB00147E7E /* MockMatch.swift in Sources */,
 				CE7055102FBC2EDB00147E7E /* DateSliderView.swift in Sources */,
 				CE7055122FBC2EDB00147E7E /* MatchCardView.swift in Sources */,
