@@ -11,6 +11,10 @@
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
 		CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */; };
 		CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055022FBC2EDB00147E7E /* MyPageView.swift */; };
+		CE7055062FBC2EDB00147E7E /* AnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */; };
+		CE7055072FBC2EDB00147E7E /* CustomerSupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055052FBC2EDB00147E7E /* CustomerSupportView.swift */; };
+		CE7055092FBC2EDB00147E7E /* ClubSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055082FBC2EDB00147E7E /* ClubSelectionView.swift */; };
+		CE70550B2FBC2EDB00147E7E /* AnnouncementWriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70550A2FBC2EDB00147E7E /* AnnouncementWriteView.swift */; };
 		CE70550D2FBC2EDB00147E7E /* MockMatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70550C2FBC2EDB00147E7E /* MockMatch.swift */; };
 		CE7055102FBC2EDB00147E7E /* DateSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70550F2FBC2EDB00147E7E /* DateSliderView.swift */; };
 		CE7055122FBC2EDB00147E7E /* MatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055112FBC2EDB00147E7E /* MatchCardView.swift */; };
@@ -40,6 +44,10 @@
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		CE7055022FBC2EDB00147E7E /* MyPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
+		CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementView.swift; sourceTree = "<group>"; };
+		CE7055052FBC2EDB00147E7E /* CustomerSupportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerSupportView.swift; sourceTree = "<group>"; };
+		CE7055082FBC2EDB00147E7E /* ClubSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClubSelectionView.swift; sourceTree = "<group>"; };
+		CE70550A2FBC2EDB00147E7E /* AnnouncementWriteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementWriteView.swift; sourceTree = "<group>"; };
 		CE70550C2FBC2EDB00147E7E /* MockMatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockMatch.swift; sourceTree = "<group>"; };
 		CE70550F2FBC2EDB00147E7E /* DateSliderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateSliderView.swift; sourceTree = "<group>"; };
 		CE7055112FBC2EDB00147E7E /* MatchCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchCardView.swift; sourceTree = "<group>"; };
@@ -81,6 +89,10 @@
 			isa = PBXGroup;
 			children = (
 				CE7055022FBC2EDB00147E7E /* MyPageView.swift */,
+				CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */,
+				CE7055052FBC2EDB00147E7E /* CustomerSupportView.swift */,
+				CE7055082FBC2EDB00147E7E /* ClubSelectionView.swift */,
+				CE70550A2FBC2EDB00147E7E /* AnnouncementWriteView.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -330,6 +342,10 @@
 				CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */,
 				CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */,
 				CEA59C762FBB26730028046D /* SplashView.swift in Sources */,
+				CE7055062FBC2EDB00147E7E /* AnnouncementView.swift in Sources */,
+				CE7055072FBC2EDB00147E7E /* CustomerSupportView.swift in Sources */,
+				CE7055092FBC2EDB00147E7E /* ClubSelectionView.swift in Sources */,
+				CE70550B2FBC2EDB00147E7E /* AnnouncementWriteView.swift in Sources */,
 				CE70550D2FBC2EDB00147E7E /* MockMatch.swift in Sources */,
 				CE7055102FBC2EDB00147E7E /* DateSliderView.swift in Sources */,
 				CE7055122FBC2EDB00147E7E /* MatchCardView.swift in Sources */,
