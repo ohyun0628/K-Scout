@@ -86,9 +86,8 @@ struct AnnouncementView: View {
                                         
                                         VStack(alignment: .leading, spacing: 6) {
                                             Text(announcement.title)
-                                                .font(.body)
-                                                .fontWeight(.bold)
-                                                .foregroundColor(.brandNavy)
+                                                .font(.system(size: 16, weight: .bold))
+                                                .foregroundColor(Color.brandNavy)
                                                 .multilineTextAlignment(.leading)
                                                 .lineLimit(2)
                                             
@@ -165,10 +164,11 @@ struct AnnouncementView: View {
                             Image(systemName: "square.and.pencil")
                             Text("글쓰기")
                         }
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundColor(.brandNavy)
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(Color.brandNavy)
                     }
+                } else {
+                    EmptyView()
                 }
             }
         )

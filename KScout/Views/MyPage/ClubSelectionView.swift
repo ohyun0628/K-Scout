@@ -116,8 +116,7 @@ struct ClubSelectionView: View {
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(club.name)
-                                            .font(.body)
-                                            .fontWeight(.bold)
+                                            .font(.system(size: 16, weight: .bold))
                                             .foregroundColor(.primary)
                                         
                                         Text(club.region)

@@ -32,8 +32,7 @@ struct AnnouncementWriteView: View {
                                         .frame(width: 24)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("중요 공지사항 설정")
-                                            .font(.body)
-                                            .fontWeight(.bold)
+                                            .font(.system(size: 16, weight: .bold))
                                         Text("리스트 맨 위에 상단 고정되며 빨간색 배지가 붙습니다.")
                                             .font(.caption)
                                             .foregroundColor(.gray)
@@ -54,7 +53,7 @@ struct AnnouncementWriteView: View {
                             Text("제목")
                                 .font(.caption)
                                 .fontWeight(.bold)
-                                .foregroundColor(.brandNavy)
+                                .foregroundColor(Color.brandNavy)
                             
                             TextField("공지사항 제목을 입력하세요", text: $title)
                                 .font(.body)
@@ -74,7 +73,7 @@ struct AnnouncementWriteView: View {
                                 Text("본문 내용")
                                     .font(.caption)
                                     .fontWeight(.bold)
-                                    .foregroundColor(.brandNavy)
+                                    .foregroundColor(Color.brandNavy)
                                 Spacer()
                                 Text("\(content.count)자")
                                     .font(.caption)
@@ -104,11 +103,13 @@ struct AnnouncementWriteView: View {
                 }
                 .foregroundColor(.gray),
                 
-                trailing: Button("등록") {
+                trailing: Button(action: {
                     saveAnnouncement()
+                }) {
+                    Text("등록")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(Color.brandNavy)
                 }
-                .fontWeight(.bold)
-                .foregroundColor(.brandNavy)
             )
             .alert(isPresented: $showAlert) {
                 Alert(

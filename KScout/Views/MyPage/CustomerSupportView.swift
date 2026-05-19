@@ -58,13 +58,11 @@ struct CustomerSupportView: View {
                                 }) {
                                     HStack(alignment: .center, spacing: 12) {
                                         Text("Q")
-                                            .font(.title3)
-                                            .fontWeight(.bold)
+                                            .font(.system(size: 20, weight: .bold))
                                             .foregroundColor(.brandNavy)
                                         
                                         Text(faq.question)
-                                            .font(.subheadline)
-                                            .fontWeight(.medium)
+                                            .font(.system(size: 15, weight: .medium))
                                             .foregroundColor(.primary)
                                             .multilineTextAlignment(.leading)
                                             .lineLimit(2)
@@ -85,8 +83,7 @@ struct CustomerSupportView: View {
                                     
                                     HStack(alignment: .top, spacing: 12) {
                                         Text("A")
-                                            .font(.title3)
-                                            .fontWeight(.bold)
+                                            .font(.system(size: 20, weight: .bold))
                                             .foregroundColor(.gray)
                                             .opacity(0.8)
                                         
