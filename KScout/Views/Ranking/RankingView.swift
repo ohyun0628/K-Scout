@@ -16,15 +16,7 @@ struct RankingView: View {
             
             VStack(spacing: 0) {
                 // 1. 커스텀 헤더 타이틀
-                HStack {
-                    Text("순위표")
-                        .font(.system(size: 28, weight: .black))
-                        .foregroundColor(Color.brandNavy)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 12)
+                HeaderTitleView(title: "순위표")
                 
                 // 2. 대분류 세그먼트 셀렉터 (팀 순위 vs 선수 순위)
                 HStack(spacing: 0) {
