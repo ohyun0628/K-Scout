@@ -29,8 +29,8 @@ struct SignUpView: View {
                         Image("SplashIcon")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 55, height: 55)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .frame(width: 85, height: 85)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                             .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 3)
                         
                         Text("K-SCOUT")
