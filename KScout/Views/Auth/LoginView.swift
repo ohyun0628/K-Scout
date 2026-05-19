@@ -7,6 +7,8 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var nickname = "" // 닉네임 필드 추가
+    @State private var isNicknameChecked = false // 중복 확인 완료 여부
+    @State private var isErrorText = true // 메시지 색상 구분용 (빨강/초록)
     @State private var isSignUpMode = false // 로그인 모드인지 회원가입 모드인지 구분
     @State private var errorMessage = ""
     @State private var showError = false
@@ -43,12 +45,31 @@ struct LoginView: View {
                     // 2. 입력 폼 영역
                     VStack(spacing: 15) {
                         if isSignUpMode {
-                            TextField("닉네임", text: $nickname)
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(12)
-                                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-                                .autocapitalization(.none)
+                            HStack(spacing: 10) {
+                                TextField("닉네임", text: $nickname)
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                                    .autocapitalization(.none)
+                                    .onChange(of: nickname) { _ in
+                                        isNicknameChecked = false
+                                    }
+                                
+                                Button(action: {
+                                    checkNicknameUniqueness()
+                                }) {
+                                    Text(isNicknameChecked ? "확인 완료" : "중복 확인")
+                                        .font(.footnote)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 15)
+                                        .padding(.vertical, 14)
+                                        .background(isNicknameChecked ? Color.gray : Color.green)
+                                        .cornerRadius(10)
+                                }
+                                .disabled(isNicknameChecked)
+                            }
                         }
                         
                         TextField("이메일 주소", text: $email)
@@ -67,10 +88,10 @@ struct LoginView: View {
                     }
                     .padding(.horizontal, 30)
                     
-                    // 3. 에러 메시지 표시
+                    // 3. 에러 또는 안내 메시지 표시
                     if showError {
                         Text(errorMessage)
-                            .foregroundColor(.red)
+                            .foregroundColor(isErrorText ? .red : .green)
                             .font(.footnote)
                             .padding(.horizontal, 30)
                     }
@@ -121,10 +142,35 @@ struct LoginView: View {
     
     // MARK: - Firebase Auth Functions
     
+    private func checkNicknameUniqueness() {
+        guard !nickname.isEmpty else {
+            self.errorMessage = "닉네임을 입력해주세요."
+            self.isErrorText = true
+            self.showError = true
+            return
+        }
+        
+        if nickname.count < 2 {
+            self.errorMessage = "닉네임은 2글자 이상이어야 합니다."
+            self.isErrorText = true
+            self.showError = true
+            return
+        }
+        
+        // 향후 Firestore 연동 시 실시간 데이터베이스 중복 체크 예정
+        withAnimation {
+            self.isNicknameChecked = true
+            self.errorMessage = "'\(nickname)'은(는) 사용 가능한 닉네임입니다."
+            self.isErrorText = false // 초록색 안내 메시지
+            self.showError = true
+        }
+    }
+    
     private func handleLogin() {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
+                self.isErrorText = true
                 self.showError = true
                 return
             }
@@ -136,6 +182,14 @@ struct LoginView: View {
     private func handleSignUp() {
         guard !nickname.isEmpty else {
             self.errorMessage = "닉네임을 입력해주세요."
+            self.isErrorText = true
+            self.showError = true
+            return
+        }
+        
+        guard isNicknameChecked else {
+            self.errorMessage = "닉네임 중복 확인을 진행해주세요."
+            self.isErrorText = true
             self.showError = true
             return
         }
@@ -143,6 +197,7 @@ struct LoginView: View {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
+                self.isErrorText = true
                 self.showError = true
                 return
             }
