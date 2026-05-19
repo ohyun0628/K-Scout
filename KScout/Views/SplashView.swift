@@ -1,14 +1,18 @@
 import SwiftUI
 
 struct SplashView: View {
+    @EnvironmentObject var authManager: AuthManager
     @State private var isActive = false
     @State private var size: CGFloat = 0.7
     @State private var opacity: Double = 0.4
     
     var body: some View {
         if isActive {
-            // 2초 뒤에 메인 탭 뷰로 전환
-            MainTabView()
+            if authManager.isLoggedIn {
+                MainTabView()
+            } else {
+                LoginView()
+            }
         } else {
             VStack {
                 VStack(spacing: 20) {
