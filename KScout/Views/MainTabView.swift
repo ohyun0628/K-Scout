@@ -11,7 +11,7 @@ struct MainTabView: View {
             
             RankingView()
                 .tabItem {
-                    Image(systemName: "trophy")
+                    Image(systemName: "list.number")
                     Text("순위")
                 }
             

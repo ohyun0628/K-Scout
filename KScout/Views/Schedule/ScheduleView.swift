@@ -43,15 +43,7 @@ struct ScheduleView: View {
             
             VStack(spacing: 0) {
                 // 1. 경기 일정 커스텀 헤더 타이틀
-                HStack {
-                    Text("경기 일정")
-                        .font(.system(size: 28, weight: .black))
-                        .foregroundColor(Color.brandNavy)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 12)
+                HeaderTitleView(title: "경기 일정")
                 
                 // 2. K리그1 / K리그2 세그먼트 셀렉터 (Mockup 완벽 매칭)
                 HStack(spacing: 0) {
