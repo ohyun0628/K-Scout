@@ -11,6 +11,10 @@
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
 		CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */; };
 		CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055022FBC2EDB00147E7E /* MyPageView.swift */; };
+		CE7055062FBC2EDB00147E7E /* AnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */; };
+		CE7055072FBC2EDB00147E7E /* CustomerSupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055052FBC2EDB00147E7E /* CustomerSupportView.swift */; };
+		CE7055092FBC2EDB00147E7E /* ClubSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055082FBC2EDB00147E7E /* ClubSelectionView.swift */; };
+		CE70550B2FBC2EDB00147E7E /* AnnouncementWriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70550A2FBC2EDB00147E7E /* AnnouncementWriteView.swift */; };
 		CEA59B9E2FBB1F0F0028046D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */; };
 		CEA59BA12FBB1F0F0028046D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */; };
 		CEA59C692FBB26730028046D /* RankingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA59C532FBB26730028046D /* RankingViewModel.swift */; };
@@ -37,6 +41,10 @@
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		CE7055022FBC2EDB00147E7E /* MyPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
+		CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementView.swift; sourceTree = "<group>"; };
+		CE7055052FBC2EDB00147E7E /* CustomerSupportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerSupportView.swift; sourceTree = "<group>"; };
+		CE7055082FBC2EDB00147E7E /* ClubSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClubSelectionView.swift; sourceTree = "<group>"; };
+		CE70550A2FBC2EDB00147E7E /* AnnouncementWriteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementWriteView.swift; sourceTree = "<group>"; };
 		CEA59B962FBB1F0B0028046D /* KScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KScout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -75,6 +83,10 @@
 			isa = PBXGroup;
 			children = (
 				CE7055022FBC2EDB00147E7E /* MyPageView.swift */,
+				CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */,
+				CE7055052FBC2EDB00147E7E /* CustomerSupportView.swift */,
+				CE7055082FBC2EDB00147E7E /* ClubSelectionView.swift */,
+				CE70550A2FBC2EDB00147E7E /* AnnouncementWriteView.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -313,6 +325,10 @@
 				CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */,
 				CEA59C762FBB26730028046D /* SplashView.swift in Sources */,
 				CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */,
+				CE7055062FBC2EDB00147E7E /* AnnouncementView.swift in Sources */,
+				CE7055072FBC2EDB00147E7E /* CustomerSupportView.swift in Sources */,
+				CE7055092FBC2EDB00147E7E /* ClubSelectionView.swift in Sources */,
+				CE70550B2FBC2EDB00147E7E /* AnnouncementWriteView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
