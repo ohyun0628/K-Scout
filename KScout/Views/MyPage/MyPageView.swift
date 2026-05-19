@@ -235,9 +235,7 @@ struct MyPageView: View {
     // 4. 일반 지원 그룹 (공지사항 / 고객센터 / 비밀번호 재설정)
     private var supportSection: some View {
         VStack(spacing: 0) {
-            Button(action: {
-                activeAlert = .general(message: "공지사항 준비 중입니다.")
-            }) {
+            NavigationLink(destination: AnnouncementView()) {
                 HStack {
                     Image(systemName: "megaphone.fill")
                         .foregroundColor(.brandNavy)
@@ -254,9 +252,7 @@ struct MyPageView: View {
             
             Divider().padding(.horizontal)
             
-            Button(action: {
-                activeAlert = .general(message: "고객센터 준비 중입니다.")
-            }) {
+            NavigationLink(destination: CustomerSupportView()) {
                 HStack {
                     Image(systemName: "questionmark.circle.fill")
                         .foregroundColor(.brandNavy)
