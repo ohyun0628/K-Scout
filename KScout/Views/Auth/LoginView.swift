@@ -22,16 +22,12 @@ struct LoginView: View {
                     VStack(spacing: 25) {
                         // 1. 로고 및 플랫폼 타이틀 영역
                         VStack(spacing: 12) {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.brandNavy)
-                                    .frame(width: 55, height: 55)
-                                    .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 3)
-                                
-                                Image(systemName: "dot.radiowaves.up.forward")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(Color(red: 233/255, green: 196/255, blue: 106/255))
-                            }
+                            Image("SplashIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 55, height: 55)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 3)
                             
                             Text("K-SCOUT")
                                 .font(.system(size: 26, weight: .black, design: .default))
