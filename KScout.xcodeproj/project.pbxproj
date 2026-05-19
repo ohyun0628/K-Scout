@@ -11,6 +11,9 @@
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
 		CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */; };
 		CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055022FBC2EDB00147E7E /* MyPageView.swift */; };
+		CE70550D2FBC2EDB00147E7E /* MockMatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70550C2FBC2EDB00147E7E /* MockMatch.swift */; };
+		CE7055102FBC2EDB00147E7E /* DateSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70550F2FBC2EDB00147E7E /* DateSliderView.swift */; };
+		CE7055122FBC2EDB00147E7E /* MatchCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055112FBC2EDB00147E7E /* MatchCardView.swift */; };
 		CEA59B9E2FBB1F0F0028046D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */; };
 		CEA59BA12FBB1F0F0028046D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */; };
 		CEA59C692FBB26730028046D /* RankingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA59C532FBB26730028046D /* RankingViewModel.swift */; };
@@ -37,6 +40,9 @@
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		CE7055022FBC2EDB00147E7E /* MyPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
+		CE70550C2FBC2EDB00147E7E /* MockMatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockMatch.swift; sourceTree = "<group>"; };
+		CE70550F2FBC2EDB00147E7E /* DateSliderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateSliderView.swift; sourceTree = "<group>"; };
+		CE7055112FBC2EDB00147E7E /* MatchCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchCardView.swift; sourceTree = "<group>"; };
 		CEA59B962FBB1F0B0028046D /* KScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KScout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -77,6 +83,15 @@
 				CE7055022FBC2EDB00147E7E /* MyPageView.swift */,
 			);
 			path = MyPage;
+			sourceTree = "<group>";
+		};
+		CE70550E2FBC2EDB00147E7E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				CE70550F2FBC2EDB00147E7E /* DateSliderView.swift */,
+				CE7055112FBC2EDB00147E7E /* MatchCardView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		CEA59B8D2FBB1F0B0028046D = {
@@ -144,6 +159,7 @@
 				CEA59C572FBB26730028046D /* Match.swift */,
 				CEA59C582FBB26730028046D /* Standing.swift */,
 				CEA59C592FBB26730028046D /* Player.swift */,
+				CE70550C2FBC2EDB00147E7E /* MockMatch.swift */,
 			);
 			name = Models;
 			path = "../../K-Scout/KScout/Models";
@@ -164,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7055012FBC2EDB00147E7E /* MyPage */,
+				CE70550E2FBC2EDB00147E7E /* Components */,
 				CEA59C772FBB49340028046D /* Auth */,
 				CEA59C5E2FBB26730028046D /* MainTabView.swift */,
 				CEA59C5F2FBB26730028046D /* Ranking */,
@@ -311,8 +328,10 @@
 				CEA59C6D2FBB26730028046D /* Player.swift in Sources */,
 				CEA59C6B2FBB26730028046D /* Match.swift in Sources */,
 				CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */,
-				CEA59C762FBB26730028046D /* SplashView.swift in Sources */,
 				CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */,
+				CE70550D2FBC2EDB00147E7E /* MockMatch.swift in Sources */,
+				CE7055102FBC2EDB00147E7E /* DateSliderView.swift in Sources */,
+				CE7055122FBC2EDB00147E7E /* MatchCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

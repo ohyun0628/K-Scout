@@ -1,35 +1,11 @@
 import SwiftUI
 
-struct MockMatch: Identifiable {
-    let id = UUID()
-    let homeTeam: String
-    let awayTeam: String
-    let homeScore: Int?
-    let awayScore: Int?
-    let status: String // "LIVE", "NS" (Not Started), "FT" (Finished)
-    let time: String // e.g. "15:00" or "67'"
-    let stadium: String
-    let league: Int // 1 for K리그1, 2 for K리그2
-    let dayOffset: Int // Offset from selected date (e.g. 0 for "목 18", -3 for "월 15")
-}
-
 struct ScheduleView: View {
     @State private var selectedLeague = 1 // 1: K리그1, 2: K리그2
     @State private var selectedDayOffset = 0 // Offset from the middle date (0 corresponds to "목 18")
     @State private var notificationSubscription: Set<UUID> = [] // 알림 설정한 경기 목록
     @State private var showAlert = false
     @State private var alertMessage = ""
-    
-    // 주간 요일/일자 정의 (레퍼런스 이미지 기준 목 18일이 오늘/기본 선택)
-    let dateItems = [
-        (dayName: "월", dayNumber: "15", offset: -3),
-        (dayName: "화", dayNumber: "16", offset: -2),
-        (dayName: "수", dayNumber: "17", offset: -1),
-        (dayName: "목", dayNumber: "18", offset: 0),
-        (dayName: "금", dayNumber: "19", offset: 1),
-        (dayName: "토", dayNumber: "20", offset: 2),
-        (dayName: "일", dayNumber: "21", offset: 3)
-    ]
     
     // 리얼 필드 경기 데이터 목업
     let mockMatches: [MockMatch] = [
@@ -113,58 +89,11 @@ struct ScheduleView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
                 
-                // 3. 주간 데이트 슬라이더 (Mockup 완벽 매칭)
-                VStack(spacing: 8) {
-                    HStack(spacing: 0) {
-                        ForEach(dateItems, id: \.offset) { item in
-                            Button(action: {
-                                withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
-                                    selectedDayOffset = item.offset
-                                }
-                            }) {
-                                VStack(spacing: 8) {
-                                    Text(item.dayName)
-                                        .font(.system(size: 13, weight: .medium))
-                                        .foregroundColor(selectedDayOffset == item.offset ? Color.brandNavy : .gray)
-                                    
-                                    Text(item.dayNumber)
-                                        .font(.system(size: 15, weight: .black))
-                                        .foregroundColor(selectedDayOffset == item.offset ? .white : Color.brandNavy)
-                                        .frame(width: 32, height: 32)
-                                        .background(selectedDayOffset == item.offset ? Color.brandNavy : Color.clear)
-                                        .clipShape(Circle())
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 8)
-                    
-                    // 슬라이더 바 스크롤바 형태 데코레이션
-                    ZStack(alignment: .leading) {
-                        Capsule()
-                            .fill(Color.gray.opacity(0.15))
-                            .frame(height: 4)
-                        
-                        // 현재 선택된 위치에 따라 바 인디케이터 정렬 효과 계산
-                        GeometryReader { geo in
-                            let step = geo.size.width / 7
-                            let index = CGFloat(selectedDayOffset + 3) // offset -3~3 -> index 0~6
-                            
-                            Capsule()
-                                .fill(Color.brandNavy)
-                                .frame(width: step - 12, height: 4)
-                                .offset(x: index * step + 6)
-                        }
-                        .frame(height: 4)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
-                }
-                .background(Color.white)
-                .padding(.bottom, 8)
+                // 3. 주간 데이트 슬라이더 (독립 컴포넌트 호출)
+                DateSliderView(selectedDayOffset: $selectedDayOffset)
+                    .padding(.bottom, 8)
                 
-                // 4. 경기 카드 리스트 영역
+                // 4. 경기 카드 리스트 영역 (독립 컴포넌트 호출)
                 ScrollView(showsIndicators: false) {
                     if filteredMatches.isEmpty {
                         VStack(spacing: 12) {
@@ -180,7 +109,13 @@ struct ScheduleView: View {
                     } else {
                         LazyVStack(spacing: 14) {
                             ForEach(filteredMatches) { match in
-                                matchCardView(match: match)
+                                MatchCardView(
+                                    match: match,
+                                    isSubscribed: notificationSubscription.contains(match.id),
+                                    onNotificationToggle: {
+                                        toggleNotification(for: match)
+                                    }
+                                )
                             }
                         }
                         .padding(.vertical, 12)
@@ -188,7 +123,7 @@ struct ScheduleView: View {
                 }
             }
         }
-        .navigationBarHidden(true) // 커스텀 헤더 사용하므로 내비게이션 바는 숨김
+        .navigationBarHidden(true)
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("경기 알림 설정"),
@@ -196,129 +131,6 @@ struct ScheduleView: View {
                 dismissButton: .default(Text("확인"))
             )
         }
-    }
-    
-    // MARK: - Match Card Subviews
-    
-    @ViewBuilder
-    private func matchCardView(match: MockMatch) -> some View {
-        HStack(spacing: 0) {
-            // 좌측 상태 인디케이터 컬러 바 (LIVE 경기 시 빨간 바 표출)
-            if match.status == "LIVE" {
-                Rectangle()
-                    .fill(Color.red)
-                    .frame(width: 4)
-            } else {
-                Rectangle()
-                    .fill(Color.clear)
-                    .frame(width: 4)
-            }
-            
-            VStack(alignment: .leading, spacing: 10) {
-                // 상단 매치 뱃지 및 추가 기능 버튼
-                HStack {
-                    // 경기 상태에 따른 다른 스타일 배지 표출
-                    if match.status == "LIVE" {
-                        HStack(spacing: 4) {
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 6, height: 6)
-                            Text("● LIVE \(match.time)")
-                                .font(.system(size: 11, weight: .bold))
-                        }
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Color.red)
-                        .cornerRadius(12)
-                    } else if match.status == "NS" {
-                        Text(match.time)
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(Color.brandNavy)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.brandNavy.opacity(0.3), lineWidth: 1)
-                            )
-                    } else {
-                        Text("종료")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(.gray)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(Color(UIColor.secondarySystemBackground))
-                            .cornerRadius(12)
-                    }
-                    
-                    Spacer()
-                    
-                    // 알림 받기 설정 (경기 시작 전인 경우 알림 아이콘 노출)
-                    if match.status == "NS" {
-                        Button(action: {
-                            toggleNotification(for: match)
-                        }) {
-                            Image(systemName: notificationSubscription.contains(match.id) ? "bell.fill" : "bell")
-                                .font(.system(size: 16))
-                                .foregroundColor(notificationSubscription.contains(match.id) ? Color.brandNavy : .gray)
-                        }
-                    }
-                }
-                
-                // 팀 이름 및 점수 스코어 레이아웃
-                HStack {
-                    // 홈 팀
-                    Text(match.homeTeam)
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    // 스코어 또는 VS 구분선
-                    if match.status == "LIVE" || match.status == "FT" {
-                        HStack(spacing: 12) {
-                            Text("\(match.homeScore ?? 0)")
-                                .font(.system(size: 24, weight: .black))
-                                .foregroundColor(.primary)
-                            
-                            Text(":")
-                                .font(.system(size: 20, weight: .medium))
-                                .foregroundColor(.gray.opacity(0.6))
-                            
-                            Text("\(match.awayScore ?? 0)")
-                                .font(.system(size: 24, weight: .black))
-                                .foregroundColor(.primary)
-                        }
-                        .frame(width: 80)
-                    } else {
-                        Text("vs")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.gray.opacity(0.6))
-                            .frame(width: 80)
-                    }
-                    
-                    // 어웨이 팀
-                    Text(match.awayTeam)
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }
-                .padding(.vertical, 4)
-                
-                // 경기장 이름
-                HStack {
-                    Spacer()
-                    Text(match.stadium)
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
-                    Spacer()
-                }
-            }
-            .padding()
-        }
-        .background(Color.white)
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
-        .padding(.horizontal, 16)
     }
     
     // 알림 설정 토글 비즈니스 로직
