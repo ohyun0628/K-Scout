@@ -26,6 +26,12 @@ struct MainTabView: View {
                     Image(systemName: "star.fill")
                     Text("즐겨찾기")
                 }
+            
+            MyPageView()
+                .tabItem {
+                    Image(systemName: "person.fill")
+                    Text("마이페이지")
+                }
         }
         .accentColor(.green)
     }
