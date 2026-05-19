@@ -26,17 +26,7 @@ struct MyPageView: View {
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
     
     // UI 제어 상태 변수
-    @State private var showClubPicker = false
     @State private var activeAlert: MyPageAlert? = nil
-    
-    // K리그 주요 구단 목록
-    let kLeagueClubs = [
-        "선택 안 함",
-        "강원 FC", "광주 FC", "김천 상무", "대구 FC", 
-        "대전 하나 시티즌", "FC 서울", "수원 FC", "울산 HD FC", 
-        "인천 유나이티드", "전북 현대 모터스", "제주 유나이티드", "포항 스틸러스",
-        "수원 삼성 블루윙즈", "부산 아이파크", "서울 이랜드 FC", "전남 드래곤즈"
-    ]
     
     // MARK: - Computed Properties for Safety (컴파일러 타입 추론 보조)
     
@@ -76,10 +66,6 @@ struct MyPageView: View {
             }
             .navigationTitle("마이페이지")
             .navigationBarTitleDisplayMode(.inline)
-            // 선호 구단 선택용 시트 분리 적용
-            .sheet(isPresented: $showClubPicker) {
-                clubPickerSheet
-            }
             // 단일 얼럿 처리로 컴파일 부하 최적화
             .alert(item: $activeAlert) { alertType in
                 makeAlert(for: alertType)
@@ -192,9 +178,7 @@ struct MyPageView: View {
     // 3. 앱 설정 그룹 (선호 구단 / 알림 설정)
     private var settingsSection: some View {
         VStack(spacing: 0) {
-            Button(action: {
-                showClubPicker.toggle()
-            }) {
+            NavigationLink(destination: ClubSelectionView()) {
                 HStack {
                     Image(systemName: "shield.fill")
                         .foregroundColor(.brandNavy)
@@ -331,36 +315,7 @@ struct MyPageView: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 30)
     }
-    
-    // 6. 구단 선택용 시트 뷰
-    private var clubPickerSheet: some View {
-        NavigationView {
-            List {
-                ForEach(kLeagueClubs, id: \.self) { club in
-                    Button(action: {
-                        favoriteClub = club
-                        showClubPicker = false
-                    }) {
-                        HStack {
-                            Text(club)
-                                .foregroundColor(.primary)
-                            Spacer()
-                            if favoriteClub == club {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.brandNavy)
-                                    .font(.system(size: 14, weight: .bold))
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle("선호 구단 선택")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("닫기") {
-                showClubPicker = false
-            })
-        }
-    }
+
     
     // MARK: - Helper Methods for Alerts (컴파일러 부하 경감)
     
