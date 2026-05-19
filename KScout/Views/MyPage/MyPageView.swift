@@ -38,11 +38,30 @@ struct MyPageView: View {
         "수원 삼성 블루윙즈", "부산 아이파크", "서울 이랜드 FC", "전남 드래곤즈"
     ]
     
+    // MARK: - Computed Properties for Safety (컴파일러 타입 추론 보조)
+    
+    private var userInitial: String {
+        if let name = authManager.currentUser?.displayName, let first = name.first {
+            return String(first)
+        }
+        return "K"
+    }
+    
+    private var userDisplayName: String {
+        authManager.currentUser?.displayName ?? "K-Scout 회원님"
+    }
+    
+    private var userEmail: String {
+        authManager.currentUser?.email ?? "이메일 정보 없음"
+    }
+    
+    // MARK: - Main Body
+    
     var body: some View {
         NavigationView {
             ZStack {
-                // 부드러운 그레이 백그라운드
-                Color(.systemGroupedBackground)
+                // 부드러운 그레이 백그라운드 (UIColor 명시로 타입 추론 오류 원천 차단)
+                Color(UIColor.systemGroupedBackground)
                     .edgesIgnoringSafeArea(.all)
                 
                 ScrollView(showsIndicators: false) {
@@ -57,34 +76,9 @@ struct MyPageView: View {
             }
             .navigationTitle("마이페이지")
             .navigationBarTitleDisplayMode(.inline)
-            // 선호 구단 선택용 시트
+            // 선호 구단 선택용 시트 분리 적용
             .sheet(isPresented: $showClubPicker) {
-                NavigationView {
-                    List {
-                        ForEach(kLeagueClubs, id: \.self) { club in
-                            Button(action: {
-                                favoriteClub = club
-                                showClubPicker = false
-                            }) {
-                                HStack {
-                                    Text(club)
-                                        .foregroundColor(.primary)
-                                    Spacer()
-                                    if favoriteClub == club {
-                                        Image(systemName: "checkmark")
-                                            .foregroundColor(.brandNavy)
-                                            .fontWeight(.bold)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .navigationTitle("선호 구단 선택")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarItems(trailing: Button("닫기") {
-                        showClubPicker = false
-                    })
-                }
+                clubPickerSheet
             }
             // 단일 얼럿 처리로 컴파일 부하 최적화
             .alert(item: $activeAlert) { alertType in
@@ -93,63 +87,7 @@ struct MyPageView: View {
         }
     }
     
-    // MARK: - Helper Methods for Alerts (컴파일러 부하 경감)
-    
-    private func makeAlert(for type: MyPageAlert) -> Alert {
-        switch type {
-        case .general(let message):
-            return Alert(
-                title: Text("안내"),
-                message: Text(message),
-                dismissButton: .default(Text("확인"))
-            )
-        case .resetPassword:
-            let email = authManager.currentUser?.email ?? ""
-            return Alert(
-                title: Text("비밀번호 재설정"),
-                message: Text("등록된 이메일(\(email))로 비밀번호 재설정 링크를 보내시겠습니까?"),
-                primaryButton: .default(Text("보내기"), action: sendPasswordReset),
-                secondaryButton: .cancel(Text("취소"))
-            )
-        case .logout:
-            return Alert(
-                title: Text("로그아웃"),
-                message: Text("정말 로그아웃 하시겠습니까?"),
-                primaryButton: .destructive(Text("로그아웃"), action: authManager.logout),
-                secondaryButton: .cancel(Text("취소"))
-            )
-        case .deleteAccount:
-            return Alert(
-                title: Text("회원 탈퇴"),
-                message: Text("정말 계정을 탈퇴하시겠습니까? 이 작업은 취소할 수 없습니다."),
-                primaryButton: .destructive(Text("탈퇴하기"), action: deleteAccount),
-                secondaryButton: .cancel(Text("취소"))
-            )
-        }
-    }
-    
-    private func sendPasswordReset() {
-        guard let email = authManager.currentUser?.email else { return }
-        Auth.auth().sendPasswordReset(withEmail: email) { error in
-            if let error = error {
-                activeAlert = .general(message: "오류가 발생했습니다: \(error.localizedDescription)")
-            } else {
-                activeAlert = .general(message: "비밀번호 재설정 메일이 전송되었습니다.")
-            }
-        }
-    }
-    
-    private func deleteAccount() {
-        authManager.currentUser?.delete { error in
-            if let error = error {
-                activeAlert = .general(message: "보안상 재인증이 필요합니다. 다시 로그인 후 시도해주세요. (\(error.localizedDescription))")
-            } else {
-                authManager.checkLoginState()
-            }
-        }
-    }
-    
-    // MARK: - 하위 뷰 분할 (컴파일러 성능 최적화)
+    // MARK: - Subviews (컴파일러 성능 최적화)
     
     // 1. 프로필 카드 영역
     private var profileCardSection: some View {
@@ -161,18 +99,18 @@ struct MyPageView: View {
                         .fill(Color.white.opacity(0.15))
                         .frame(width: 70, height: 70)
                     
-                    Text(String(authManager.currentUser?.displayName?.prefix(1) ?? "K"))
+                    Text(userInitial)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.white)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(authManager.currentUser?.displayName ?? "K-Scout 회원님")
+                    Text(userDisplayName)
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                     
-                    Text(authManager.currentUser?.email ?? "이메일 정보 없음")
+                    Text(userEmail)
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.7))
                     
@@ -396,6 +334,91 @@ struct MyPageView: View {
         .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
         .padding(.horizontal, 16)
         .padding(.bottom, 30)
+    }
+    
+    // 6. 구단 선택용 시트 뷰
+    private var clubPickerSheet: some View {
+        NavigationView {
+            List {
+                ForEach(kLeagueClubs, id: \.self) { club in
+                    Button(action: {
+                        favoriteClub = club
+                        showClubPicker = false
+                    }) {
+                        HStack {
+                            Text(club)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if favoriteClub == club {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.brandNavy)
+                                    .fontWeight(.bold)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("선호 구단 선택")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button("닫기") {
+                showClubPicker = false
+            })
+        }
+    }
+    
+    // MARK: - Helper Methods for Alerts (컴파일러 부하 경감)
+    
+    private func makeAlert(for type: MyPageAlert) -> Alert {
+        switch type {
+        case .general(let message):
+            return Alert(
+                title: Text("안내"),
+                message: Text(message),
+                dismissButton: .default(Text("확인"))
+            )
+        case .resetPassword:
+            return Alert(
+                title: Text("비밀번호 재설정"),
+                message: Text("등록된 이메일(\(userEmail))로 비밀번호 재설정 링크를 보내시겠습니까?"),
+                primaryButton: .default(Text("보내기"), action: sendPasswordReset),
+                secondaryButton: .cancel(Text("취소"))
+            )
+        case .logout:
+            return Alert(
+                title: Text("로그아웃"),
+                message: Text("정말 로그아웃 하시겠습니까?"),
+                primaryButton: .destructive(Text("로그아웃"), action: authManager.logout),
+                secondaryButton: .cancel(Text("취소"))
+            )
+        case .deleteAccount:
+            return Alert(
+                title: Text("회원 탈퇴"),
+                message: Text("정말 계정을 탈퇴하시겠습니까? 이 작업은 취소할 수 없습니다."),
+                primaryButton: .destructive(Text("탈퇴하기"), action: deleteAccount),
+                secondaryButton: .cancel(Text("취소"))
+            )
+        }
+    }
+    
+    private func sendPasswordReset() {
+        guard let email = authManager.currentUser?.email else { return }
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                activeAlert = .general(message: "오류가 발생했습니다: \(error.localizedDescription)")
+            } else {
+                activeAlert = .general(message: "비밀번호 재설정 메일이 전송되었습니다.")
+            }
+        }
+    }
+    
+    private func deleteAccount() {
+        authManager.currentUser?.delete { error in
+            if let error = error {
+                activeAlert = .general(message: "보안상 재인증이 필요합니다. 다시 로그인 후 시도해주세요. (\(error.localizedDescription))")
+            } else {
+                authManager.checkLoginState()
+            }
+        }
     }
 }
 
