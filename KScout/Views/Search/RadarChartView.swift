@@ -41,20 +41,11 @@ struct RadarChartView: View {
         }
     }
     
-    // 2. 방사형 선 그리기 분리
+    // 2. 방사형 선 그리기 분리 (전용 Shape를 사용하여 컴파일 타임 최적화)
     @ViewBuilder
     private func radialLines(center: CGPoint, radius: CGFloat) -> some View {
-        ForEach(0..<5) { i in
-            Path { path in
-                let angle = CGFloat(i) * (2.0 * .pi / 5.0) - (.pi / 2.0)
-                path.move(to: center)
-                path.addLine(to: CGPoint(
-                    x: center.x + radius * cos(angle),
-                    y: center.y + radius * sin(angle)
-                ))
-            }
+        RadialLinesShape(center: center, radius: radius)
             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        }
     }
     
     // 3. 데이터 영역 분리
@@ -79,7 +70,7 @@ struct RadarChartView: View {
     @ViewBuilder
     private func vertexLabels(center: CGPoint, radius: CGFloat) -> some View {
         let labels = ["득점", "도움", "슈팅", "패스", "수비"]
-        ForEach(0..<5) { i in
+        ForEach(0..<5, id: \.self) { i in
             Text(labels[i])
                 .font(.system(size: 11, weight: .bold))
                 .foregroundColor(Color.brandNavy.opacity(0.8))
@@ -93,6 +84,25 @@ struct RadarChartView: View {
         let labelX = center.x + labelRadius * cos(angle)
         let labelY = center.y + labelRadius * sin(angle)
         return CGPoint(x: labelX, y: labelY)
+    }
+}
+
+// 방사형 선들을 그리는 Shape
+struct RadialLinesShape: Shape {
+    let center: CGPoint
+    let radius: CGFloat
+    
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        for i in 0..<5 {
+            let angle = CGFloat(i) * (2.0 * .pi / 5.0) - (.pi / 2.0)
+            path.move(to: center)
+            path.addLine(to: CGPoint(
+                x: center.x + radius * cos(angle),
+                y: center.y + radius * sin(angle)
+            ))
+        }
+        return path
     }
 }
 
