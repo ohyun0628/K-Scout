@@ -20,8 +20,7 @@ struct RadarChartView: View {
         return ZStack {
             // 1. 배경 오각형 거미줄 그리기
             ForEach(1...5, id: \.self) { step in
-                let scale = CGFloat(step) / 5.0
-                PolygonShape(sides: 5, scale: scale)
+                PolygonShape(sides: 5, scale: CGFloat(step) / 5.0)
                     .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                     .frame(width: chartSize, height: chartSize)
             }
@@ -42,29 +41,31 @@ struct RadarChartView: View {
             
             // 5. 능력치 라벨 표시
             ForEach(0..<5) { i in
-                let angle = CGFloat(i) * (2.0 * .pi / 5.0) - (.pi / 2.0)
-                let labelRadius = chartRadius + 18
-                let labelX = center.x + labelRadius * cos(angle)
-                let labelY = center.y + labelRadius * sin(angle)
-                
                 Text(labels[i])
                     .font(.system(size: 11, weight: .bold))
                     .foregroundColor(Color.brandNavy.opacity(0.8))
-                    .position(x: labelX, y: labelY)
+                    .position(labelPosition(index: i, center: center, radius: chartRadius))
             }
         }
     }
     
+    private func labelPosition(index: Int, center: CGPoint, radius: CGFloat) -> CGPoint {
+        let angle = CGFloat(index) * (2.0 * .pi / 5.0) - (.pi / 2.0)
+        let labelRadius = radius + 18
+        let labelX = center.x + labelRadius * cos(angle)
+        let labelY = center.y + labelRadius * sin(angle)
+        return CGPoint(x: labelX, y: labelY)
+    }
+    
     private func drawLines(center: CGPoint, radius: CGFloat) -> some View {
-        return ForEach(0..<5) { i in
-            let angle: CGFloat = CGFloat(i) * (CGFloat(2.0) * CGFloat.pi / CGFloat(5.0)) - (CGFloat.pi / CGFloat(2.0))
-            let endX: CGFloat = center.x + radius * cos(angle)
-            let endY: CGFloat = center.y + radius * sin(angle)
-            let endPoint = CGPoint(x: endX, y: endY)
-            
+        ForEach(0..<5) { i in
             Path { path in
+                let angle = CGFloat(i) * (2.0 * .pi / 5.0) - (.pi / 2.0)
                 path.move(to: center)
-                path.addLine(to: endPoint)
+                path.addLine(to: CGPoint(
+                    x: center.x + radius * cos(angle),
+                    y: center.y + radius * sin(angle)
+                ))
             }
             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         }
