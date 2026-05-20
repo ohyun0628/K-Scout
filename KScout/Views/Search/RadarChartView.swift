@@ -12,32 +12,50 @@ struct RadarChartView: View {
     }
     
     private func makeRadar(size: CGSize) -> some View {
-        ZStack {
+        let chartSize = min(size.width, size.height) - 60
+        let chartRadius = chartSize / 2
+        let center = CGPoint(x: size.width / 2, y: size.height / 2)
+        let labels = ["득점", "도움", "슈팅", "패스", "수비"]
+        
+        return ZStack {
             // 1. 배경 오각형 거미줄 그리기
             ForEach(1...5, id: \.self) { step in
                 let scale = CGFloat(step) / 5.0
                 PolygonShape(sides: 5, scale: scale)
-                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                    .frame(width: chartSize, height: chartSize)
             }
             
             // 2. 뻗어나가는 선
-            drawLines(size: size)
+            drawLines(center: center, radius: chartRadius)
             
-            // 3. 실제 능력치
+            // 3. 실제 능력치 면적
             RadarDataShape(data: data, sides: 5)
                 .fill(Color.brandSecondary.opacity(0.45))
+                .frame(width: chartSize, height: chartSize)
                 .animation(.easeInOut(duration: 1.0))
             
             RadarDataShape(data: data, sides: 5)
                 .stroke(Color.brandLightNavy, lineWidth: 2)
+                .frame(width: chartSize, height: chartSize)
                 .animation(.easeInOut(duration: 1.0))
+            
+            // 5. 능력치 라벨 표시
+            ForEach(0..<5) { i in
+                let angle = CGFloat(i) * (2.0 * .pi / 5.0) - (.pi / 2.0)
+                let labelRadius = chartRadius + 18
+                let labelX = center.x + labelRadius * cos(angle)
+                let labelY = center.y + labelRadius * sin(angle)
+                
+                Text(labels[i])
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(Color.brandNavy.opacity(0.8))
+                    .position(x: labelX, y: labelY)
+            }
         }
     }
     
-    private func drawLines(size: CGSize) -> some View {
-        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-        let radius = min(size.width, size.height) / 2
-        
+    private func drawLines(center: CGPoint, radius: CGFloat) -> some View {
         return ForEach(0..<5) { i in
             let angle: CGFloat = CGFloat(i) * (CGFloat(2.0) * CGFloat.pi / CGFloat(5.0)) - (CGFloat.pi / CGFloat(2.0))
             let endX: CGFloat = center.x + radius * cos(angle)
@@ -48,7 +66,7 @@ struct RadarChartView: View {
                 path.move(to: center)
                 path.addLine(to: endPoint)
             }
-            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         }
     }
 }
