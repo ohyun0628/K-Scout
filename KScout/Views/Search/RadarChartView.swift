@@ -14,62 +14,81 @@ struct RadarChartView: View {
             
             ZStack {
                 // 1. 오각형 배경 거미줄
-                spiderWeb(chartSize: chartSize)
+                SpiderWebBackgroundView(chartSize: chartSize)
                 
                 // 2. 방사형 선들
-                radialLines(center: center, radius: chartRadius)
+                RadialLinesView(center: center, radius: chartRadius)
                 
                 // 3. 실제 데이터 영역
-                dataArea(chartSize: chartSize)
+                RadarDataAreaView(data: data, chartSize: chartSize)
                 
                 // 4. 데이터 테두리 선
-                dataBorder(chartSize: chartSize)
+                RadarDataBorderView(data: data, chartSize: chartSize)
                 
                 // 5. 능력치 라벨 표시
-                vertexLabels(center: center, radius: chartRadius)
+                VertexLabelsView(center: center, radius: chartRadius)
             }
         }
     }
+}
+
+// 1. 배경 거미줄 그리기 구조체 분리
+struct SpiderWebBackgroundView: View {
+    let chartSize: CGFloat
     
-    // 1. 배경 거미줄 그리기 분리
-    @ViewBuilder
-    private func spiderWeb(chartSize: CGFloat) -> some View {
+    var body: some View {
         ForEach(1...5, id: \.self) { step in
             PolygonShape(sides: 5, scale: CGFloat(step) / 5.0)
                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                 .frame(width: chartSize, height: chartSize)
         }
     }
+}
+
+// 2. 방사형 선 그리기 구조체 분리
+struct RadialLinesView: View {
+    let center: CGPoint
+    let radius: CGFloat
     
-    // 2. 방사형 선 그리기 분리 (전용 Shape를 사용하여 컴파일 타임 최적화)
-    @ViewBuilder
-    private func radialLines(center: CGPoint, radius: CGFloat) -> some View {
+    var body: some View {
         RadialLinesShape(center: center, radius: radius)
             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
     }
+}
+
+// 3. 실제 데이터 영역 구조체 분리
+struct RadarDataAreaView: View {
+    let data: [Double]
+    let chartSize: CGFloat
     
-    // 3. 데이터 영역 분리
-    @ViewBuilder
-    private func dataArea(chartSize: CGFloat) -> some View {
+    var body: some View {
         RadarDataShape(data: data, sides: 5)
             .fill(Color.brandSecondary.opacity(0.45))
             .frame(width: chartSize, height: chartSize)
             .animation(.easeInOut(duration: 1.0))
     }
+}
+
+// 4. 데이터 테두리 선 구조체 분리
+struct RadarDataBorderView: View {
+    let data: [Double]
+    let chartSize: CGFloat
     
-    // 4. 데이터 테두리 분리
-    @ViewBuilder
-    private func dataBorder(chartSize: CGFloat) -> some View {
+    var body: some View {
         RadarDataShape(data: data, sides: 5)
             .stroke(Color.brandLightNavy, lineWidth: 2)
             .frame(width: chartSize, height: chartSize)
             .animation(.easeInOut(duration: 1.0))
     }
+}
+
+// 5. 능력치 라벨 표시 구조체 분리
+struct VertexLabelsView: View {
+    let center: CGPoint
+    let radius: CGFloat
+    let labels = ["득점", "도움", "슈팅", "패스", "수비"]
     
-    // 5. 능력치 라벨 분리
-    @ViewBuilder
-    private func vertexLabels(center: CGPoint, radius: CGFloat) -> some View {
-        let labels = ["득점", "도움", "슈팅", "패스", "수비"]
+    var body: some View {
         ForEach(0..<5, id: \.self) { i in
             Text(labels[i])
                 .font(.system(size: 11, weight: .bold))
