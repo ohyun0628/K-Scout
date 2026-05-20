@@ -7,57 +7,43 @@ struct RadarChartView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            makeRadar(size: geometry.size)
-        }
-    }
-    
-    private func makeRadar(size: CGSize) -> some View {
-        let chartSize = min(size.width, size.height) - 60
-        let chartRadius = chartSize / 2
-        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-        let labels = ["득점", "도움", "슈팅", "패스", "수비"]
-        
-        return ZStack {
-            // 1. 배경 오각형 거미줄 그리기
-            ForEach(1...5, id: \.self) { step in
-                PolygonShape(sides: 5, scale: CGFloat(step) / 5.0)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    .frame(width: chartSize, height: chartSize)
-            }
+            let size = geometry.size
+            let chartSize = min(size.width, size.height) - 60
+            let chartRadius = chartSize / 2
+            let center = CGPoint(x: size.width / 2, y: size.height / 2)
             
-            // 2. 뻗어나가는 선
-            drawLines(center: center, radius: chartRadius)
-            
-            // 3. 실제 능력치 면적
-            RadarDataShape(data: data, sides: 5)
-                .fill(Color.brandSecondary.opacity(0.45))
-                .frame(width: chartSize, height: chartSize)
-                .animation(.easeInOut(duration: 1.0))
-            
-            RadarDataShape(data: data, sides: 5)
-                .stroke(Color.brandLightNavy, lineWidth: 2)
-                .frame(width: chartSize, height: chartSize)
-                .animation(.easeInOut(duration: 1.0))
-            
-            // 5. 능력치 라벨 표시
-            ForEach(0..<5) { i in
-                Text(labels[i])
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(Color.brandNavy.opacity(0.8))
-                    .position(labelPosition(index: i, center: center, radius: chartRadius))
+            ZStack {
+                // 1. 오각형 배경 거미줄
+                spiderWeb(chartSize: chartSize)
+                
+                // 2. 방사형 선들
+                radialLines(center: center, radius: chartRadius)
+                
+                // 3. 실제 데이터 영역
+                dataArea(chartSize: chartSize)
+                
+                // 4. 데이터 테두리 선
+                dataBorder(chartSize: chartSize)
+                
+                // 5. 능력치 라벨 표시
+                vertexLabels(center: center, radius: chartRadius)
             }
         }
     }
     
-    private func labelPosition(index: Int, center: CGPoint, radius: CGFloat) -> CGPoint {
-        let angle = CGFloat(index) * (2.0 * .pi / 5.0) - (.pi / 2.0)
-        let labelRadius = radius + 18
-        let labelX = center.x + labelRadius * cos(angle)
-        let labelY = center.y + labelRadius * sin(angle)
-        return CGPoint(x: labelX, y: labelY)
+    // 1. 배경 거미줄 그리기 분리
+    @ViewBuilder
+    private func spiderWeb(chartSize: CGFloat) -> some View {
+        ForEach(1...5, id: \.self) { step in
+            PolygonShape(sides: 5, scale: CGFloat(step) / 5.0)
+                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                .frame(width: chartSize, height: chartSize)
+        }
     }
     
-    private func drawLines(center: CGPoint, radius: CGFloat) -> some View {
+    // 2. 방사형 선 그리기 분리
+    @ViewBuilder
+    private func radialLines(center: CGPoint, radius: CGFloat) -> some View {
         ForEach(0..<5) { i in
             Path { path in
                 let angle = CGFloat(i) * (2.0 * .pi / 5.0) - (.pi / 2.0)
@@ -69,6 +55,44 @@ struct RadarChartView: View {
             }
             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         }
+    }
+    
+    // 3. 데이터 영역 분리
+    @ViewBuilder
+    private func dataArea(chartSize: CGFloat) -> some View {
+        RadarDataShape(data: data, sides: 5)
+            .fill(Color.brandSecondary.opacity(0.45))
+            .frame(width: chartSize, height: chartSize)
+            .animation(.easeInOut(duration: 1.0))
+    }
+    
+    // 4. 데이터 테두리 분리
+    @ViewBuilder
+    private func dataBorder(chartSize: CGFloat) -> some View {
+        RadarDataShape(data: data, sides: 5)
+            .stroke(Color.brandLightNavy, lineWidth: 2)
+            .frame(width: chartSize, height: chartSize)
+            .animation(.easeInOut(duration: 1.0))
+    }
+    
+    // 5. 능력치 라벨 분리
+    @ViewBuilder
+    private func vertexLabels(center: CGPoint, radius: CGFloat) -> some View {
+        let labels = ["득점", "도움", "슈팅", "패스", "수비"]
+        ForEach(0..<5) { i in
+            Text(labels[i])
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(Color.brandNavy.opacity(0.8))
+                .position(labelPosition(index: i, center: center, radius: radius))
+        }
+    }
+    
+    private func labelPosition(index: Int, center: CGPoint, radius: CGFloat) -> CGPoint {
+        let angle = CGFloat(index) * (2.0 * .pi / 5.0) - (.pi / 2.0)
+        let labelRadius = radius + 18
+        let labelX = center.x + labelRadius * cos(angle)
+        let labelY = center.y + labelRadius * sin(angle)
+        return CGPoint(x: labelX, y: labelY)
     }
 }
 
