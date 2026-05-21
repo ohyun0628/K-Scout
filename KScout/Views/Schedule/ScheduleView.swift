@@ -151,8 +151,12 @@ class ScheduleViewModel: ObservableObject {
                 self.isLoading = false
                 switch result {
                 case .success(let items):
-                    self.apiMatches = items
-                    self.mapApiMatchesToMockMatches(league: league, season: season)
+                    if items.isEmpty {
+                        self.loadMockData(league: league)
+                    } else {
+                        self.apiMatches = items
+                        self.mapApiMatchesToMockMatches(league: league, season: season)
+                    }
                 case .failure:
                     self.loadMockData(league: league)
                 }

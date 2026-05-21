@@ -71,7 +71,12 @@ class RankingViewModel: ObservableObject {
         NetworkManager.shared.request(endpoint: .standings(league: league, season: season)) { (result: Result<[StandingsResponse], NetworkError>) in
             switch result {
             case .success(let responses):
-                if let response = responses.first {
+                if responses.isEmpty {
+                    // 빈 배열일 때 폴백: Mock 데이터 적용
+                    DispatchQueue.main.async {
+                        self.standings = self.standings.filter { $0.league != league } + self.mockStandings.filter { $0.league == league }
+                    }
+                } else if let response = responses.first {
                     let mappedStandings = response.league.standings.flatMap { $0 }.map { item in
                         Standing(
                             id: item.team.id,
@@ -107,22 +112,29 @@ class RankingViewModel: ObservableObject {
         NetworkManager.shared.request(endpoint: endpoint) { (result: Result<[PlayerRankingItem], NetworkError>) in
             switch result {
             case .success(let items):
-                let mappedRankings = items.enumerated().map { (index, item) -> PlayerRanking in
-                    let statCount = (type == "goals") ? (item.statistics.first?.goals.total ?? 0) : (item.statistics.first?.assists?.total ?? 0)
-                    return PlayerRanking(
-                        id: UUID(),
-                        rank: index + 1,
-                        playerName: item.player.name,
-                        teamName: item.statistics.first?.team.name ?? "알 수 없음",
-                        statCount: statCount,
-                        played: item.statistics.first?.games.appearances ?? 0,
-                        league: league,
-                        type: type
-                    )
-                }
-                
-                DispatchQueue.main.async {
-                    self.playerRankings = self.playerRankings.filter { !($0.league == league && $0.type == type) } + mappedRankings
+                if items.isEmpty {
+                    // 빈 배열일 때 폴백: Mock 데이터 적용
+                    DispatchQueue.main.async {
+                        self.playerRankings = self.playerRankings.filter { !($0.league == league && $0.type == type) } + self.mockPlayerRankings.filter { $0.league == league && $0.type == type }
+                    }
+                } else {
+                    let mappedRankings = items.enumerated().map { (index, item) -> PlayerRanking in
+                        let statCount = (type == "goals") ? (item.statistics.first?.goals.total ?? 0) : (item.statistics.first?.assists?.total ?? 0)
+                        return PlayerRanking(
+                            id: UUID(),
+                            rank: index + 1,
+                            playerName: item.player.name,
+                            teamName: item.statistics.first?.team.name ?? "알 수 없음",
+                            statCount: statCount,
+                            played: item.statistics.first?.games.appearances ?? 0,
+                            league: league,
+                            type: type
+                        )
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.playerRankings = self.playerRankings.filter { !($0.league == league && $0.type == type) } + mappedRankings
+                    }
                 }
             case .failure:
                 // 실패 시 폴백: Mock 데이터 적용
