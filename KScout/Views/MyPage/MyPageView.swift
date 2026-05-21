@@ -139,7 +139,7 @@ struct MyPageView: View {
     
     // 2. 나의 관심 선수 대시보드 카드
     private var favoritePlayersSection: some View {
-        NavigationLink(destination: FavoriteView()) {
+        NavigationLink(destination: FavoriteView(showBackButton: true)) {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("나의 관심 선수")

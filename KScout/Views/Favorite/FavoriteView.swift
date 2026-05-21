@@ -4,6 +4,13 @@ struct FavoriteView: View {
     @ObservedObject private var favoriteManager = FavoriteManager.shared
     @State private var selectedPlayer: Player? = nil
     
+    let showBackButton: Bool
+    @Environment(\.presentationMode) var presentationMode
+    
+    init(showBackButton: Bool = false) {
+        self.showBackButton = showBackButton
+    }
+    
     var body: some View {
         ZStack {
             // 그레이 베이스 백그라운드
@@ -12,7 +19,9 @@ struct FavoriteView: View {
             
             VStack(spacing: 0) {
                 // 1. 공통 상단 헤더 타이틀
-                HeaderTitleView(title: "관심 선수")
+                HeaderTitleView(title: "관심 선수", showBackButton: showBackButton) {
+                    presentationMode.wrappedValue.dismiss()
+                }
                 
                 if favoriteManager.favoritePlayers.isEmpty {
                     Spacer()
