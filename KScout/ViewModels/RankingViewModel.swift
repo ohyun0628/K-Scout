@@ -5,6 +5,11 @@ class RankingViewModel: ObservableObject {
     @Published var playerRankings: [PlayerRanking] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var currentSeason: Int = 2026 {
+        didSet {
+            fetchAllData(season: currentSeason)
+        }
+    }
     
     // 리그별/구분별 필터 데이터 리턴
     func filteredStandings(forLeague league: Int) -> [Standing] {
@@ -15,14 +20,117 @@ class RankingViewModel: ObservableObject {
         return playerRankings.filter { $0.league == league && $0.type == type }.sorted { $0.rank < $1.rank }
     }
     
-    func fetchAllData() {
+    func fetchAllData(season: Int) {
         self.isLoading = true
+        self.errorMessage = nil
         
-        // 데이터 패치 시뮬레이션
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.standings = self.mockStandings
-            self.playerRankings = self.mockPlayerRankings
+        let group = DispatchGroup()
+        
+        // 1. K리그1 순위 패치
+        group.enter()
+        fetchStandings(league: 1, season: season) {
+            group.leave()
+        }
+        
+        // 2. K리그2 순위 패치
+        group.enter()
+        fetchStandings(league: 2, season: season) {
+            group.leave()
+        }
+        
+        // 3. K리그1 득점왕 패치
+        group.enter()
+        fetchPlayerRankings(league: 1, season: season, type: "goals") {
+            group.leave()
+        }
+        
+        // 4. K리그1 도움왕 패치
+        group.enter()
+        fetchPlayerRankings(league: 1, season: season, type: "assists") {
+            group.leave()
+        }
+        
+        // 5. K리그2 득점왕 패치
+        group.enter()
+        fetchPlayerRankings(league: 2, season: season, type: "goals") {
+            group.leave()
+        }
+        
+        // 6. K리그2 도움왕 패치
+        group.enter()
+        fetchPlayerRankings(league: 2, season: season, type: "assists") {
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
             self.isLoading = false
+        }
+    }
+    
+    private func fetchStandings(league: Int, season: Int, completion: @escaping () -> Void) {
+        NetworkManager.shared.request(endpoint: .standings(league: league, season: season)) { (result: Result<[StandingsResponse], NetworkError>) in
+            switch result {
+            case .success(let responses):
+                if let response = responses.first {
+                    let mappedStandings = response.league.standings.flatMap { $0 }.map { item in
+                        Standing(
+                            id: item.team.id,
+                            rank: item.rank,
+                            teamName: item.team.name,
+                            points: item.points,
+                            goalsDiff: item.goalsDiff,
+                            played: item.all.played,
+                            won: item.all.win,
+                            draw: item.all.draw,
+                            lost: item.all.lose,
+                            league: league
+                        )
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.standings = self.standings.filter { $0.league != league } + mappedStandings
+                    }
+                }
+            case .failure:
+                // 실패 시 폴백: 현재 리그의 Mock 데이터로 대체
+                DispatchQueue.main.async {
+                    self.standings = self.standings.filter { $0.league != league } + self.mockStandings.filter { $0.league == league }
+                }
+            }
+            completion()
+        }
+    }
+    
+    private func fetchPlayerRankings(league: Int, season: Int, type: String, completion: @escaping () -> Void) {
+        let endpoint: APIEndpoint = (type == "goals") ? .topScorers(league: league, season: season) : .topAssists(league: league, season: season)
+        
+        NetworkManager.shared.request(endpoint: endpoint) { (result: Result<[PlayerRankingItem], NetworkError>) in
+            switch result {
+            case .success(let items):
+                let mappedRankings = items.enumerated().map { (index, item) in
+                    let statCount = (type == "goals") ? (item.statistics.first?.goals.total ?? 0) : (item.statistics.first?.assists?.total ?? 0)
+                    return PlayerRanking(
+                        id: UUID(),
+                        rank: index + 1,
+                        playerName: item.player.name,
+                        teamName: item.statistics.first?.team.name ?? "알 수 없음",
+                        statCount: statCount,
+                        played: item.statistics.first?.games.appearances ?? 0,
+                        league: league,
+                        type: type
+                    )
+                }
+                
+                DispatchQueue.main.async {
+                    self.playerRankings = self.playerRankings.filter { !($0.league == league && $0.type == type) } + mappedRankings
+                }
+            case .failure:
+                // 실패 시 폴백: Mock 데이터 적용
+                DispatchQueue.main.async {
+                    self.playerRankings = self.playerRankings.filter { !($0.league == league && $0.type == type) } + self.mockPlayerRankings.filter { $0.league == league && $0.type == type }
+                }
+            }
+            completion()
         }
     }
     

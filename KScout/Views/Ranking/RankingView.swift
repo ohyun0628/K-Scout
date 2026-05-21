@@ -16,7 +16,7 @@ struct RankingView: View {
             
             VStack(spacing: 0) {
                 // 1. 커스텀 헤더 타이틀
-                HeaderTitleView(title: "순위표")
+                HeaderTitleView(title: "순위표", selectedSeason: $viewModel.currentSeason)
                 
                 // 2. 대분류 세그먼트 셀렉터 (팀 순위 vs 선수 순위)
                 HStack(spacing: 0) {
@@ -174,7 +174,7 @@ struct RankingView: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            viewModel.fetchAllData()
+            viewModel.fetchAllData(season: viewModel.currentSeason)
         }
     }
 }
