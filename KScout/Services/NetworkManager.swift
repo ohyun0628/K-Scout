@@ -15,7 +15,7 @@ class NetworkManager {
     // API-Football 발급 키 (기본값 설정, 필요시 유저가 변경 가능)
     var apiKey: String {
         get {
-            UserDefaults.standard.string(forKey: "API_SPORTS_KEY") ?? "YOUR_API_KEY_HERE"
+            UserDefaults.standard.string(forKey: "API_SPORTS_KEY") ?? "4eb0b3baf194555ef46565fa9dc2d35d"
         }
         set {
             UserDefaults.standard.set(newValue, forKey: "API_SPORTS_KEY")
