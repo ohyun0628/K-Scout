@@ -3,6 +3,7 @@ import SwiftUI
 struct PlayerDetailSheet: View {
     let player: Player
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject private var favoriteManager = FavoriteManager.shared
     
     var body: some View {
         NavigationView {
@@ -102,13 +103,22 @@ struct PlayerDetailSheet: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("선수 상세 분석")
-            .navigationBarItems(trailing: Button(action: {
-                presentationMode.wrappedValue.dismiss()
-            }) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.gray)
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    favoriteManager.toggleFavorite(playerID: player.id)
+                }) {
+                    Image(systemName: favoriteManager.isFavorite(playerID: player.id) ? "star.fill" : "star")
+                        .font(.title3)
+                        .foregroundColor(favoriteManager.isFavorite(playerID: player.id) ? .yellow : .gray)
+                },
+                trailing: Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                }
+            )
         }
     }
     
