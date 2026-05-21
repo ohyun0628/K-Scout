@@ -11,6 +11,9 @@ struct FavoriteView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
+                // 1. 공통 상단 헤더 타이틀
+                HeaderTitleView(title: "관심 선수")
+                
                 if favoriteManager.favoritePlayers.isEmpty {
                     Spacer()
                     VStack(spacing: 16) {
@@ -42,8 +45,7 @@ struct FavoriteView: View {
                 }
             }
         }
-        .navigationTitle("관심 선수")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarHidden(true)
         .sheet(item: $selectedPlayer) { player in
             PlayerDetailSheet(player: player)
         }
@@ -97,6 +99,7 @@ struct FavoriteView: View {
                     }
                     
                     Button(action: {
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                         withAnimation {
                             favoriteManager.toggleFavorite(playerID: player.id)
                         }

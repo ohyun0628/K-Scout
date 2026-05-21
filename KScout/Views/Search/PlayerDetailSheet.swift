@@ -105,6 +105,7 @@ struct PlayerDetailSheet: View {
             .navigationTitle("선수 상세 분석")
             .navigationBarItems(
                 leading: Button(action: {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     favoriteManager.toggleFavorite(playerID: player.id)
                 }) {
                     Image(systemName: favoriteManager.isFavorite(playerID: player.id) ? "star.fill" : "star")
