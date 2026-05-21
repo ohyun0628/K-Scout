@@ -24,7 +24,7 @@
 		CE70551A2FBC2EDB00147E7E /* PlayerRankingRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055192FBC2EDB00147E7E /* PlayerRankingRow.swift */; };
 		CE70551C2FBC2EDB00147E7E /* HeaderTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70551B2FBC2EDB00147E7E /* HeaderTitleView.swift */; };
 		CE70551E2FBC2EDB00147E7E /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70551D2FBC2EDB00147E7E /* SearchViewModel.swift */; };
-		CE7055202FBC2EDB00147E7E /* PlayerDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70551F2FBC2EDB00147E7E /* PlayerDetailSheet.swift */; };
+		CE7055202FBC2EDB00147E7E /* PlayerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE70551F2FBC2EDB00147E7E /* PlayerDetailView.swift */; };
 		CEA59B9E2FBB1F0F0028046D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */; };
 		CEA59BA12FBB1F0F0028046D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */; };
 		CEA59C692FBB26730028046D /* RankingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA59C532FBB26730028046D /* RankingViewModel.swift */; };
@@ -64,7 +64,7 @@
 		CE7055192FBC2EDB00147E7E /* PlayerRankingRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerRankingRow.swift; sourceTree = "<group>"; };
 		CE70551B2FBC2EDB00147E7E /* HeaderTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderTitleView.swift; sourceTree = "<group>"; };
 		CE70551D2FBC2EDB00147E7E /* SearchViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
-		CE70551F2FBC2EDB00147E7E /* PlayerDetailSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerDetailSheet.swift; sourceTree = "<group>"; };
+		CE70551F2FBC2EDB00147E7E /* PlayerDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerDetailView.swift; sourceTree = "<group>"; };
 		CEA59B962FBB1F0B0028046D /* KScout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KScout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEA59BA02FBB1F0F0028046D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -254,7 +254,7 @@
 			children = (
 				CEA59C662FBB26730028046D /* SearchView.swift */,
 				CEA59C672FBB26730028046D /* RadarChartView.swift */,
-				CE70551F2FBC2EDB00147E7E /* PlayerDetailSheet.swift */,
+				CE70551F2FBC2EDB00147E7E /* PlayerDetailView.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -376,7 +376,7 @@
 				CE70551A2FBC2EDB00147E7E /* PlayerRankingRow.swift in Sources */,
 				CE70551C2FBC2EDB00147E7E /* HeaderTitleView.swift in Sources */,
 				CE70551E2FBC2EDB00147E7E /* SearchViewModel.swift in Sources */,
-				CE7055202FBC2EDB00147E7E /* PlayerDetailSheet.swift in Sources */,
+				CE7055202FBC2EDB00147E7E /* PlayerDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

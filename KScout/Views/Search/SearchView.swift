@@ -4,76 +4,73 @@ struct SearchView: View {
     @StateObject private var viewModel = SearchViewModel()
     
     var body: some View {
-        ZStack {
-            // 그레이 베이스 백그라운드
-            Color(UIColor.systemGroupedBackground)
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 0) {
-                // 1. 공통 상단 헤더 타이틀
-                HeaderTitleView(title: "선수 검색")
+        NavigationView {
+            ZStack {
+                // 그레이 베이스 백그라운드
+                Color(UIColor.systemGroupedBackground)
+                    .edgesIgnoringSafeArea(.all)
                 
-                // 2. 커스텀 서치 바
-                HStack {
+                VStack(spacing: 0) {
+                    // 1. 공통 상단 헤더 타이틀
+                    HeaderTitleView(title: "선수 검색")
+                    
+                    // 2. 커스텀 서치 바
                     HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                        
-                        TextField("선수 이름 또는 구단 검색", text: $viewModel.searchText)
-                            .foregroundColor(.primary)
-                            .font(.system(size: 15))
-                        
-                        if !viewModel.searchText.isEmpty {
-                            Button(action: {
-                                viewModel.searchText = ""
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(Color(UIColor.secondarySystemBackground))
-                    .cornerRadius(12)
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
-                
-                // 3. 검색 결과 목록
-                if viewModel.filteredPlayers.isEmpty {
-                    Spacer()
-                    VStack(spacing: 12) {
-                        Image(systemName: "person.fill.questionmark")
-                            .font(.system(size: 48))
-                            .foregroundColor(.gray.opacity(0.5))
-                        
-                        Text("검색 결과와 일치하는 선수가 없습니다.")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundColor(.gray)
-                    }
-                    Spacer()
-                } else {
-                    ScrollView(showsIndicators: false) {
-                        LazyVStack(spacing: 12) {
-                            ForEach(viewModel.filteredPlayers) { player in
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.gray)
+                            
+                            TextField("선수 이름 또는 구단 검색", text: $viewModel.searchText)
+                                .foregroundColor(.primary)
+                                .font(.system(size: 15))
+                            
+                            if !viewModel.searchText.isEmpty {
                                 Button(action: {
-                                    viewModel.selectedPlayer = player
+                                    viewModel.searchText = ""
                                 }) {
-                                    playerRow(player)
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
                                 }
-                                .buttonStyle(PlainButtonStyle())
                             }
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(12)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+                    
+                    // 3. 검색 결과 목록
+                    if viewModel.filteredPlayers.isEmpty {
+                        Spacer()
+                        VStack(spacing: 12) {
+                            Image(systemName: "person.fill.questionmark")
+                                .font(.system(size: 48))
+                                .foregroundColor(.gray.opacity(0.5))
+                            
+                            Text("검색 결과와 일치하는 선수가 없습니다.")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.gray)
+                        }
+                        Spacer()
+                    } else {
+                        ScrollView(showsIndicators: false) {
+                            LazyVStack(spacing: 12) {
+                                ForEach(viewModel.filteredPlayers) { player in
+                                    NavigationLink(destination: PlayerDetailView(player: player)) {
+                                        playerRow(player)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                        }
                     }
                 }
             }
-        }
-        .navigationBarHidden(true)
-        .sheet(item: $viewModel.selectedPlayer) { player in
-            PlayerDetailSheet(player: player)
+            .navigationBarHidden(true)
         }
     }
     

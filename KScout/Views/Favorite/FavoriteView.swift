@@ -2,7 +2,6 @@ import SwiftUI
 
 struct FavoriteView: View {
     @ObservedObject private var favoriteManager = FavoriteManager.shared
-    @State private var selectedPlayer: Player? = nil
     
     let showBackButton: Bool
     @Environment(\.presentationMode) var presentationMode
@@ -45,7 +44,10 @@ struct FavoriteView: View {
                     ScrollView(showsIndicators: false) {
                         LazyVStack(spacing: 12) {
                             ForEach(favoriteManager.favoritePlayers) { player in
-                                playerRow(player)
+                                NavigationLink(destination: PlayerDetailView(player: player)) {
+                                    playerRow(player)
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                         .padding(.horizontal, 16)
@@ -55,78 +57,70 @@ struct FavoriteView: View {
             }
         }
         .navigationBarHidden(true)
-        .sheet(item: $selectedPlayer) { player in
-            PlayerDetailSheet(player: player)
-        }
     }
     
     @ViewBuilder
     private func playerRow(_ player: Player) -> some View {
-        Button(action: {
-            selectedPlayer = player
-        }) {
-            HStack(spacing: 14) {
-                // 선수 프로필 이니셜 원형 배지
-                Circle()
-                    .fill(logoColor(for: player.teamName).opacity(0.1))
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Text(String(player.name.prefix(1)))
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(logoColor(for: player.teamName))
-                    )
-                
-                // 선수 기본 정보
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(player.name)
+        HStack(spacing: 14) {
+            // 선수 프로필 이니셜 원형 배지
+            Circle()
+                .fill(logoColor(for: player.teamName).opacity(0.1))
+                .frame(width: 44, height: 44)
+                .overlay(
+                    Text(String(player.name.prefix(1)))
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.primary)
-                    
-                    HStack(spacing: 6) {
-                        Circle()
-                            .fill(logoColor(for: player.teamName))
-                            .frame(width: 8, height: 8)
-                        
-                        Text(player.teamName)
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(.gray)
-                    }
-                }
+                        .foregroundColor(logoColor(for: player.teamName))
+                )
+            
+            // 선수 기본 정보
+            VStack(alignment: .leading, spacing: 4) {
+                Text(player.name)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.primary)
                 
-                Spacer()
-                
-                // 주요 기록 요약 및 삭제 버튼
-                HStack(spacing: 16) {
-                    VStack(alignment: .trailing, spacing: 4) {
-                        Text("\(player.goals)골 \(player.assists)도움")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(Color.brandNavy)
-                        
-                        Text("\(player.passes)패스")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundColor(.gray.opacity(0.8))
-                    }
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(logoColor(for: player.teamName))
+                        .frame(width: 8, height: 8)
                     
-                    Button(action: {
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                        withAnimation {
-                            favoriteManager.toggleFavorite(playerID: player.id)
-                        }
-                    }) {
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 20))
-                            .foregroundColor(.yellow)
-                    }
-                    .buttonStyle(PlainButtonStyle())
+                    Text(player.teamName)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.gray)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .background(Color.white)
-            .cornerRadius(16)
-            .shadow(color: Color.black.opacity(0.015), radius: 6, x: 0, y: 3)
+            
+            Spacer()
+            
+            // 주요 기록 요약 및 삭제 버튼
+            HStack(spacing: 16) {
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("\(player.goals)골 \(player.assists)도움")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(Color.brandNavy)
+                    
+                    Text("\(player.passes)패스")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.gray.opacity(0.8))
+                }
+                
+                Button(action: {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    withAnimation {
+                        favoriteManager.toggleFavorite(playerID: player.id)
+                    }
+                }) {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(.yellow)
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
         }
-        .buttonStyle(PlainButtonStyle())
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.015), radius: 6, x: 0, y: 3)
     }
     
     // K리그 실전 매칭을 위한 팀별 브랜드 컬러 매핑 함수 (동일 로직 유지)

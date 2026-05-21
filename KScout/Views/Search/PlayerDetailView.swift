@@ -1,16 +1,15 @@
 import SwiftUI
 
-struct PlayerDetailSheet: View {
+struct PlayerDetailView: View {
     let player: Player
-    @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var favoriteManager = FavoriteManager.shared
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                Color(UIColor.systemGroupedBackground)
-                    .edgesIgnoringSafeArea(.all)
-                
+        ZStack {
+            Color(UIColor.systemGroupedBackground)
+                .edgesIgnoringSafeArea(.all)
+            
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 20) {
                     // 선수 기본 인포 카드
                     VStack(spacing: 12) {
@@ -78,49 +77,38 @@ struct PlayerDetailSheet: View {
                         
                         Divider()
                         
-                        ScrollView {
-                            VStack(spacing: 0) {
-                                statRow(title: "득점 (Goals)", value: "\(player.goals)골", color: .red)
-                                Divider().padding(.leading, 20)
-                                statRow(title: "도움 (Assists)", value: "\(player.assists)도움", color: .blue)
-                                Divider().padding(.leading, 20)
-                                statRow(title: "슈팅 (Shots)", value: "\(player.shots)회", color: .orange)
-                                Divider().padding(.leading, 20)
-                                statRow(title: "패스 (Passes)", value: "\(player.passes)회", color: .green)
-                                Divider().padding(.leading, 20)
-                                statRow(title: "수비 성공 (Defense)", value: "\(player.defense)회", color: .purple)
-                            }
+                        VStack(spacing: 0) {
+                            statRow(title: "득점 (Goals)", value: "\(player.goals)골", color: .red)
+                            Divider().padding(.leading, 20)
+                            statRow(title: "도움 (Assists)", value: "\(player.assists)도움", color: .blue)
+                            Divider().padding(.leading, 20)
+                            statRow(title: "슈팅 (Shots)", value: "\(player.shots)회", color: .orange)
+                            Divider().padding(.leading, 20)
+                            statRow(title: "패스 (Passes)", value: "\(player.passes)회", color: .green)
+                            Divider().padding(.leading, 20)
+                            statRow(title: "수비 성공 (Defense)", value: "\(player.defense)회", color: .purple)
                         }
                     }
                     .background(Color.white)
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.02), radius: 8, x: 0, y: 4)
-                    
-                    Spacer()
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("선수 상세 분석")
-            .navigationBarItems(
-                leading: Button(action: {
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    favoriteManager.toggleFavorite(playerID: player.id)
-                }) {
-                    Image(systemName: favoriteManager.isFavorite(playerID: player.id) ? "star.fill" : "star")
-                        .font(.title3)
-                        .foregroundColor(favoriteManager.isFavorite(playerID: player.id) ? .yellow : .gray)
-                },
-                trailing: Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundColor(.gray)
-                }
-            )
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("선수 상세 분석")
+        .navigationBarItems(
+            trailing: Button(action: {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                favoriteManager.toggleFavorite(playerID: player.id)
+            }) {
+                Image(systemName: favoriteManager.isFavorite(playerID: player.id) ? "star.fill" : "star")
+                    .font(.title3)
+                    .foregroundColor(favoriteManager.isFavorite(playerID: player.id) ? .yellow : .gray)
+            }
+        )
     }
     
     @ViewBuilder
@@ -189,8 +177,10 @@ struct PlayerDetailSheet: View {
     }
 }
 
-struct PlayerDetailSheet_Previews: PreviewProvider {
+struct PlayerDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        PlayerDetailSheet(player: Player(id: 1, name: "주민규", photo: nil, teamName: "울산 HD", goals: 14, assists: 3, shots: 48, passes: 320, defense: 12))
+        NavigationView {
+            PlayerDetailView(player: Player(id: 1, name: "주민규", photo: nil, teamName: "울산 HD", goals: 14, assists: 3, shots: 48, passes: 320, defense: 12))
+        }
     }
 }
