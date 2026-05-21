@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ScheduleView: View {
     @StateObject private var viewModel = ScheduleViewModel()
-    @State private var selectedLeague = 1 // 1: K리그1, 2: K리그2
     @State private var selectedDayOffset = 0 // Offset from the middle date (0 corresponds to "목 18")
     @State private var notificationSubscription: Set<UUID> = [] // 알림 설정한 경기 목록
     @State private var showAlert = false
@@ -10,7 +9,7 @@ struct ScheduleView: View {
     
     // 조건 필터링 경기 데이터
     private var filteredMatches: [MockMatch] {
-        viewModel.matches.filter { $0.league == selectedLeague && $0.dayOffset == selectedDayOffset }
+        viewModel.matches.filter { $0.league == viewModel.selectedLeague && $0.dayOffset == selectedDayOffset }
     }
     
     var body: some View {
@@ -27,29 +26,29 @@ struct ScheduleView: View {
                 HStack(spacing: 0) {
                     Button(action: {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            selectedLeague = 1
+                            viewModel.selectedLeague = 1
                         }
                     }) {
                         Text("K리그1")
                             .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(selectedLeague == 1 ? .white : .gray)
+                            .foregroundColor(viewModel.selectedLeague == 1 ? .white : .gray)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(selectedLeague == 1 ? Color.brandNavy : Color.clear)
+                            .background(viewModel.selectedLeague == 1 ? Color.brandNavy : Color.clear)
                             .cornerRadius(10)
                     }
                     
                     Button(action: {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            selectedLeague = 2
+                            viewModel.selectedLeague = 2
                         }
                     }) {
                         Text("K리그2")
                             .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(selectedLeague == 2 ? .white : .gray)
+                            .foregroundColor(viewModel.selectedLeague == 2 ? .white : .gray)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(selectedLeague == 2 ? Color.brandNavy : Color.clear)
+                            .background(viewModel.selectedLeague == 2 ? Color.brandNavy : Color.clear)
                             .cornerRadius(10)
                     }
                 }
@@ -109,13 +108,7 @@ struct ScheduleView: View {
             )
         }
         .onAppear {
-            viewModel.fetchSchedule(league: selectedLeague, season: viewModel.selectedSeason)
-        }
-        .onChange(of: selectedLeague) { newLeague in
-            viewModel.fetchSchedule(league: newLeague, season: viewModel.selectedSeason)
-        }
-        .onChange(of: viewModel.selectedSeason) { newSeason in
-            viewModel.fetchSchedule(league: selectedLeague, season: newSeason)
+            viewModel.fetchSchedule(league: viewModel.selectedLeague, season: viewModel.selectedSeason)
         }
     }
     
@@ -138,7 +131,16 @@ class ScheduleViewModel: ObservableObject {
     @Published var matches: [MockMatch] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var selectedSeason: Int = 2026
+    @Published var selectedLeague: Int = 1 {
+        didSet {
+            fetchSchedule(league: selectedLeague, season: selectedSeason)
+        }
+    }
+    @Published var selectedSeason: Int = 2026 {
+        didSet {
+            fetchSchedule(league: selectedLeague, season: selectedSeason)
+        }
+    }
     
     private var apiMatches: [FixtureItem] = []
     
