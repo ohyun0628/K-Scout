@@ -21,11 +21,13 @@ struct MainTabView: View {
                     Text("선수")
                 }
             
-            FavoriteView()
-                .tabItem {
-                    Image(systemName: "star")
-                    Text("즐겨찾기")
-                }
+            NavigationView {
+                FavoriteView()
+            }
+            .tabItem {
+                Image(systemName: "star")
+                Text("즐겨찾기")
+            }
             
             MyPageView()
                 .tabItem {

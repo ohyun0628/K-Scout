@@ -24,6 +24,7 @@ struct MyPageView: View {
     // 사용자 설정 영구 저장용 AppStorage
     @AppStorage("favoriteClub") private var favoriteClub = "선택 안 함"
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
+    @ObservedObject private var favoriteManager = FavoriteManager.shared
     
     // UI 제어 상태 변수
     @State private var activeAlert: MyPageAlert? = nil
@@ -138,7 +139,7 @@ struct MyPageView: View {
     
     // 2. 나의 관심 선수 대시보드 카드
     private var favoritePlayersSection: some View {
-        NavigationLink(destination: FavoriteView()) {
+        NavigationLink(destination: FavoriteView(showBackButton: true)) {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("나의 관심 선수")
@@ -156,7 +157,7 @@ struct MyPageView: View {
                 HStack(spacing: 4) {
                     Text("🌟")
                         .font(.body)
-                    Text("12명")
+                    Text("\(favoriteManager.favoriteIDs.count)명")
                         .font(.title3)
                         .fontWeight(.black)
                         .foregroundColor(.brandNavy)
