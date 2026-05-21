@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */; };
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
+		CE7055422FBC2EDB00147E7F /* FavoriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */; };
 		CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */; };
 		CE7055032FBC2EDB00147E7E /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055022FBC2EDB00147E7E /* MyPageView.swift */; };
 		CE7055062FBC2EDB00147E7E /* AnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */; };
@@ -48,6 +49,7 @@
 /* Begin PBXFileReference section */
 		CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteManager.swift; sourceTree = "<group>"; };
 		CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		CE7055022FBC2EDB00147E7E /* MyPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		CE7055042FBC2EDB00147E7E /* AnnouncementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementView.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7054FD2FBC2EC300147E7E /* AuthManager.swift */,
+				CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */,
 				CEA59C5B2FBB26730028046D /* NetworkManager.swift */,
 				CEA59C5C2FBB26730028046D /* APIEndpoint.swift */,
 			);
@@ -349,6 +352,7 @@
 				CEA59C6A2FBB26730028046D /* KScoutApp.swift in Sources */,
 				CEA59C742FBB26730028046D /* SearchView.swift in Sources */,
 				CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */,
+				CE7055422FBC2EDB00147E7F /* FavoriteManager.swift in Sources */,
 				CEA59C702FBB26730028046D /* MainTabView.swift in Sources */,
 				CEA59C732FBB26730028046D /* FavoriteView.swift in Sources */,
 				CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */,
