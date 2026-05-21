@@ -152,13 +152,13 @@ class ScheduleViewModel: ObservableObject {
                 switch result {
                 case .success(let items):
                     if items.isEmpty {
-                        self.loadMockData(league: league)
+                        self.loadMockData(league: league, season: season)
                     } else {
                         self.apiMatches = items
                         self.mapApiMatchesToMockMatches(league: league, season: season)
                     }
                 case .failure:
-                    self.loadMockData(league: league)
+                    self.loadMockData(league: league, season: season)
                 }
             }
         }
@@ -227,17 +227,64 @@ class ScheduleViewModel: ObservableObject {
         self.matches = apiFiltered
     }
     
-    private func loadMockData(league: Int) {
-        self.matches = [
-            MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "LIVE", time: "67'", stadium: "전주월드컵경기장", league: league, dayOffset: 0),
-            MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "서울월드컵경기장", league: league, dayOffset: 0),
-            MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
-            
-            MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광주축구전용구장", league: league, dayOffset: 1),
-            MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
-            
-            MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
-        ]
+    private func loadMockData(league: Int, season: Int) {
+        if season >= 2026 {
+            if league == 1 {
+                self.matches = [
+                    MockMatch(homeTeam: "울산 HD FC", awayTeam: "전북 현대 모터스", homeScore: 2, awayScore: 1, status: "LIVE", time: "67'", stadium: "울산문수축구경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "FC 서울", awayTeam: "부천 FC 1995", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "포항 스틸러스", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 1, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "광주 FC", awayTeam: "FC 안양", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
+                    MockMatch(homeTeam: "제주 유나이티드", awayTeam: "강원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "제주월드컵경기장", league: 1, dayOffset: 1),
+                    
+                    MockMatch(homeTeam: "김천 상무", awayTeam: "대전 하나 시티즌", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "김천종합운동장", league: 1, dayOffset: -1)
+                ]
+            } else {
+                self.matches = [
+                    MockMatch(homeTeam: "수원 삼성", awayTeam: "부산 아이파크", homeScore: 1, awayScore: 0, status: "LIVE", time: "85'", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "서울 이랜드", awayTeam: "수원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "목동종합운동장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "성남 FC", awayTeam: "대구 FC", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "탄천종합운동장", league: 2, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "전남 드래곤즈", awayTeam: "충남아산 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광양축구전용구장", league: 2, dayOffset: 1),
+                    MockMatch(homeTeam: "안산 그리너스", awayTeam: "경남 FC", homeScore: 0, awayScore: 2, status: "FT", time: "종료", stadium: "안산와스타디움", league: 2, dayOffset: -1)
+                ]
+            }
+        } else if season == 2025 {
+            if league == 1 {
+                self.matches = [
+                    MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "김천 상무", homeScore: 1, awayScore: 0, status: "LIVE", time: "42'", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "대전 하나 시티즌", awayTeam: "포항 스틸러스", homeScore: nil, awayScore: nil, status: "NS", time: "17:00", stadium: "대전월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "FC 서울", awayTeam: "강원 FC", homeScore: 3, awayScore: 2, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "FC 안양", awayTeam: "광주 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "안양종합운동장", league: 1, dayOffset: 1),
+                    MockMatch(homeTeam: "울산 HD FC", awayTeam: "수원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "울산문수축구경기장", league: 1, dayOffset: 1),
+                    
+                    MockMatch(homeTeam: "제주 유나이티드", awayTeam: "대구 FC", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "제주월드컵경기장", league: 1, dayOffset: -1)
+                ]
+            } else {
+                self.matches = [
+                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "부천 FC 1995", homeScore: 2, awayScore: 2, status: "LIVE", time: "55'", stadium: "인천축구전용경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "수원 삼성", awayTeam: "서울 이랜드", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "전남 드래곤즈", awayTeam: "부산 아이파크", homeScore: 0, awayScore: 2, status: "FT", time: "종료", stadium: "광양축구전용구장", league: 2, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "성남 FC", awayTeam: "충남아산 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "탄천종합운동장", league: 2, dayOffset: 1),
+                    MockMatch(homeTeam: "천안 시티 FC", awayTeam: "김포 FC", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: -1)
+                ]
+            }
+        } else {
+            // 2024년 및 이전 디폴트 데이터
+            self.matches = [
+                MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "LIVE", time: "67'", stadium: "전주월드컵경기장", league: league, dayOffset: 0),
+                MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "서울월드컵경기장", league: league, dayOffset: 0),
+                MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
+                
+                MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광주축구전용구장", league: league, dayOffset: 1),
+                MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
+                
+                MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
+            ]
+        }
     }
 }
 
