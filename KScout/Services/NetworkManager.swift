@@ -15,7 +15,11 @@ class NetworkManager {
     // API-Football 발급 키 (기본값 설정, 필요시 유저가 변경 가능)
     var apiKey: String {
         get {
-            UserDefaults.standard.string(forKey: "API_SPORTS_KEY") ?? "4eb0b3baf194555ef46565fa9dc2d35d"
+            let saved = UserDefaults.standard.string(forKey: "API_SPORTS_KEY") ?? ""
+            if saved.isEmpty || saved == "YOUR_API_KEY_HERE" {
+                return "4eb0b3baf194555ef46565fa9dc2d35d"
+            }
+            return saved
         }
         set {
             UserDefaults.standard.set(newValue, forKey: "API_SPORTS_KEY")
@@ -25,28 +29,39 @@ class NetworkManager {
     func request<T: Decodable>(endpoint: APIEndpoint, completion: @escaping (Result<T, NetworkError>) -> Void) {
         // API 키가 입력되어 있지 않은 경우 바로 실패 처리하여 폴백 유도
         guard apiKey != "YOUR_API_KEY_HERE" && !apiKey.isEmpty else {
+            print("[NetworkManager] API Key is empty or placeholder. Falling back to mock data.")
             completion(.failure(.invalidResponse))
             return
         }
         
         guard let url = endpoint.url else {
+            print("[NetworkManager] Invalid URL for endpoint.")
             completion(.failure(.invalidURL))
             return
         }
+        
+        print("[NetworkManager] Requesting: \(url.absoluteString)")
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.addValue(apiKey, forHTTPHeaderField: "x-apisports-key")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            if error != nil {
+            if let error = error {
+                print("[NetworkManager] Network Error: \(error.localizedDescription)")
                 completion(.failure(.invalidResponse))
                 return
             }
             
-            guard let httpResponse = response as? HTTPURLResponse, 
-                  (200...299).contains(httpResponse.statusCode),
-                  let data = data else {
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("[NetworkManager] Invalid HTTP response.")
+                completion(.failure(.invalidResponse))
+                return
+            }
+            
+            print("[NetworkManager] Status Code: \(httpResponse.statusCode)")
+            
+            guard (200...299).contains(httpResponse.statusCode), let data = data else {
                 completion(.failure(.invalidResponse))
                 return
             }
@@ -72,6 +87,7 @@ class NetworkManager {
                     }
                 }
             } catch {
+                print("[NetworkManager] Decoding Error: \(error)")
                 DispatchQueue.main.async {
                     completion(.failure(.decodingError))
                 }
