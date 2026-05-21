@@ -92,8 +92,18 @@ class RankingViewModel: ObservableObject {
                         )
                     }
                     
+                    // K리그 스플릿 라운드 특성상 정규 리그와 상/하위 스플릿 그룹이 중복 집계되어 동일 팀 ID가 여러 번 나타날 수 있으므로 ID 기준 중복 제거
+                    var uniqueStandings: [Standing] = []
+                    var seenIds = Set<Int>()
+                    for standing in mappedStandings {
+                        if !seenIds.contains(standing.id) {
+                            seenIds.insert(standing.id)
+                            uniqueStandings.append(standing)
+                        }
+                    }
+                    
                     DispatchQueue.main.async {
-                        self.standings = self.standings.filter { $0.league != league } + mappedStandings
+                        self.standings = self.standings.filter { $0.league != league } + uniqueStandings
                     }
                 }
             case .failure:
