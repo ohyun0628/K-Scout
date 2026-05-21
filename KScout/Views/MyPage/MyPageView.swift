@@ -24,6 +24,7 @@ struct MyPageView: View {
     // 사용자 설정 영구 저장용 AppStorage
     @AppStorage("favoriteClub") private var favoriteClub = "선택 안 함"
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
+    @ObservedObject private var favoriteManager = FavoriteManager.shared
     
     // UI 제어 상태 변수
     @State private var activeAlert: MyPageAlert? = nil
@@ -156,7 +157,7 @@ struct MyPageView: View {
                 HStack(spacing: 4) {
                     Text("🌟")
                         .font(.body)
-                    Text("12명")
+                    Text("\(favoriteManager.favoriteIDs.count)명")
                         .font(.title3)
                         .fontWeight(.black)
                         .foregroundColor(.brandNavy)
