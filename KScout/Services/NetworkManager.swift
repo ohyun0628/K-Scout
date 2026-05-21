@@ -101,6 +101,23 @@ class NetworkManager {
 struct APISportsResponse<T: Decodable>: Decodable {
     let errors: [String: String]?
     let response: T?
+    
+    enum CodingKeys: String, CodingKey {
+        case errors
+        case response
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.response = try container.decodeIfPresent(T.self, forKey: .response)
+        
+        // API-Sports는 에러가 없으면 "errors": [], 에러가 있으면 "errors": {"token": "..."}를 반환하는 불일치 존재
+        if let dict = try? container.decodeIfPresent([String: String].self, forKey: .errors) {
+            self.errors = dict
+        } else {
+            self.errors = nil
+        }
+    }
 }
 
 // 1. 팀 순위 (Standings) DTO
