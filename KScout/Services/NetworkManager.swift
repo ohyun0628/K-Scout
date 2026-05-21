@@ -151,7 +151,11 @@ struct FixtureItem: Decodable {
 struct FixtureInfo: Decodable {
     let id: Int
     let date: String
+    let venue: VenueInfo?
     let status: StatusInfo
+}
+struct VenueInfo: Decodable {
+    let name: String?
 }
 struct StatusInfo: Decodable {
     let long: String

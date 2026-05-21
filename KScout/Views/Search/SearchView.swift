@@ -20,12 +20,11 @@ struct SearchView: View {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.gray)
                             
-                            TextField("선수 이름 또는 구단 검색", text: $viewModel.searchText)
+                            TextField("선수 이름 또는 구단 검색", text: $viewModel.searchText, onCommit: {
+                                viewModel.searchPlayers(query: viewModel.searchText)
+                            })
                                 .foregroundColor(.primary)
                                 .font(.system(size: 15))
-                                .onSubmit {
-                                    viewModel.searchPlayers(query: viewModel.searchText)
-                                }
                             
                             if !viewModel.searchText.isEmpty {
                                 Button(action: {

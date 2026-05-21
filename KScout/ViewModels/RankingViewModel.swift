@@ -107,7 +107,7 @@ class RankingViewModel: ObservableObject {
         NetworkManager.shared.request(endpoint: endpoint) { (result: Result<[PlayerRankingItem], NetworkError>) in
             switch result {
             case .success(let items):
-                let mappedRankings = items.enumerated().map { (index, item) in
+                let mappedRankings = items.enumerated().map { (index, item) -> PlayerRanking in
                     let statCount = (type == "goals") ? (item.statistics.first?.goals.total ?? 0) : (item.statistics.first?.assists?.total ?? 0)
                     return PlayerRanking(
                         id: UUID(),
