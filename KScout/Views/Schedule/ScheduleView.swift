@@ -166,6 +166,18 @@ class ScheduleViewModel: ObservableObject {
         self.isLoading = true
         self.errorMessage = nil
         
+        if season == 2026 {
+            self.matches = []
+            self.isLoading = false
+            return
+        }
+        
+        if season == 2025 {
+            self.matches = DummyData2025.matches.filter { $0.league == league }
+            self.isLoading = false
+            return
+        }
+        
         NetworkManager.shared.request(endpoint: .fixtures(league: league, season: season)) { (result: Result<[FixtureItem], NetworkError>) in
             DispatchQueue.main.async {
                 self.isLoading = false

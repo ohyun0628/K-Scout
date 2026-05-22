@@ -24,6 +24,20 @@ class RankingViewModel: ObservableObject {
         self.isLoading = true
         self.errorMessage = nil
         
+        if season == 2026 {
+            self.standings = []
+            self.playerRankings = []
+            self.isLoading = false
+            return
+        }
+        
+        if season == 2025 {
+            self.standings = DummyData2025.standings
+            self.playerRankings = DummyData2025.playerRankings
+            self.isLoading = false
+            return
+        }
+        
         let group = DispatchGroup()
         
         // 1. K리그1 순위 패치
