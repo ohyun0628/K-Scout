@@ -1,38 +1,15 @@
 import SwiftUI
 
 struct ScheduleView: View {
-    @State private var selectedLeague = 1 // 1: K리그1, 2: K리그2
+    @StateObject private var viewModel = ScheduleViewModel()
     @State private var selectedDayOffset = 0 // Offset from the middle date (0 corresponds to "목 18")
     @State private var notificationSubscription: Set<UUID> = [] // 알림 설정한 경기 목록
     @State private var showAlert = false
     @State private var alertMessage = ""
     
-    // 리얼 필드 경기 데이터 목업
-    let mockMatches: [MockMatch] = [
-        // K리그1 - 목 18일 경기 (목업 이미지 매칭)
-        MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "LIVE", time: "67'", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
-        MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
-        MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: 1, dayOffset: 0),
-        
-        // K리그1 - 금 19일 경기
-        MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
-        MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "DGB대구은행파크", league: 1, dayOffset: 1),
-        
-        // K리그1 - 수 17일 경기 (과거)
-        MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: 1, dayOffset: -1),
-        
-        // K리그2 - 목 18일 경기
-        MockMatch(homeTeam: "부산 아이파크", awayTeam: "수원 삼성 블루윙즈", homeScore: 0, awayScore: 1, status: "LIVE", time: "82'", stadium: "부산아시아드주경기장", league: 2, dayOffset: 0),
-        MockMatch(homeTeam: "서울 이랜드 FC", awayTeam: "전남 드래곤즈", homeScore: nil, awayScore: nil, status: "NS", time: "17:30", stadium: "목동종합운동장", league: 2, dayOffset: 0),
-        
-        // K리그2 - 토 20일 경기
-        MockMatch(homeTeam: "성남 FC", awayTeam: "FC 안양", homeScore: nil, awayScore: nil, status: "NS", time: "14:00", stadium: "탄천종합운동장", league: 2, dayOffset: 2),
-        MockMatch(homeTeam: "부천 FC 1995", awayTeam: "충남아산 FC", homeScore: nil, awayScore: nil, status: "NS", time: "16:30", stadium: "부천종합운동장", league: 2, dayOffset: 2)
-    ]
-    
     // 조건 필터링 경기 데이터
     private var filteredMatches: [MockMatch] {
-        mockMatches.filter { $0.league == selectedLeague && $0.dayOffset == selectedDayOffset }
+        viewModel.matches.filter { $0.league == viewModel.selectedLeague && $0.dayOffset == selectedDayOffset }
     }
     
     var body: some View {
@@ -42,36 +19,36 @@ struct ScheduleView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                // 1. 경기 일정 커스텀 헤더 타이틀
-                HeaderTitleView(title: "경기 일정")
+                // 1. 경기 일정 커스텀 헤더 타이틀 (시즌 선택 바인딩)
+                HeaderTitleView(title: "경기 일정", selectedSeason: $viewModel.selectedSeason)
                 
-                // 2. K리그1 / K리그2 세그먼트 셀렉터 (Mockup 완벽 매칭)
+                // 2. K리그1 / K리그2 세그먼트 셀렉터
                 HStack(spacing: 0) {
                     Button(action: {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            selectedLeague = 1
+                            viewModel.selectedLeague = 1
                         }
                     }) {
                         Text("K리그1")
                             .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(selectedLeague == 1 ? .white : .gray)
+                            .foregroundColor(viewModel.selectedLeague == 1 ? .white : .gray)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(selectedLeague == 1 ? Color.brandNavy : Color.clear)
+                            .background(viewModel.selectedLeague == 1 ? Color.brandNavy : Color.clear)
                             .cornerRadius(10)
                     }
                     
                     Button(action: {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            selectedLeague = 2
+                            viewModel.selectedLeague = 2
                         }
                     }) {
                         Text("K리그2")
                             .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(selectedLeague == 2 ? .white : .gray)
+                            .foregroundColor(viewModel.selectedLeague == 2 ? .white : .gray)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(selectedLeague == 2 ? Color.brandNavy : Color.clear)
+                            .background(viewModel.selectedLeague == 2 ? Color.brandNavy : Color.clear)
                             .cornerRadius(10)
                     }
                 }
@@ -81,13 +58,38 @@ struct ScheduleView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
                 
-                // 3. 주간 데이트 슬라이더 (독립 컴포넌트 호출)
+                // 3. 주간 데이트 슬라이더
                 DateSliderView(selectedDayOffset: $selectedDayOffset)
                     .padding(.bottom, 8)
                 
-                // 4. 경기 카드 리스트 영역 (독립 컴포넌트 호출)
+                // 4. 경기 카드 리스트 영역
                 ScrollView(showsIndicators: false) {
-                    if filteredMatches.isEmpty {
+                    if viewModel.isLoading {
+                        VStack(spacing: 12) {
+                            Spacer()
+                            ProgressView("경기 일정을 가져오는 중...")
+                                .padding(.top, 60)
+                            Spacer()
+                        }
+                    } else if viewModel.selectedSeason == 2026 {
+                        VStack(spacing: 20) {
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.system(size: 60))
+                                .foregroundColor(.gray.opacity(0.8))
+                                .padding(.top, 60)
+                            
+                            Text("2026 시즌 일정 준비 중")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(Color.brandNavy)
+                            
+                            Text("2026 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
+                                .font(.system(size: 14))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .lineSpacing(5)
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else if filteredMatches.isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "sportscourt")
                                 .font(.system(size: 48))
@@ -123,6 +125,9 @@ struct ScheduleView: View {
                 dismissButton: .default(Text("확인"))
             )
         }
+        .onAppear {
+            viewModel.fetchSchedule(league: viewModel.selectedLeague, season: viewModel.selectedSeason)
+        }
     }
     
     // 알림 설정 토글 비즈니스 로직
@@ -135,6 +140,183 @@ struct ScheduleView: View {
             alertMessage = "\(match.homeTeam) vs \(match.awayTeam) 경기 시작 15분 전에 푸시 알림을 보내드립니다!"
         }
         showAlert = true
+    }
+}
+
+// MARK: - ScheduleViewModel
+
+class ScheduleViewModel: ObservableObject {
+    @Published var matches: [MockMatch] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    @Published var selectedLeague: Int = 1 {
+        didSet {
+            fetchSchedule(league: selectedLeague, season: selectedSeason)
+        }
+    }
+    @Published var selectedSeason: Int = 2026 {
+        didSet {
+            fetchSchedule(league: selectedLeague, season: selectedSeason)
+        }
+    }
+    
+    private var apiMatches: [FixtureItem] = []
+    
+    func fetchSchedule(league: Int, season: Int) {
+        self.isLoading = true
+        self.errorMessage = nil
+        
+        if season == 2026 {
+            self.matches = []
+            self.isLoading = false
+            return
+        }
+        
+        if season == 2025 {
+            self.matches = DummyData2025.matches.filter { $0.league == league }
+            self.isLoading = false
+            return
+        }
+        
+        NetworkManager.shared.request(endpoint: .fixtures(league: league, season: season)) { (result: Result<[FixtureItem], NetworkError>) in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let items):
+                    if items.isEmpty {
+                        self.loadMockData(league: league, season: season)
+                    } else {
+                        self.apiMatches = items
+                        self.mapApiMatchesToMockMatches(league: league, season: season)
+                    }
+                case .failure:
+                    self.loadMockData(league: league, season: season)
+                }
+            }
+        }
+    }
+    
+    private func mapApiMatchesToMockMatches(league: Int, season: Int) {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        let weekday = calendar.component(.weekday, from: today)
+        let daysToThursday = 5 - weekday
+        
+        var offsetDates: [Int: String] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        for offset in -3...3 {
+            let targetDate = calendar.date(byAdding: .day, value: daysToThursday + offset, to: today) ?? today
+            var components = calendar.dateComponents([.year, .month, .day], from: targetDate)
+            components.year = season
+            if let searchDate = calendar.date(from: components) {
+                offsetDates[offset] = dateFormatter.string(from: searchDate)
+            }
+        }
+        
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        
+        let apiFiltered = apiMatches.compactMap { item -> MockMatch? in
+            guard let matchDate = isoFormatter.date(from: item.fixture.date) else { return nil }
+            let matchDateString = dateFormatter.string(from: matchDate)
+            
+            guard let offset = offsetDates.first(where: { $1 == matchDateString })?.key else {
+                return nil
+            }
+            
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateFormat = "HH:mm"
+            let timeString = timeFormatter.string(from: matchDate)
+            
+            let statusShort = item.fixture.status.short
+            var displayStatus = "NS"
+            var displayTime = timeString
+            
+            if ["1H", "2H", "HT", "ET", "P"].contains(statusShort) {
+                displayStatus = "LIVE"
+                displayTime = item.fixture.status.elapsed.map { "\($0)'" } ?? "LIVE"
+            } else if ["FT", "AET", "PEN"].contains(statusShort) {
+                displayStatus = "FT"
+                displayTime = "종료"
+            }
+            
+            return MockMatch(
+                homeTeam: item.teams.home.name,
+                awayTeam: item.teams.away.name,
+                homeScore: item.goals.home,
+                awayScore: item.goals.away,
+                status: displayStatus,
+                time: displayTime,
+                stadium: item.fixture.venue?.name ?? "경기장",
+                league: league,
+                dayOffset: offset
+            )
+        }
+        
+        self.matches = apiFiltered
+    }
+    
+    private func loadMockData(league: Int, season: Int) {
+        if season >= 2026 {
+            if league == 1 {
+                self.matches = [
+                    MockMatch(homeTeam: "울산 HD FC", awayTeam: "전북 현대 모터스", homeScore: 2, awayScore: 1, status: "LIVE", time: "67'", stadium: "울산문수축구경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "FC 서울", awayTeam: "부천 FC 1995", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "포항 스틸러스", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 1, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "광주 FC", awayTeam: "FC 안양", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
+                    MockMatch(homeTeam: "제주 유나이티드", awayTeam: "강원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "제주월드컵경기장", league: 1, dayOffset: 1),
+                    
+                    MockMatch(homeTeam: "김천 상무", awayTeam: "대전 하나 시티즌", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "김천종합운동장", league: 1, dayOffset: -1)
+                ]
+            } else {
+                self.matches = [
+                    MockMatch(homeTeam: "수원 삼성", awayTeam: "부산 아이파크", homeScore: 1, awayScore: 0, status: "LIVE", time: "85'", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "서울 이랜드", awayTeam: "수원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "목동종합운동장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "성남 FC", awayTeam: "대구 FC", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "탄천종합운동장", league: 2, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "전남 드래곤즈", awayTeam: "충남아산 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광양축구전용구장", league: 2, dayOffset: 1),
+                    MockMatch(homeTeam: "안산 그리너스", awayTeam: "경남 FC", homeScore: 0, awayScore: 2, status: "FT", time: "종료", stadium: "안산와스타디움", league: 2, dayOffset: -1)
+                ]
+            }
+        } else if season == 2025 {
+            if league == 1 {
+                self.matches = [
+                    MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "김천 상무", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "대전 하나 시티즌", awayTeam: "포항 스틸러스", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "대전월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "FC 서울", awayTeam: "강원 FC", homeScore: 3, awayScore: 2, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "FC 안양", awayTeam: "광주 FC", homeScore: 1, awayScore: 2, status: "FT", time: "종료", stadium: "안양종합운동장", league: 1, dayOffset: 1),
+                    MockMatch(homeTeam: "울산 HD FC", awayTeam: "수원 FC", homeScore: 0, awayScore: 0, status: "FT", time: "종료", stadium: "울산문수축구경기장", league: 1, dayOffset: 1),
+                    
+                    MockMatch(homeTeam: "제주 유나이티드", awayTeam: "대구 FC", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "제주월드컵경기장", league: 1, dayOffset: -1)
+                ]
+            } else {
+                self.matches = [
+                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "부천 FC 1995", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "수원 삼성", awayTeam: "서울 이랜드", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "전남 드래곤즈", awayTeam: "부산 아이파크", homeScore: 0, awayScore: 2, status: "FT", time: "종료", stadium: "광양축구전용구장", league: 2, dayOffset: 0),
+                    
+                    MockMatch(homeTeam: "성남 FC", awayTeam: "충남아산 FC", homeScore: 1, awayScore: 3, status: "FT", time: "종료", stadium: "탄천종합운동장", league: 2, dayOffset: 1),
+                    MockMatch(homeTeam: "천안 시티 FC", awayTeam: "김포 FC", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: -1)
+                ]
+            }
+        } else {
+            // 2024년 및 이전 디폴트 데이터 (종료된 시즌이므로 완료 상태로 표시)
+            self.matches = [
+                MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: league, dayOffset: 0),
+                MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: league, dayOffset: 0),
+                MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
+                
+                MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: league, dayOffset: 1),
+                MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
+                
+                MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
+            ]
+        }
     }
 }
 

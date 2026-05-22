@@ -16,7 +16,7 @@ struct RankingView: View {
             
             VStack(spacing: 0) {
                 // 1. 커스텀 헤더 타이틀
-                HeaderTitleView(title: "순위표")
+                HeaderTitleView(title: "순위표", selectedSeason: $viewModel.currentSeason)
                 
                 // 2. 대분류 세그먼트 셀렉터 (팀 순위 vs 선수 순위)
                 HStack(spacing: 0) {
@@ -136,6 +136,26 @@ struct RankingView: View {
                     Spacer()
                     ProgressView("순위 정보 로드 중...")
                     Spacer()
+                } else if viewModel.currentSeason == 2026 {
+                    VStack(spacing: 20) {
+                        Spacer()
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray.opacity(0.8))
+                        
+                        Text("2026 시즌 준비 중")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(Color.brandNavy)
+                        
+                        Text("2026 시즌 성적 및 순위 정보는 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(5)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 40)
                 } else {
                     ScrollView(showsIndicators: false) {
                         if mainTab == 0 {
@@ -174,7 +194,7 @@ struct RankingView: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            viewModel.fetchAllData()
+            viewModel.fetchAllData(season: viewModel.currentSeason)
         }
     }
 }

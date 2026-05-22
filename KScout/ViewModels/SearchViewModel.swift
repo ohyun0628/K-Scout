@@ -5,6 +5,15 @@ class SearchViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var filteredPlayers: [Player] = []
     @Published var selectedPlayer: Player? = nil
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    @Published var selectedSeason: Int = 2026 {
+        didSet {
+            if !searchText.isEmpty {
+                searchPlayers(query: searchText)
+            }
+        }
+    }
     
     private var allPlayers: [Player] = []
     private var cancellables = Set<AnyCancellable>()
@@ -12,16 +21,17 @@ class SearchViewModel: ObservableObject {
     init() {
         loadMockPlayers()
         
-        // 검색어 입력 시 0.2초 딜레이(Debounce)를 주어 실시간 필터링 수행
+        // 검색어 입력 시 0.2초 딜레이(Debounce)를 주어 로컬 필터링 우선 수행
         $searchText
             .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
             .sink { [weak self] text in
-                self?.filterPlayers(with: text)
+                self?.filterMockPlayers(with: text)
             }
             .store(in: &cancellables)
     }
     
-    private func filterPlayers(with query: String) {
+    // 로컬 캐시/Mock 검색어 필터링
+    func filterMockPlayers(with query: String) {
         if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             filteredPlayers = allPlayers
         } else {
@@ -32,8 +42,97 @@ class SearchViewModel: ObservableObject {
         }
     }
     
+    // API 실시간 선수 명 검색 호출
+    func searchPlayers(query: String) {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            self.filteredPlayers = allPlayers
+            return
+        }
+        
+        self.isLoading = true
+        self.errorMessage = nil
+        
+        let englishQuery = translateKoreanToEnglish(trimmed)
+        let group = DispatchGroup()
+        var fetchedPlayers: [Player] = []
+        
+        // K리그 1 검색
+        group.enter()
+        NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: 1, season: selectedSeason)) { (result: Result<[PlayerDetailItem], NetworkError>) in
+            if case .success(let items) = result {
+                let players = items.compactMap { Player(detailItem: $0) }
+                fetchedPlayers.append(contentsOf: players)
+            }
+            group.leave()
+        }
+        
+        // K리그 2 검색
+        group.enter()
+        NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: 2, season: selectedSeason)) { (result: Result<[PlayerDetailItem], NetworkError>) in
+            if case .success(let items) = result {
+                let players = items.compactMap { Player(detailItem: $0) }
+                fetchedPlayers.append(contentsOf: players)
+            }
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
+            self.isLoading = false
+            if fetchedPlayers.isEmpty {
+                // API 결과가 없거나 통신 실패 시 로컬 검색으로 자연스러운 전환
+                self.filterMockPlayers(with: trimmed)
+            } else {
+                // 중복 제거
+                var uniquePlayers: [Player] = []
+                for p in fetchedPlayers {
+                    if !uniquePlayers.contains(where: { $0.id == p.id }) {
+                        uniquePlayers.append(p)
+                    }
+                }
+                self.filteredPlayers = uniquePlayers
+            }
+        }
+    }
+    
+    // 한국어 -> API-Football 영문 한글 매핑 딕셔너리
+    private func translateKoreanToEnglish(_ query: String) -> String {
+        let dictionary = [
+            "주민규": "Min-Kyu Joo",
+            "이승우": "Seung-Woo Lee",
+            "기성용": "Sung-Yueng Ki",
+            "세징야": "Cesinha",
+            "설영우": "Young-Woo Seol",
+            "조현우": "Hyeon-Woo Jo",
+            "무고사": "Mugosa",
+            "일류첸코": "Iljutcenko",
+            "송민규": "Min-Kyu Song",
+            "김영권": "Young-Gwon Kim",
+            "이동경": "Dong-Gyeong Lee"
+        ]
+        return dictionary[query.trimmingCharacters(in: .whitespacesAndNewlines)] ?? query
+    }
+    
     private func loadMockPlayers() {
         allPlayers = Player.mockPlayers
         filteredPlayers = allPlayers
+    }
+}
+
+// MARK: - Player API DTO Extension
+
+extension Player {
+    init?(detailItem: PlayerDetailItem) {
+        guard let stats = detailItem.statistics.first else { return nil }
+        self.id = detailItem.player.id
+        self.name = detailItem.player.name
+        self.photo = detailItem.player.photo
+        self.teamName = stats.team.name
+        
+        self.goals = stats.goals?.total ?? 0
+        self.assists = stats.goals?.assists ?? 0
+        self.shots = stats.shots?.total ?? 0
+        self.passes = stats.passes?.total ?? 0
+        self.defense = stats.tackles?.total ?? 0
     }
 }

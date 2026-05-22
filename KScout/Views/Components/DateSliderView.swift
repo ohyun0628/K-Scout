@@ -3,15 +3,25 @@ import SwiftUI
 struct DateSliderView: View {
     @Binding var selectedDayOffset: Int
     
-    let dateItems = [
-        (dayName: "월", dayNumber: "15", offset: -3),
-        (dayName: "화", dayNumber: "16", offset: -2),
-        (dayName: "수", dayNumber: "17", offset: -1),
-        (dayName: "목", dayNumber: "18", offset: 0),
-        (dayName: "금", dayNumber: "19", offset: 1),
-        (dayName: "토", dayNumber: "20", offset: 2),
-        (dayName: "일", dayNumber: "21", offset: 3)
-    ]
+    // 현재 날짜를 기준으로 월~일요일 범위 동적 계산 (목요일을 offset 0으로 정렬)
+    var dateItems: [(dayName: String, dayNumber: String, offset: Int)] {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        let weekday = calendar.component(.weekday, from: today)
+        let weekdayNames = ["일", "월", "화", "수", "목", "금", "토"]
+        
+        // 목요일(5)을 기준점(offset 0)으로 설정
+        let daysToThursday = 5 - weekday
+        
+        return (-3...3).map { offset in
+            let targetDate = calendar.date(byAdding: .day, value: daysToThursday + offset, to: today) ?? today
+            let dayNum = String(calendar.component(.day, from: targetDate))
+            let wday = calendar.component(.weekday, from: targetDate)
+            let name = weekdayNames[wday - 1]
+            return (dayName: name, dayNumber: dayNum, offset: offset)
+        }
+    }
     
     var body: some View {
         VStack(spacing: 8) {
@@ -39,7 +49,7 @@ struct DateSliderView: View {
                 }
             }
             .padding(.horizontal, 8)
-            .padding(.bottom, 6) // 여유 간격을 넉넉히 주어 잘리는 현상 방지
+            .padding(.bottom, 6)
             
             // 데코레이션 슬라이더 바
             ZStack(alignment: .leading) {

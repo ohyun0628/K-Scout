@@ -11,8 +11,8 @@ struct SearchView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 0) {
-                    // 1. 공통 상단 헤더 타이틀
-                    HeaderTitleView(title: "선수 검색")
+                    // 1. 공통 상단 헤더 타이틀 (시즌 선택 바인딩 연동)
+                    HeaderTitleView(title: "선수 검색", selectedSeason: $viewModel.selectedSeason)
                     
                     // 2. 커스텀 서치 바
                     HStack {
@@ -20,7 +20,9 @@ struct SearchView: View {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.gray)
                             
-                            TextField("선수 이름 또는 구단 검색", text: $viewModel.searchText)
+                            TextField("선수 이름 또는 구단 검색", text: $viewModel.searchText, onCommit: {
+                                viewModel.searchPlayers(query: viewModel.searchText)
+                            })
                                 .foregroundColor(.primary)
                                 .font(.system(size: 15))
                             
@@ -42,7 +44,11 @@ struct SearchView: View {
                     .padding(.bottom, 12)
                     
                     // 3. 검색 결과 목록
-                    if viewModel.filteredPlayers.isEmpty {
+                    if viewModel.isLoading {
+                        Spacer()
+                        ProgressView("선수 정보를 검색하는 중...")
+                        Spacer()
+                    } else if viewModel.filteredPlayers.isEmpty {
                         Spacer()
                         VStack(spacing: 12) {
                             Image(systemName: "person.fill.questionmark")
