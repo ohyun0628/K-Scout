@@ -39,22 +39,30 @@ class RankingViewModel: ObservableObject {
             sorted = uniquePlayers.sorted { $0.assists > $1.assists }
         case "points":
             sorted = uniquePlayers.sorted { $0.attackPoints > $1.attackPoints }
+        case "pkGoals":
+            sorted = uniquePlayers.sorted { $0.pkGoals > $1.pkGoals }
+        case "played":
+            sorted = uniquePlayers.sorted { $0.played > $1.played }
         case "mom":
             sorted = uniquePlayers.sorted { $0.momCount > $1.momCount }
         case "rating":
             sorted = uniquePlayers.sorted { $0.avgRating > $1.avgRating }
         case "best11":
             sorted = uniquePlayers.sorted { $0.best11Count > $1.best11Count }
-        case "goalsPer90":
-            sorted = uniquePlayers.sorted { $0.goalsPer90 > $1.goalsPer90 }
-        case "pointsPer90":
-            sorted = uniquePlayers.sorted { $0.pointsPer90 > $1.pointsPer90 }
         case "shots":
             sorted = uniquePlayers.sorted { $0.shots > $1.shots }
         case "shotsOnTarget":
             sorted = uniquePlayers.sorted { $0.shotsOnTarget > $1.shotsOnTarget }
         case "minutes":
             sorted = uniquePlayers.sorted { $0.playedMinutes > $1.playedMinutes }
+        case "goalsPer90":
+            sorted = uniquePlayers.sorted { $0.goalsPer90 > $1.goalsPer90 }
+        case "pointsPer90":
+            sorted = uniquePlayers.sorted { $0.pointsPer90 > $1.pointsPer90 }
+        case "fouls":
+            sorted = uniquePlayers.sorted { $0.fouls > $1.fouls }
+        case "yellowCards":
+            sorted = uniquePlayers.sorted { $0.yellowCards > $1.yellowCards }
         default:
             sorted = uniquePlayers.sorted { $0.statCount > $1.statCount }
         }
@@ -80,7 +88,10 @@ class RankingViewModel: ObservableObject {
                 pointsPer90: player.pointsPer90,
                 shots: player.shots,
                 shotsOnTarget: player.shotsOnTarget,
-                playedMinutes: player.playedMinutes
+                playedMinutes: player.playedMinutes,
+                pkGoals: player.pkGoals,
+                fouls: player.fouls,
+                yellowCards: player.yellowCards
             )
         }
     }

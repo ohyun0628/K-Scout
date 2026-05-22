@@ -25,6 +25,11 @@ struct PlayerRanking: Identifiable, Codable {
     var shotsOnTarget: Int
     var playedMinutes: Int
     
+    // 네이버 스포츠 대시보드 추가 대응: PK골, 파울, 경고
+    var pkGoals: Int
+    var fouls: Int
+    var yellowCards: Int
+    
     init(
         id: UUID = UUID(),
         rank: Int,
@@ -44,7 +49,10 @@ struct PlayerRanking: Identifiable, Codable {
         pointsPer90: Double? = nil,
         shots: Int? = nil,
         shotsOnTarget: Int? = nil,
-        playedMinutes: Int? = nil
+        playedMinutes: Int? = nil,
+        pkGoals: Int? = nil,
+        fouls: Int? = nil,
+        yellowCards: Int? = nil
     ) {
         self.id = id
         self.rank = rank
@@ -84,5 +92,10 @@ struct PlayerRanking: Identifiable, Codable {
         let s = shots ?? (g * 3 + Int.random(in: 10...30))
         self.shots = s
         self.shotsOnTarget = shotsOnTarget ?? (g + Int.random(in: 5...15))
+        
+        // PK골, 파울, 경고 생성
+        self.pkGoals = pkGoals ?? Int.random(in: 0...3)
+        self.fouls = fouls ?? Int.random(in: 10...40)
+        self.yellowCards = yellowCards ?? Int.random(in: 0...6)
     }
 }

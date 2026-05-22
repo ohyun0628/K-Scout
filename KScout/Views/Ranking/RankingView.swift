@@ -156,29 +156,31 @@ struct RankingView: View {
                                 .padding(.horizontal, 16)
                                 .padding(.bottom, 16)
                             } else {
-                                // 선수 순위 리스트
-                                VStack(spacing: 0) {
-                                    let rankings = viewModel.filteredPlayerRankings(forLeague: selectedLeague, type: selectedStatType)
-                                    
-                                    if rankings.isEmpty {
-                                        Text("선수 순위 정보가 없습니다.")
-                                            .foregroundColor(.gray)
-                                            .padding(.vertical, 40)
-                                    } else {
-                                        ForEach(rankings) { player in
-                                            PlayerRankingRow(player: player)
-                                            if player.id != rankings.last?.id {
-                                                Divider()
-                                                    .padding(.horizontal, 16)
-                                            }
+                                // 선수 순위 리스트 (가로 스크롤 테이블 그리드로 교체)
+                                let rankings = viewModel.filteredPlayerRankings(forLeague: selectedLeague, type: selectedStatType)
+                                
+                                if rankings.isEmpty {
+                                    Text("선수 순위 정보가 없습니다.")
+                                        .foregroundColor(.gray)
+                                        .padding(.vertical, 40)
+                                } else {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        HStack {
+                                            Text("💡 열 머리글을 탭하여 지표별로 정렬해 보세요")
+                                                .font(.system(size: 11, weight: .medium))
+                                                .foregroundColor(.gray)
+                                            Spacer()
+                                            Image(systemName: "chevron.left.and.right")
+                                                .font(.system(size: 10, weight: .bold))
+                                                .foregroundColor(.gray.opacity(0.8))
                                         }
+                                        .padding(.horizontal, 4)
+                                        
+                                        PlayerStatsGridView(rankings: rankings, selectedStatType: $selectedStatType)
                                     }
+                                    .padding(.horizontal, 16)
+                                    .padding(.bottom, 16)
                                 }
-                                .background(Color.white)
-                                .cornerRadius(16)
-                                .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
-                                .padding(.horizontal, 16)
-                                .padding(.bottom, 16)
                             }
                         }
                     }
