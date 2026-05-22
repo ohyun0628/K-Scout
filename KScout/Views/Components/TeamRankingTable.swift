@@ -275,6 +275,6 @@ struct TeamRankingTable_Previews: PreviewProvider {
         TeamRankingTable(standings: [
             Standing(id: 1, rank: 1, teamName: "울산 HD FC", points: 33, goalsDiff: 15, played: 15, won: 10, draw: 3, lost: 2, league: 1, group: "Championship Round", form: "WWDLW"),
             Standing(id: 2, rank: 2, teamName: "전북 현대", points: 31, goalsDiff: 12, played: 15, won: 9, draw: 4, lost: 2, league: 1, group: "Championship Round", form: "WDWWL")
-        ])
+        ], season: 2025)
     }
 }

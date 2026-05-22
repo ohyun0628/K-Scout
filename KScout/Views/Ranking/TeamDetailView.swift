@@ -274,37 +274,29 @@ struct TeamDetailView: View {
     }
     
     // 승무패 뱃지 연동 헬퍼
+    @ViewBuilder
     private func winLossBadge(for match: MockMatch) -> some View {
         let isHome = match.homeTeam == viewModel.standing.teamName
-        guard let homeScore = match.homeScore, let awayScore = match.awayScore else {
-            return Circle().fill(Color.gray).frame(width: 32, height: 32)
-        }
-        
-        let isWin = isHome ? (homeScore > awayScore) : (awayScore > homeScore)
-        let isDraw = homeScore == awayScore
-        
-        let text: String
-        let color: Color
-        
-        if isWin {
-            text = "승"
-            color = Color.green
-        } else if isDraw {
-            text = "무"
-            color = Color.gray
+        if let homeScore = match.homeScore, let awayScore = match.awayScore {
+            let isWin = isHome ? (homeScore > awayScore) : (awayScore > homeScore)
+            let isDraw = homeScore == awayScore
+            
+            let text = isWin ? "승" : (isDraw ? "무" : "패")
+            let color = isWin ? Color.green : (isDraw ? Color.gray : Color.red)
+            
+            Circle()
+                .fill(color)
+                .frame(width: 32, height: 32)
+                .overlay(
+                    Text(text)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.white)
+                )
         } else {
-            text = "패"
-            color = Color.red
+            Circle()
+                .fill(Color.gray)
+                .frame(width: 32, height: 32)
         }
-        
-        return Circle()
-            .fill(color)
-            .frame(width: 32, height: 32)
-            .overlay(
-                Text(text)
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.white)
-            )
     }
     
     // MARK: - 선수단 득점 리스트
