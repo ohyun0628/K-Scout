@@ -244,8 +244,8 @@ class ScheduleViewModel: ObservableObject {
             }
             
             return MockMatch(
-                homeTeam: item.teams.home.name,
-                awayTeam: item.teams.away.name,
+                homeTeam: KoreanTranslationService.translateTeam(item.teams.home.name),
+                awayTeam: KoreanTranslationService.translateTeam(item.teams.away.name),
                 homeScore: item.goals.home,
                 awayScore: item.goals.away,
                 status: displayStatus,

@@ -125,9 +125,9 @@ extension Player {
     init?(detailItem: PlayerDetailItem) {
         guard let stats = detailItem.statistics.first else { return nil }
         self.id = detailItem.player.id
-        self.name = detailItem.player.name
+        self.name = KoreanTranslationService.translatePlayer(detailItem.player.name)
         self.photo = detailItem.player.photo
-        self.teamName = stats.team.name
+        self.teamName = KoreanTranslationService.translateTeam(stats.team.name)
         
         self.goals = stats.goals?.total ?? 0
         self.assists = stats.goals?.assists ?? 0

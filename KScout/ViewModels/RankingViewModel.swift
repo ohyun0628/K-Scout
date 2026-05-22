@@ -119,7 +119,7 @@ class RankingViewModel: ObservableObject {
                                 mappedStandings.append(Standing(
                                     id: item.team.id,
                                     rank: displayRank,
-                                    teamName: item.team.name,
+                                    teamName: KoreanTranslationService.translateTeam(item.team.name),
                                     points: item.points,
                                     goalsDiff: item.goalsDiff,
                                     played: item.all.played,
@@ -152,7 +152,7 @@ class RankingViewModel: ObservableObject {
                                 mappedStandings.append(Standing(
                                     id: item.team.id,
                                     rank: displayRank,
-                                    teamName: item.team.name,
+                                    teamName: KoreanTranslationService.translateTeam(item.team.name),
                                     points: item.points,
                                     goalsDiff: item.goalsDiff,
                                     played: item.all.played,
@@ -208,8 +208,8 @@ class RankingViewModel: ObservableObject {
                         return PlayerRanking(
                             id: UUID(),
                             rank: index + 1,
-                            playerName: item.player.name,
-                            teamName: item.statistics.first?.team.name ?? "알 수 없음",
+                            playerName: KoreanTranslationService.translatePlayer(item.player.name),
+                            teamName: KoreanTranslationService.translateTeam(item.statistics.first?.team.name ?? "알 수 없음"),
                             statCount: statCount,
                             played: item.statistics.first?.games.appearances ?? 0,
                             league: league,
