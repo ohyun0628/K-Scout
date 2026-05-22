@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TeamRankingTable: View {
     let standings: [Standing]
+    let season: Int
     
     var body: some View {
         if standings.isEmpty {
@@ -103,59 +104,62 @@ struct TeamRankingTable: View {
     
     @ViewBuilder
     private func teamRow(_ team: Standing) -> some View {
-        HStack(spacing: 0) {
-            // 순위 숫자 (1,2,3위는 굵고 선명하게 강조)
-            Text("\(team.rank)")
-                .font(.system(size: 14, weight: team.rank <= 3 ? .black : .medium))
-                .foregroundColor(team.rank <= 3 ? Color.brandNavy : .gray)
-                .frame(width: 32, alignment: .center)
-            
-            // 팀 로고 뱃지 및 팀명
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(logoColor(for: team.teamName))
-                    .frame(width: 24, height: 24)
-                    .overlay(
-                        Text(String(team.teamName.prefix(1)))
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(.white)
-                    )
-                
-                Text(team.teamName)
-                    .font(.system(size: 13, weight: team.rank <= 3 ? .bold : .semibold))
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 8)
-            
-            // 경기 통계 기록들 및 최근 5경기 뱃지
+        NavigationLink(destination: TeamDetailView(standing: team, season: season)) {
             HStack(spacing: 0) {
-                Text("\(team.played)")
-                    .foregroundColor(.gray)
-                    .frame(width: 24, alignment: .center)
-                Text("\(team.won)")
-                    .foregroundColor(.gray)
-                    .frame(width: 24, alignment: .center)
-                Text("\(team.draw)")
-                    .foregroundColor(.gray)
-                    .frame(width: 24, alignment: .center)
-                Text("\(team.lost)")
-                    .foregroundColor(.gray)
-                    .frame(width: 24, alignment: .center)
-                Text("\(team.points)")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(Color.brandNavy)
-                    .frame(width: 38, alignment: .trailing)
+                // 순위 숫자 (1,2,3위는 굵고 선명하게 강조)
+                Text("\(team.rank)")
+                    .font(.system(size: 14, weight: team.rank <= 3 ? .black : .medium))
+                    .foregroundColor(team.rank <= 3 ? Color.brandNavy : .gray)
+                    .frame(width: 32, alignment: .center)
                 
-                // 최근 5경기 승무패 뱃지
-                recentFormView(form: team.form)
+                // 팀 로고 뱃지 및 팀명
+                HStack(spacing: 8) {
+                    Circle()
+                        .fill(logoColor(for: team.teamName))
+                        .frame(width: 24, height: 24)
+                        .overlay(
+                            Text(String(team.teamName.prefix(1)))
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                        )
+                    
+                    Text(team.teamName)
+                        .font(.system(size: 13, weight: team.rank <= 3 ? .bold : .semibold))
+                        .foregroundColor(.primary)
+                        .lineLimit(1)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 8)
+                
+                // 경기 통계 기록들 및 최근 5경기 뱃지
+                HStack(spacing: 0) {
+                    Text("\(team.played)")
+                        .foregroundColor(.gray)
+                        .frame(width: 24, alignment: .center)
+                    Text("\(team.won)")
+                        .foregroundColor(.gray)
+                        .frame(width: 24, alignment: .center)
+                    Text("\(team.draw)")
+                        .foregroundColor(.gray)
+                        .frame(width: 24, alignment: .center)
+                    Text("\(team.lost)")
+                        .foregroundColor(.gray)
+                        .frame(width: 24, alignment: .center)
+                    Text("\(team.points)")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(Color.brandNavy)
+                        .frame(width: 38, alignment: .trailing)
+                    
+                    // 최근 5경기 승무패 뱃지
+                    recentFormView(form: team.form)
+                }
+                .font(.system(size: 13, weight: .medium))
             }
-            .font(.system(size: 13, weight: .medium))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+            .background(team.rank <= 3 ? Color.brandNavy.opacity(0.02) : Color.clear)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 12)
-        .background(team.rank <= 3 ? Color.brandNavy.opacity(0.02) : Color.clear)
+        .buttonStyle(PlainButtonStyle())
     }
     
     @ViewBuilder
