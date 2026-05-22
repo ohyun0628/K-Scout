@@ -134,6 +134,8 @@ struct TeamStandingData: Decodable {
     let team: TeamInfo
     let points: Int
     let goalsDiff: Int
+    let group: String?
+    let form: String?
     let all: StandingStatDetail
 }
 struct TeamInfo: Decodable {

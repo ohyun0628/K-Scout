@@ -11,4 +11,6 @@ struct Standing: Identifiable, Codable {
     let draw: Int
     let lost: Int
     let league: Int // 1: K리그1, 2: K리그2
+    let group: String? // "Championship Round" or "Relegation Round"
+    let form: String? // e.g. "WWDLW"
 }
