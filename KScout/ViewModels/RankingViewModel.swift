@@ -96,10 +96,25 @@ class RankingViewModel: ObservableObject {
                     if league == 1 && response.league.standings.count > 1 {
                         // K리그1 스플릿 라운드: 2개의 그룹 (Championship, Relegation)
                         for (arrayIndex, standingsArray) in response.league.standings.enumerated() {
+                            // 각 그룹 배열의 첫 번째 팀의 group 정보를 기준으로 판정하여 인덱스 순서가 바뀌어도 안전하도록 구현
+                            let isRelegation: Bool
+                            if let firstItem = standingsArray.first {
+                                let groupLower = (firstItem.group ?? "").lowercased()
+                                if groupLower.contains("relegation") {
+                                    isRelegation = true
+                                } else if groupLower.contains("championship") {
+                                    isRelegation = false
+                                } else {
+                                    isRelegation = (arrayIndex == 1) // 문자열에 힌트가 없을 시 기존 인덱스 룰(1이 B조) 적용
+                                }
+                            } else {
+                                isRelegation = (arrayIndex == 1)
+                            }
+                            
                             for item in standingsArray {
-                                let groupName = (arrayIndex == 0) ? "Championship Round" : "Relegation Round"
+                                let groupName = isRelegation ? "Relegation Round" : "Championship Round"
                                 // Relegation Round (Group B) 팀들의 랭킹은 1~6에서 7~12로 변환
-                                let displayRank = (arrayIndex == 0) ? item.rank : (item.rank <= 6 ? item.rank + 6 : item.rank)
+                                let displayRank = isRelegation ? (item.rank <= 6 ? item.rank + 6 : item.rank) : item.rank
                                 
                                 mappedStandings.append(Standing(
                                     id: item.team.id,
