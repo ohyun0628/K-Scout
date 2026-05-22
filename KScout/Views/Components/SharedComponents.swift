@@ -44,6 +44,56 @@ public func teamEmblemURL(for teamName: String) -> String {
     return ""
 }
 
+// MARK: - Reusable Remote Image View (for compatibility with older iOS SDKs without AsyncImage)
+struct RemoteImageView: View {
+    let urlString: String
+    var size: CGFloat
+    let fallback: AnyView
+    let isCircle: Bool
+    
+    @State private var uiImage: UIImage? = nil
+    
+    var body: some View {
+        Group {
+            if let image = uiImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: isCircle ? .fill : .fit)
+                    .frame(width: size, height: size)
+                    .conditionalClip(isCircle: isCircle, size: size)
+            } else {
+                fallback
+                    .onAppear {
+                        loadImage()
+                    }
+            }
+        }
+    }
+    
+    private func loadImage() {
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            if let data = data, let loadedImage = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.uiImage = loadedImage
+                }
+            }
+        }.resume()
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func conditionalClip(isCircle: Bool, size: CGFloat) -> some View {
+        if isCircle {
+            self.clipShape(Circle())
+                .overlay(Circle().stroke(Color.gray.opacity(0.15), lineWidth: 0.5))
+        } else {
+            self
+        }
+    }
+}
+
 // MARK: - Reusable Team Logo View
 struct TeamLogoView: View {
     let teamName: String
@@ -51,18 +101,8 @@ struct TeamLogoView: View {
     
     var body: some View {
         let urlStr = teamEmblemURL(for: teamName)
-        if !urlStr.isEmpty, let url = URL(string: urlStr) {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: size, height: size)
-                default:
-                    fallbackLogo
-                }
-            }
+        if !urlStr.isEmpty {
+            RemoteImageView(urlString: urlStr, size: size, fallback: AnyView(fallbackLogo), isCircle: false)
         } else {
             fallbackLogo
         }
@@ -90,23 +130,7 @@ struct PlayerAvatarView: View {
         let imgIndex = abs(playerName.hashValue) % 70 + 1
         let urlStr = "https://i.pravatar.cc/150?img=\(imgIndex)"
         
-        if let url = URL(string: urlStr) {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: size, height: size)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.gray.opacity(0.15), lineWidth: 0.5))
-                default:
-                    fallbackAvatar
-                }
-            }
-        } else {
-            fallbackAvatar
-        }
+        RemoteImageView(urlString: urlStr, size: size, fallback: AnyView(fallbackAvatar), isCircle: true)
     }
     
     private var fallbackAvatar: some View {
