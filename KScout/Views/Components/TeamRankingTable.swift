@@ -47,58 +47,53 @@ struct TeamRankingTable: View {
                     .padding(.horizontal, 4)
             }
             
-            VStack(spacing: 0) {
-                // 테이블 헤더
-                HStack(spacing: 0) {
-                    Text("순위")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.gray)
-                        .frame(width: 32, alignment: .center)
-                    
-                    Text("팀")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.gray)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.leading, 8)
-                    
+            ScrollView(.horizontal, showsIndicators: false) {
+                VStack(spacing: 0) {
+                    // 네이버 스포츠 스타일 테이블 헤더
                     HStack(spacing: 0) {
-                        Text("경")
-                            .frame(width: 24, alignment: .center)
-                        Text("승")
-                            .frame(width: 24, alignment: .center)
-                        Text("무")
-                            .frame(width: 24, alignment: .center)
-                        Text("패")
-                            .frame(width: 24, alignment: .center)
+                        Text("순위")
+                            .frame(width: 28, alignment: .center)
+                        Text("팀명")
+                            .frame(width: 105, alignment: .leading)
+                            .padding(.leading, 6)
                         Text("승점")
-                            .font(.system(size: 12, weight: .bold))
-                            .frame(width: 38, alignment: .trailing)
-                        
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(Color(red: 2/255, green: 114/255, blue: 76/255)) // 네이버 특유의 초록/파란 스탯 강조색
+                            .frame(width: 32, alignment: .center)
+                        Text("경기")
+                            .frame(width: 26, alignment: .center)
+                        Text("승")
+                            .frame(width: 22, alignment: .center)
+                        Text("무")
+                            .frame(width: 22, alignment: .center)
+                        Text("패")
+                            .frame(width: 22, alignment: .center)
+                        Text("득실")
+                            .frame(width: 28, alignment: .center)
                         Text("최근 5경기")
-                            .font(.system(size: 12, weight: .bold))
                             .frame(width: 95, alignment: .center)
                             .padding(.leading, 10)
                     }
-                    .font(.system(size: 12))
+                    .font(.system(size: 11, weight: .bold))
                     .foregroundColor(.gray)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(Color.white)
-                
-                Divider()
-                
-                // 팀 로우들
-                ForEach(teams) { team in
-                    teamRow(team)
-                    if team.id != teams.last?.id {
-                        Divider()
+                    .padding(.vertical, 10)
+                    .background(Color(UIColor.secondarySystemBackground).opacity(0.5))
+                    
+                    Divider()
+                    
+                    // 팀 로우 목록
+                    ForEach(teams) { team in
+                        teamRow(team)
+                        if team.id != teams.last?.id {
+                            Divider()
+                        }
                     }
                 }
+                .frame(width: 381) // 전체 컬럼 가로폭 고정으로 줄맞춤 보장
             }
             .background(Color.white)
-            .cornerRadius(16)
-            .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
         }
     }
     
@@ -106,58 +101,76 @@ struct TeamRankingTable: View {
     private func teamRow(_ team: Standing) -> some View {
         NavigationLink(destination: TeamDetailView(standing: team, season: season)) {
             HStack(spacing: 0) {
-                // 순위 숫자 (1,2,3위는 굵고 선명하게 강조)
+                // 1. 순위
                 Text("\(team.rank)")
-                    .font(.system(size: 14, weight: team.rank <= 3 ? .black : .medium))
+                    .font(.system(size: 13, weight: team.rank <= 3 ? .bold : .medium))
                     .foregroundColor(team.rank <= 3 ? Color.brandNavy : .gray)
-                    .frame(width: 32, alignment: .center)
+                    .frame(width: 28, alignment: .center)
                 
-                // 팀 로고 뱃지 및 팀명
-                HStack(spacing: 8) {
+                // 2. 팀명 (엠블럼 + 텍스트 + 이동 기호 '>')
+                HStack(spacing: 5) {
                     Circle()
                         .fill(logoColor(for: team.teamName))
-                        .frame(width: 24, height: 24)
+                        .frame(width: 20, height: 20)
                         .overlay(
                             Text(String(team.teamName.prefix(1)))
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 9, weight: .bold))
                                 .foregroundColor(.white)
                         )
                     
                     Text(team.teamName)
-                        .font(.system(size: 13, weight: team.rank <= 3 ? .bold : .semibold))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.primary)
                         .lineLimit(1)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 8)
-                
-                // 경기 통계 기록들 및 최근 5경기 뱃지
-                HStack(spacing: 0) {
-                    Text("\(team.played)")
-                        .foregroundColor(.gray)
-                        .frame(width: 24, alignment: .center)
-                    Text("\(team.won)")
-                        .foregroundColor(.gray)
-                        .frame(width: 24, alignment: .center)
-                    Text("\(team.draw)")
-                        .foregroundColor(.gray)
-                        .frame(width: 24, alignment: .center)
-                    Text("\(team.lost)")
-                        .foregroundColor(.gray)
-                        .frame(width: 24, alignment: .center)
-                    Text("\(team.points)")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(Color.brandNavy)
-                        .frame(width: 38, alignment: .trailing)
                     
-                    // 최근 5경기 승무패 뱃지
-                    recentFormView(form: team.form)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundColor(.gray.opacity(0.4))
                 }
-                .font(.system(size: 13, weight: .medium))
+                .frame(width: 105, alignment: .leading)
+                .padding(.leading, 6)
+                
+                // 3. 승점 (강조 색상 및 굵게 표시)
+                Text("\(team.points)")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(Color(red: 21/255, green: 112/255, blue: 183/255))
+                    .frame(width: 32, alignment: .center)
+                
+                // 4. 경기수
+                Text("\(team.played)")
+                    .font(.system(size: 13))
+                    .foregroundColor(.primary)
+                    .frame(width: 26, alignment: .center)
+                
+                // 5. 승
+                Text("\(team.won)")
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                    .frame(width: 22, alignment: .center)
+                
+                // 6. 무
+                Text("\(team.draw)")
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                    .frame(width: 22, alignment: .center)
+                
+                // 7. 패
+                Text("\(team.lost)")
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                    .frame(width: 22, alignment: .center)
+                
+                // 8. 득실차
+                Text("\(team.goalsDiff > 0 ? "+" : "")\(team.goalsDiff)")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(team.goalsDiff > 0 ? Color.red : (team.goalsDiff < 0 ? Color.blue : .primary))
+                    .frame(width: 28, alignment: .center)
+                
+                // 9. 최근 5경기 폼 뱃지
+                recentFormView(form: team.form)
             }
-            .padding(.horizontal, 12)
             .padding(.vertical, 12)
-            .background(team.rank <= 3 ? Color.brandNavy.opacity(0.02) : Color.clear)
+            .background(Color.white)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -199,29 +212,30 @@ struct TeamRankingTable: View {
         }
     }
     
+    // 네이버 스포츠 톤 매치 (승: 초록 계열 / 무: 회색 계열 / 패: 파란 계열)
     private func formTextColor(for char: Character) -> Color {
         switch char {
-        case "W", "w": return Color(red: 0.08, green: 0.55, blue: 0.35)
-        case "D", "d": return Color.gray
-        case "L", "l": return Color(red: 0.75, green: 0.15, blue: 0.15)
+        case "W", "w": return Color(red: 2/255, green: 114/255, blue: 76/255)
+        case "D", "d": return Color(red: 102/255, green: 102/255, blue: 102/255)
+        case "L", "l": return Color(red: 21/255, green: 112/255, blue: 183/255)
         default: return Color.gray
         }
     }
     
     private func formBackgroundColor(for char: Character) -> Color {
         switch char {
-        case "W", "w": return Color(red: 0.08, green: 0.55, blue: 0.35).opacity(0.1)
-        case "D", "d": return Color.gray.opacity(0.1)
-        case "L", "l": return Color(red: 0.75, green: 0.15, blue: 0.15).opacity(0.1)
+        case "W", "w": return Color(red: 224/255, green: 245/255, blue: 233/255)
+        case "D", "d": return Color(red: 242/255, green: 242/255, blue: 242/255)
+        case "L", "l": return Color(red: 230/255, green: 242/255, blue: 250/255)
         default: return Color.clear
         }
     }
     
     private func formBorderColor(for char: Character) -> Color {
         switch char {
-        case "W", "w": return Color(red: 0.08, green: 0.55, blue: 0.35).opacity(0.3)
-        case "D", "d": return Color.gray.opacity(0.3)
-        case "L", "l": return Color(red: 0.75, green: 0.15, blue: 0.15).opacity(0.3)
+        case "W", "w": return Color(red: 136/255, green: 218/255, blue: 181/255)
+        case "D", "d": return Color(red: 217/255, green: 217/255, blue: 217/255)
+        case "L", "l": return Color(red: 163/255, green: 204/255, blue: 235/255)
         default: return Color.clear
         }
     }
