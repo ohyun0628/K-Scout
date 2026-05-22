@@ -99,17 +99,21 @@ struct RankingView: View {
                     if mainTab == 1 {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
-                                statSelectorButton(title: "득점", type: "goals")
-                                statSelectorButton(title: "도움", type: "assists")
-                                statSelectorButton(title: "공격포인트", type: "points")
-                                statSelectorButton(title: "MOM", type: "mom")
-                                statSelectorButton(title: "평균 평점", type: "rating")
-                                statSelectorButton(title: "베스트 11", type: "best11")
-                                statSelectorButton(title: "90분당 득점", type: "goalsPer90")
-                                statSelectorButton(title: "90분당 공포", type: "pointsPer90")
-                                statSelectorButton(title: "슈팅", type: "shots")
-                                statSelectorButton(title: "유효 슈팅", type: "shotsOnTarget")
-                                statSelectorButton(title: "출전 시간", type: "minutes")
+                                Group {
+                                    statSelectorButton(title: "득점", type: "goals")
+                                    statSelectorButton(title: "도움", type: "assists")
+                                    statSelectorButton(title: "공격포인트", type: "points")
+                                    statSelectorButton(title: "MOM", type: "mom")
+                                    statSelectorButton(title: "평균 평점", type: "rating")
+                                    statSelectorButton(title: "베스트 11", type: "best11")
+                                    statSelectorButton(title: "90분당 득점", type: "goalsPer90")
+                                    statSelectorButton(title: "90분당 공포", type: "pointsPer90")
+                                }
+                                Group {
+                                    statSelectorButton(title: "슈팅", type: "shots")
+                                    statSelectorButton(title: "유효 슈팅", type: "shotsOnTarget")
+                                    statSelectorButton(title: "출전 시간", type: "minutes")
+                                }
                             }
                             .padding(.horizontal, 16)
                         }
