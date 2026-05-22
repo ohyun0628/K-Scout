@@ -23,20 +23,20 @@ struct PlayerRankingRow: View {
             }
             .frame(width: 36, alignment: .center)
             
+            // 실사 프로필 사진 추가
+            PlayerAvatarView(playerName: player.playerName, size: 36)
+                .padding(.leading, 8)
+            
             // 선수 프로필 (소속 팀 로고 배지 및 이름/팀명)
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
                     Text(player.playerName)
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.primary)
-                    
-                    // 포지션/기타 텍스트가 필요하면 추가 가능
                 }
                 
                 HStack(spacing: 6) {
-                    Circle()
-                        .fill(logoColor(for: player.teamName))
-                        .frame(width: 12, height: 12)
+                    TeamLogoView(teamName: player.teamName, size: 12)
                     
                     Text(player.teamName)
                         .font(.system(size: 12, weight: .semibold))

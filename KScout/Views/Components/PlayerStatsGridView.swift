@@ -30,7 +30,7 @@ struct PlayerStatsGridView: View {
                 Text("순위 / 선수")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundColor(.gray)
-                    .frame(width: 130, height: 44, alignment: .leading)
+                    .frame(width: 165, height: 44, alignment: .leading)
                     .padding(.leading, 12)
                     .background(Color(UIColor.secondarySystemBackground).opacity(0.4))
                 
@@ -57,6 +57,9 @@ struct PlayerStatsGridView: View {
                         }
                         .frame(width: 24)
                         
+                        // 실사 프로필 사진 추가
+                        PlayerAvatarView(playerName: player.playerName, size: 28)
+                        
                         // 이름 & 팀
                         VStack(alignment: .leading, spacing: 2) {
                             Text(player.playerName)
@@ -65,9 +68,7 @@ struct PlayerStatsGridView: View {
                                 .lineLimit(1)
                             
                             HStack(spacing: 4) {
-                                Circle()
-                                    .fill(logoColor(for: player.teamName))
-                                    .frame(width: 8, height: 8)
+                                TeamLogoView(teamName: player.teamName, size: 10)
                                 
                                 Text(player.teamName)
                                     .font(.system(size: 10, weight: .medium))
@@ -76,7 +77,7 @@ struct PlayerStatsGridView: View {
                             }
                         }
                     }
-                    .frame(width: 130, height: 52, alignment: .leading)
+                    .frame(width: 165, height: 52, alignment: .leading)
                     .padding(.leading, 12)
                     .background(Color.white)
                     .contentShape(Rectangle())
@@ -89,7 +90,7 @@ struct PlayerStatsGridView: View {
                     }
                 }
             }
-            .frame(width: 130)
+            .frame(width: 165)
             
             // 고정 컬럼과 스크롤 영역 구분선
             Rectangle()

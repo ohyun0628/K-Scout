@@ -127,31 +127,22 @@ struct PlayerStatsDetailSheet: View {
                                 }
                                 .frame(width: 28, alignment: .center)
                                 
-                                // 동그란 프로필 사진 이미지 플레이스홀더 (네이버 디자인 구현)
-                                ZStack {
-                                    Circle()
-                                        .fill(Color(UIColor.secondarySystemBackground))
-                                        .frame(width: 42, height: 42)
-                                    
-                                    Image(systemName: "person.fill")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(.gray.opacity(0.6))
-                                    
-                                    // 이름 첫글자 또는 아바타 느낌 살리기
-                                    Text(String(player.playerName.prefix(1)))
-                                        .font(.system(size: 14, weight: .bold))
-                                        .foregroundColor(Color.brandNavy.opacity(0.15))
-                                }
+                                // 동그란 실사 프로필 사진 이미지 뷰
+                                PlayerAvatarView(playerName: player.playerName, size: 42)
                                 
-                                // 선수명 및 소속팀
+                                // 선수명 및 소속팀 (팀 로고 배지 추가)
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(player.playerName)
                                         .font(.system(size: 15, weight: .bold))
                                         .foregroundColor(.primary)
                                     
-                                    Text(player.teamName)
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.gray)
+                                    HStack(spacing: 4) {
+                                        TeamLogoView(teamName: player.teamName, size: 12)
+                                        
+                                        Text(player.teamName)
+                                            .font(.system(size: 12, weight: .medium))
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                                 
                                 Spacer()

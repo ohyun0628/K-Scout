@@ -109,14 +109,7 @@ struct TeamRankingTable: View {
                 
                 // 2. 팀명 (엠블럼 + 텍스트 + 이동 기호 '>')
                 HStack(spacing: 5) {
-                    Circle()
-                        .fill(logoColor(for: team.teamName))
-                        .frame(width: 20, height: 20)
-                        .overlay(
-                            Text(String(team.teamName.prefix(1)))
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundColor(.white)
-                        )
+                    TeamLogoView(teamName: team.teamName, size: 20)
                     
                     Text(team.teamName)
                         .font(.system(size: 13, weight: .semibold))
