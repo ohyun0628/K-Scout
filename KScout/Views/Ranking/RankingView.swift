@@ -7,6 +7,7 @@ struct RankingView: View {
     @State private var mainTab = 0 // 0: 팀 순위, 1: 선수 순위
     @State private var selectedLeague = 1 // 1: K리그1, 2: K리그2
     @State private var selectedStatType = "goals" // "goals": 득점, "assists": 도움
+    @State private var showingPlayerStatsSheet = false
     
     var body: some View {
         NavigationView {
@@ -170,13 +171,27 @@ struct RankingView: View {
                                                 .font(.system(size: 11, weight: .medium))
                                                 .foregroundColor(.gray)
                                             Spacer()
-                                            Image(systemName: "chevron.left.and.right")
-                                                .font(.system(size: 10, weight: .bold))
-                                                .foregroundColor(.gray.opacity(0.8))
+                                            Button(action: {
+                                                showingPlayerStatsSheet = true
+                                            }) {
+                                                HStack(spacing: 2) {
+                                                    Text("상세 랭킹")
+                                                        .font(.system(size: 11, weight: .bold))
+                                                    Image(systemName: "chevron.right")
+                                                        .font(.system(size: 9, weight: .bold))
+                                                }
+                                                .foregroundColor(Color.brandNavy)
+                                            }
                                         }
                                         .padding(.horizontal, 4)
                                         
-                                        PlayerStatsGridView(rankings: rankings, selectedStatType: $selectedStatType)
+                                        PlayerStatsGridView(
+                                            rankings: rankings,
+                                            selectedStatType: $selectedStatType,
+                                            onRowTapped: {
+                                                showingPlayerStatsSheet = true
+                                            }
+                                        )
                                     }
                                     .padding(.horizontal, 16)
                                     .padding(.bottom, 16)
@@ -191,6 +206,13 @@ struct RankingView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
             viewModel.fetchAllData(season: viewModel.currentSeason)
+        }
+        .sheet(isPresented: $showingPlayerStatsSheet) {
+            PlayerStatsDetailSheet(
+                viewModel: viewModel,
+                selectedLeague: selectedLeague,
+                initialStatType: selectedStatType
+            )
         }
     }
     
