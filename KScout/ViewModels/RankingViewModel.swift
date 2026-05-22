@@ -91,22 +91,83 @@ class RankingViewModel: ObservableObject {
                         self.standings = self.standings.filter { $0.league != league } + self.getMockStandings(forLeague: league, season: season)
                     }
                 } else if let response = responses.first {
-                    let mappedStandings = response.league.standings.flatMap { $0 }.map { item in
-                        Standing(
-                            id: item.team.id,
-                            rank: item.rank,
-                            teamName: item.team.name,
-                            points: item.points,
-                            goalsDiff: item.goalsDiff,
-                            played: item.all.played,
-                            won: item.all.win,
-                            draw: item.all.draw,
-                            lost: item.all.lose,
-                            league: league
-                        )
+                    var mappedStandings: [Standing] = []
+                    
+                    if league == 1 && response.league.standings.count > 1 {
+                        // K리그1 스플릿 라운드: 2개의 그룹 (Championship, Relegation)
+                        for (arrayIndex, standingsArray) in response.league.standings.enumerated() {
+                            // 각 그룹 배열의 첫 번째 팀의 group 정보를 기준으로 판정하여 인덱스 순서가 바뀌어도 안전하도록 구현
+                            let isRelegation: Bool
+                            if let firstItem = standingsArray.first {
+                                let groupLower = (firstItem.group ?? "").lowercased()
+                                if groupLower.contains("relegation") {
+                                    isRelegation = true
+                                } else if groupLower.contains("championship") {
+                                    isRelegation = false
+                                } else {
+                                    isRelegation = (arrayIndex == 1) // 문자열에 힌트가 없을 시 기존 인덱스 룰(1이 B조) 적용
+                                }
+                            } else {
+                                isRelegation = (arrayIndex == 1)
+                            }
+                            
+                            for item in standingsArray {
+                                let groupName = isRelegation ? "Relegation Round" : "Championship Round"
+                                // Relegation Round (Group B) 팀들의 랭킹은 1~6에서 7~12로 변환
+                                let displayRank = isRelegation ? (item.rank <= 6 ? item.rank + 6 : item.rank) : item.rank
+                                
+                                mappedStandings.append(Standing(
+                                    id: item.team.id,
+                                    rank: displayRank,
+                                    teamName: KoreanTranslationService.translateTeam(item.team.name),
+                                    points: item.points,
+                                    goalsDiff: item.goalsDiff,
+                                    played: item.all.played,
+                                    won: item.all.win,
+                                    draw: item.all.draw,
+                                    lost: item.all.lose,
+                                    league: league,
+                                    group: groupName,
+                                    form: item.form
+                                ))
+                            }
+                        }
+                    } else {
+                        // K리그2 또는 K리그1 정규 시즌 (그룹이 1개이거나 별도의 스플릿 구분이 없는 경우)
+                        for standingsArray in response.league.standings {
+                            for item in standingsArray {
+                                var groupName: String? = nil
+                                var displayRank = item.rank
+                                let groupLower = (item.group ?? "").lowercased()
+                                
+                                if groupLower.contains("championship") {
+                                    groupName = "Championship Round"
+                                } else if groupLower.contains("relegation") {
+                                    groupName = "Relegation Round"
+                                    if displayRank <= 6 {
+                                        displayRank += 6
+                                    }
+                                }
+                                
+                                mappedStandings.append(Standing(
+                                    id: item.team.id,
+                                    rank: displayRank,
+                                    teamName: KoreanTranslationService.translateTeam(item.team.name),
+                                    points: item.points,
+                                    goalsDiff: item.goalsDiff,
+                                    played: item.all.played,
+                                    won: item.all.win,
+                                    draw: item.all.draw,
+                                    lost: item.all.lose,
+                                    league: league,
+                                    group: groupName,
+                                    form: item.form
+                                ))
+                            }
+                        }
                     }
                     
-                    // K리그 스플릿 라운드 특성상 정규 리그와 상/하위 스플릿 그룹이 중복 집계되어 동일 팀 ID가 여러 번 나타날 수 있으므로 ID 기준 중복 제거
+                    // ID 기준 중복 제거 (만약 동일 팀이 정규/스플릿 배열에 겹쳐있을 경우 첫 번째 것 유지)
                     var uniqueStandings: [Standing] = []
                     var seenIds = Set<Int>()
                     for standing in mappedStandings {
@@ -147,8 +208,8 @@ class RankingViewModel: ObservableObject {
                         return PlayerRanking(
                             id: UUID(),
                             rank: index + 1,
-                            playerName: item.player.name,
-                            teamName: item.statistics.first?.team.name ?? "알 수 없음",
+                            playerName: KoreanTranslationService.translatePlayer(item.player.name),
+                            teamName: KoreanTranslationService.translateTeam(item.statistics.first?.team.name ?? "알 수 없음"),
                             statCount: statCount,
                             played: item.statistics.first?.games.appearances ?? 0,
                             league: league,
@@ -175,86 +236,86 @@ class RankingViewModel: ObservableObject {
         if season >= 2026 {
             if league == 1 {
                 return [
-                    Standing(id: 101, rank: 1, teamName: "울산 HD FC", points: 35, goalsDiff: 14, played: 15, won: 11, draw: 2, lost: 2, league: 1),
-                    Standing(id: 102, rank: 2, teamName: "전북 현대", points: 32, goalsDiff: 11, played: 15, won: 10, draw: 2, lost: 3, league: 1),
-                    Standing(id: 103, rank: 3, teamName: "김천 상무", points: 29, goalsDiff: 8, played: 15, won: 9, draw: 2, lost: 4, league: 1),
-                    Standing(id: 104, rank: 4, teamName: "포항 스틸러스", points: 28, goalsDiff: 6, played: 15, won: 8, draw: 4, lost: 3, league: 1),
-                    Standing(id: 105, rank: 5, teamName: "FC 서울", points: 26, goalsDiff: 4, played: 15, won: 7, draw: 5, lost: 3, league: 1),
-                    Standing(id: 106, rank: 6, teamName: "강원 FC", points: 24, goalsDiff: 2, played: 15, won: 7, draw: 3, lost: 5, league: 1),
-                    Standing(id: 107, rank: 7, teamName: "대전 하나", points: 21, goalsDiff: 0, played: 15, won: 6, draw: 3, lost: 6, league: 1),
-                    Standing(id: 108, rank: 8, teamName: "광주 FC", points: 18, goalsDiff: -2, played: 15, won: 5, draw: 3, lost: 7, league: 1),
-                    Standing(id: 109, rank: 9, teamName: "FC 안양", points: 15, goalsDiff: -5, played: 15, won: 4, draw: 3, lost: 8, league: 1),
-                    Standing(id: 110, rank: 10, teamName: "인천 유나이티드", points: 14, goalsDiff: -6, played: 15, won: 3, draw: 5, lost: 7, league: 1),
-                    Standing(id: 111, rank: 11, teamName: "제주 유나이티드", points: 11, goalsDiff: -10, played: 15, won: 3, draw: 2, lost: 10, league: 1),
-                    Standing(id: 112, rank: 12, teamName: "부천 FC 1995", points: 9, goalsDiff: -12, played: 15, won: 2, draw: 3, lost: 10, league: 1)
+                    Standing(id: 101, rank: 1, teamName: "울산 HD FC", points: 35, goalsDiff: 14, played: 15, won: 11, draw: 2, lost: 2, league: 1, group: "Championship Round", form: "WWDLW"),
+                    Standing(id: 102, rank: 2, teamName: "전북 현대", points: 32, goalsDiff: 11, played: 15, won: 10, draw: 2, lost: 3, league: 1, group: "Championship Round", form: "WDWWL"),
+                    Standing(id: 103, rank: 3, teamName: "김천 상무", points: 29, goalsDiff: 8, played: 15, won: 9, draw: 2, lost: 4, league: 1, group: "Championship Round", form: "LWWWD"),
+                    Standing(id: 104, rank: 4, teamName: "포항 스틸러스", points: 28, goalsDiff: 6, played: 15, won: 8, draw: 4, lost: 3, league: 1, group: "Championship Round", form: "DLWDL"),
+                    Standing(id: 105, rank: 5, teamName: "FC 서울", points: 26, goalsDiff: 4, played: 15, won: 7, draw: 5, lost: 3, league: 1, group: "Championship Round", form: "DWLWW"),
+                    Standing(id: 106, rank: 6, teamName: "강원 FC", points: 24, goalsDiff: 2, played: 15, won: 7, draw: 3, lost: 5, league: 1, group: "Championship Round", form: "WLDLD"),
+                    Standing(id: 107, rank: 7, teamName: "대전 하나", points: 21, goalsDiff: 0, played: 15, won: 6, draw: 3, lost: 6, league: 1, group: "Relegation Round", form: "LLWWD"),
+                    Standing(id: 108, rank: 8, teamName: "광주 FC", points: 18, goalsDiff: -2, played: 15, won: 5, draw: 3, lost: 7, league: 1, group: "Relegation Round", form: "WLDLL"),
+                    Standing(id: 109, rank: 9, teamName: "FC 안양", points: 15, goalsDiff: -5, played: 15, won: 4, draw: 3, lost: 8, league: 1, group: "Relegation Round", form: "DLLDW"),
+                    Standing(id: 110, rank: 10, teamName: "인천 유나이티드", points: 14, goalsDiff: -6, played: 15, won: 3, draw: 5, lost: 7, league: 1, group: "Relegation Round", form: "LDWLL"),
+                    Standing(id: 111, rank: 11, teamName: "제주 유나이티드", points: 11, goalsDiff: -10, played: 15, won: 3, draw: 2, lost: 10, league: 1, group: "Relegation Round", form: "LLDLL"),
+                    Standing(id: 112, rank: 12, teamName: "부천 FC 1995", points: 9, goalsDiff: -12, played: 15, won: 2, draw: 3, lost: 10, league: 1, group: "Relegation Round", form: "DLLLD")
                 ]
             } else {
                 return [
-                    Standing(id: 201, rank: 1, teamName: "수원 삼성", points: 31, goalsDiff: 10, played: 15, won: 9, draw: 4, lost: 2, league: 2),
-                    Standing(id: 202, rank: 2, teamName: "서울 이랜드", points: 28, goalsDiff: 8, played: 15, won: 8, draw: 4, lost: 3, league: 2),
-                    Standing(id: 203, rank: 3, teamName: "부산 아이파크", points: 26, goalsDiff: 5, played: 15, won: 7, draw: 5, lost: 3, league: 2),
-                    Standing(id: 204, rank: 4, teamName: "전남 드래곤즈", points: 24, goalsDiff: 3, played: 15, won: 6, draw: 6, lost: 3, league: 2),
-                    Standing(id: 205, rank: 5, teamName: "성남 FC", points: 21, goalsDiff: 1, played: 15, won: 5, draw: 6, lost: 4, league: 2),
-                    Standing(id: 206, rank: 6, teamName: "수원 FC", points: 19, goalsDiff: -2, played: 15, won: 5, draw: 4, lost: 6, league: 2),
-                    Standing(id: 207, rank: 7, teamName: "대구 FC", points: 18, goalsDiff: -3, played: 15, won: 4, draw: 6, lost: 5, league: 2),
-                    Standing(id: 208, rank: 8, teamName: "충남아산 FC", points: 15, goalsDiff: -5, played: 15, won: 3, draw: 6, lost: 6, league: 2)
+                    Standing(id: 201, rank: 1, teamName: "수원 삼성", points: 31, goalsDiff: 10, played: 15, won: 9, draw: 4, lost: 2, league: 2, group: nil, form: "WDWWL"),
+                    Standing(id: 202, rank: 2, teamName: "서울 이랜드", points: 28, goalsDiff: 8, played: 15, won: 8, draw: 4, lost: 3, league: 2, group: nil, form: "DWLWW"),
+                    Standing(id: 203, rank: 3, teamName: "부산 아이파크", points: 26, goalsDiff: 5, played: 15, won: 7, draw: 5, lost: 3, league: 2, group: nil, form: "LWWWD"),
+                    Standing(id: 204, rank: 4, teamName: "전남 드래곤즈", points: 24, goalsDiff: 3, played: 15, won: 6, draw: 6, lost: 3, league: 2, group: nil, form: "DLWDL"),
+                    Standing(id: 205, rank: 5, teamName: "성남 FC", points: 21, goalsDiff: 1, played: 15, won: 5, draw: 6, lost: 4, league: 2, group: nil, form: "DWLWW"),
+                    Standing(id: 206, rank: 6, teamName: "수원 FC", points: 19, goalsDiff: -2, played: 15, won: 5, draw: 4, lost: 6, league: 2, group: nil, form: "WLDLD"),
+                    Standing(id: 207, rank: 7, teamName: "대구 FC", points: 18, goalsDiff: -3, played: 15, won: 4, draw: 6, lost: 5, league: 2, group: nil, form: "LLWWD"),
+                    Standing(id: 208, rank: 8, teamName: "충남아산 FC", points: 15, goalsDiff: -5, played: 15, won: 3, draw: 6, lost: 6, league: 2, group: nil, form: "WLDLL")
                 ]
             }
         } else if season == 2025 {
             if league == 1 {
                 return [
-                    Standing(id: 101, rank: 1, teamName: "전북 현대", points: 75, goalsDiff: 28, played: 38, won: 22, draw: 9, lost: 7, league: 1),
-                    Standing(id: 102, rank: 2, teamName: "김천 상무", points: 68, goalsDiff: 19, played: 38, won: 19, draw: 11, lost: 8, league: 1),
-                    Standing(id: 103, rank: 3, teamName: "대전 하나", points: 65, goalsDiff: 15, played: 38, won: 18, draw: 11, lost: 9, league: 1),
-                    Standing(id: 104, rank: 4, teamName: "포항 스틸러스", points: 62, goalsDiff: 12, played: 38, won: 17, draw: 11, lost: 10, league: 1),
-                    Standing(id: 105, rank: 5, teamName: "FC 서울", points: 59, goalsDiff: 8, played: 38, won: 16, draw: 11, lost: 11, league: 1),
-                    Standing(id: 106, rank: 6, teamName: "강원 FC", points: 55, goalsDiff: 3, played: 38, won: 15, draw: 10, lost: 13, league: 1),
-                    Standing(id: 107, rank: 7, teamName: "FC 안양", points: 51, goalsDiff: -4, played: 38, won: 14, draw: 9, lost: 15, league: 1),
-                    Standing(id: 108, rank: 8, teamName: "광주 FC", points: 48, goalsDiff: -6, played: 38, won: 13, draw: 9, lost: 16, league: 1),
-                    Standing(id: 109, rank: 9, teamName: "울산 HD FC", points: 46, goalsDiff: -8, played: 38, won: 12, draw: 10, lost: 16, league: 1),
-                    Standing(id: 110, rank: 10, teamName: "수원 FC", points: 42, goalsDiff: -12, played: 38, won: 11, draw: 9, lost: 18, league: 1),
-                    Standing(id: 111, rank: 11, teamName: "제주 유나이티드", points: 38, goalsDiff: -15, played: 38, won: 9, draw: 11, lost: 18, league: 1),
-                    Standing(id: 112, rank: 12, teamName: "대구 FC", points: 35, goalsDiff: -20, played: 38, won: 8, draw: 11, lost: 19, league: 1)
+                    Standing(id: 101, rank: 1, teamName: "전북 현대", points: 75, goalsDiff: 28, played: 38, won: 22, draw: 9, lost: 7, league: 1, group: "Championship Round", form: "WDWWW"),
+                    Standing(id: 102, rank: 2, teamName: "김천 상무", points: 68, goalsDiff: 19, played: 38, won: 19, draw: 11, lost: 8, league: 1, group: "Championship Round", form: "DWLWW"),
+                    Standing(id: 103, rank: 3, teamName: "대전 하나", points: 65, goalsDiff: 15, played: 38, won: 18, draw: 11, lost: 9, league: 1, group: "Championship Round", form: "LDWDW"),
+                    Standing(id: 104, rank: 4, teamName: "포항 스틸러스", points: 62, goalsDiff: 12, played: 38, won: 17, draw: 11, lost: 10, league: 1, group: "Championship Round", form: "WLDLD"),
+                    Standing(id: 105, rank: 5, teamName: "FC 서울", points: 59, goalsDiff: 8, played: 38, won: 16, draw: 11, lost: 11, league: 1, group: "Championship Round", form: "WWLDW"),
+                    Standing(id: 106, rank: 6, teamName: "강원 FC", points: 55, goalsDiff: 3, played: 38, won: 15, draw: 10, lost: 13, league: 1, group: "Championship Round", form: "WDDDL"),
+                    Standing(id: 107, rank: 7, teamName: "FC 안양", points: 51, goalsDiff: -4, played: 38, won: 14, draw: 9, lost: 15, league: 1, group: "Relegation Round", form: "WLWLL"),
+                    Standing(id: 108, rank: 8, teamName: "광주 FC", points: 48, goalsDiff: -6, played: 38, won: 13, draw: 9, lost: 16, league: 1, group: "Relegation Round", form: "DDWLW"),
+                    Standing(id: 109, rank: 9, teamName: "울산 HD FC", points: 46, goalsDiff: -8, played: 38, won: 12, draw: 10, lost: 16, league: 1, group: "Relegation Round", form: "LLDDW"),
+                    Standing(id: 110, rank: 10, teamName: "수원 FC", points: 42, goalsDiff: -12, played: 38, won: 11, draw: 9, lost: 18, league: 1, group: "Relegation Round", form: "WLLWL"),
+                    Standing(id: 111, rank: 11, teamName: "제주 유나이티드", points: 38, goalsDiff: -15, played: 38, won: 9, draw: 11, lost: 18, league: 1, group: "Relegation Round", form: "LDWLL"),
+                    Standing(id: 112, rank: 12, teamName: "대구 FC", points: 35, goalsDiff: -20, played: 38, won: 8, draw: 11, lost: 19, league: 1, group: "Relegation Round", form: "DLLLD")
                 ]
             } else {
                 return [
-                    Standing(id: 201, rank: 1, teamName: "인천 유나이티드", points: 69, goalsDiff: 18, played: 36, won: 20, draw: 9, lost: 7, league: 2),
-                    Standing(id: 202, rank: 2, teamName: "부천 FC 1995", points: 64, goalsDiff: 13, played: 36, won: 18, draw: 10, lost: 8, league: 2),
-                    Standing(id: 203, rank: 3, teamName: "수원 삼성", points: 61, goalsDiff: 10, played: 36, won: 17, draw: 10, lost: 9, league: 2),
-                    Standing(id: 204, rank: 4, teamName: "서울 이랜드", points: 58, goalsDiff: 7, played: 36, won: 16, draw: 10, lost: 10, league: 2),
-                    Standing(id: 205, rank: 5, teamName: "전남 드래곤즈", points: 53, goalsDiff: 2, played: 36, won: 14, draw: 11, lost: 11, league: 2),
-                    Standing(id: 206, rank: 6, teamName: "부산 아이파크", points: 50, goalsDiff: -1, played: 36, won: 13, draw: 11, lost: 12, league: 2),
-                    Standing(id: 207, rank: 7, teamName: "성남 FC", points: 45, goalsDiff: -5, played: 36, won: 11, draw: 12, lost: 13, league: 2),
-                    Standing(id: 208, rank: 8, teamName: "충남아산 FC", points: 42, goalsDiff: -8, played: 36, won: 10, draw: 12, lost: 14, league: 2)
+                    Standing(id: 201, rank: 1, teamName: "인천 유나이티드", points: 69, goalsDiff: 18, played: 36, won: 20, draw: 9, lost: 7, league: 2, group: nil, form: "WWWWL"),
+                    Standing(id: 202, rank: 2, teamName: "부천 FC 1995", points: 64, goalsDiff: 13, played: 36, won: 18, draw: 10, lost: 8, league: 2, group: nil, form: "WDLWD"),
+                    Standing(id: 203, rank: 3, teamName: "수원 삼성", points: 61, goalsDiff: 10, played: 36, won: 17, draw: 10, lost: 9, league: 2, group: nil, form: "LWWDL"),
+                    Standing(id: 204, rank: 4, teamName: "서울 이랜드", points: 58, goalsDiff: 7, played: 36, won: 16, draw: 10, lost: 10, league: 2, group: nil, form: "DWLLW"),
+                    Standing(id: 205, rank: 5, teamName: "전남 드래곤즈", points: 53, goalsDiff: 2, played: 36, won: 14, draw: 11, lost: 11, league: 2, group: nil, form: "LLWWD"),
+                    Standing(id: 206, rank: 6, teamName: "부산 아이파크", points: 50, goalsDiff: -1, played: 36, won: 13, draw: 11, lost: 12, league: 2, group: nil, form: "WLDDL"),
+                    Standing(id: 207, rank: 7, teamName: "성남 FC", points: 45, goalsDiff: -5, played: 36, won: 11, draw: 12, lost: 13, league: 2, group: nil, form: "LDWDL"),
+                    Standing(id: 208, rank: 8, teamName: "충남아산 FC", points: 42, goalsDiff: -8, played: 36, won: 10, draw: 12, lost: 14, league: 2, group: nil, form: "DLLWW")
                 ]
             }
         } else {
             // 2024년 및 이전 디폴트 데이터
             if league == 1 {
                 return [
-                    Standing(id: 101, rank: 1, teamName: "울산 HD FC", points: 33, goalsDiff: 15, played: 15, won: 10, draw: 3, lost: 2, league: 1),
-                    Standing(id: 102, rank: 2, teamName: "전북 현대", points: 31, goalsDiff: 12, played: 15, won: 9, draw: 4, lost: 2, league: 1),
-                    Standing(id: 103, rank: 3, teamName: "포항 스틸러스", points: 29, goalsDiff: 8, played: 15, won: 8, draw: 5, lost: 2, league: 1),
-                    Standing(id: 104, rank: 4, teamName: "수원 FC", points: 25, goalsDiff: 2, played: 15, won: 7, draw: 4, lost: 4, league: 1),
-                    Standing(id: 105, rank: 5, teamName: "서울 FC", points: 24, goalsDiff: 3, played: 15, won: 6, draw: 6, lost: 3, league: 1),
-                    Standing(id: 106, rank: 6, teamName: "대전 하나", points: 20, goalsDiff: -1, played: 15, won: 5, draw: 5, lost: 5, league: 1),
-                    Standing(id: 107, rank: 7, teamName: "강원 FC", points: 16, goalsDiff: -6, played: 15, won: 4, draw: 4, lost: 7, league: 1),
-                    Standing(id: 108, rank: 8, teamName: "광주 FC", points: 12, goalsDiff: -10, played: 15, won: 3, draw: 3, lost: 9, league: 1),
-                    Standing(id: 109, rank: 9, teamName: "대구 FC", points: 11, goalsDiff: -8, played: 15, won: 2, draw: 5, lost: 8, league: 1),
-                    Standing(id: 110, rank: 10, teamName: "인천 유나이티드", points: 10, goalsDiff: -11, played: 15, won: 2, draw: 4, lost: 9, league: 1),
-                    Standing(id: 111, rank: 11, teamName: "제주 유나이티드", points: 9, goalsDiff: -12, played: 15, won: 2, draw: 3, lost: 10, league: 1),
-                    Standing(id: 112, rank: 12, teamName: "김천 상무", points: 9, goalsDiff: -12, played: 15, won: 1, draw: 6, lost: 8, league: 1)
+                    Standing(id: 101, rank: 1, teamName: "울산 HD FC", points: 33, goalsDiff: 15, played: 15, won: 10, draw: 3, lost: 2, league: 1, group: "Championship Round", form: "WWDLW"),
+                    Standing(id: 102, rank: 2, teamName: "전북 현대", points: 31, goalsDiff: 12, played: 15, won: 9, draw: 4, lost: 2, league: 1, group: "Championship Round", form: "WDWWL"),
+                    Standing(id: 103, rank: 3, teamName: "포항 스틸러스", points: 29, goalsDiff: 8, played: 15, won: 8, draw: 5, lost: 2, league: 1, group: "Championship Round", form: "LWWWD"),
+                    Standing(id: 104, rank: 4, teamName: "수원 FC", points: 25, goalsDiff: 2, played: 15, won: 7, draw: 4, lost: 4, league: 1, group: "Championship Round", form: "DLWDL"),
+                    Standing(id: 105, rank: 5, teamName: "서울 FC", points: 24, goalsDiff: 3, played: 15, won: 6, draw: 6, lost: 3, league: 1, group: "Championship Round", form: "DWLWW"),
+                    Standing(id: 106, rank: 6, teamName: "대전 하나", points: 20, goalsDiff: -1, played: 15, won: 5, draw: 5, lost: 5, league: 1, group: "Championship Round", form: "WLDLD"),
+                    Standing(id: 107, rank: 7, teamName: "강원 FC", points: 16, goalsDiff: -6, played: 15, won: 4, draw: 4, lost: 7, league: 1, group: "Relegation Round", form: "LLWWD"),
+                    Standing(id: 108, rank: 8, teamName: "광주 FC", points: 12, goalsDiff: -10, played: 15, won: 3, draw: 3, lost: 9, league: 1, group: "Relegation Round", form: "WLDLL"),
+                    Standing(id: 109, rank: 9, teamName: "대구 FC", points: 11, goalsDiff: -8, played: 15, won: 2, draw: 5, lost: 8, league: 1, group: "Relegation Round", form: "DLLDW"),
+                    Standing(id: 110, rank: 10, teamName: "인천 유나이티드", points: 10, goalsDiff: -11, played: 15, won: 2, draw: 4, lost: 9, league: 1, group: "Relegation Round", form: "LDWLL"),
+                    Standing(id: 111, rank: 11, teamName: "제주 유나이티드", points: 9, goalsDiff: -12, played: 15, won: 2, draw: 3, lost: 10, league: 1, group: "Relegation Round", form: "LLDLL"),
+                    Standing(id: 112, rank: 12, teamName: "김천 상무", points: 9, goalsDiff: -12, played: 15, won: 1, draw: 6, lost: 8, league: 1, group: "Relegation Round", form: "DLLLD")
                 ]
             } else {
                 return [
-                    Standing(id: 201, rank: 1, teamName: "부산 아이파크", points: 31, goalsDiff: 10, played: 15, won: 9, draw: 4, lost: 2, league: 2),
-                    Standing(id: 202, rank: 2, teamName: "수원 삼성", points: 29, goalsDiff: 8, played: 15, won: 8, draw: 5, lost: 2, league: 2),
-                    Standing(id: 203, rank: 3, teamName: "서울 이랜드", points: 26, goalsDiff: 5, played: 15, won: 7, draw: 5, lost: 3, league: 2),
-                    Standing(id: 204, rank: 4, teamName: "전남 드래곤즈", points: 24, goalsDiff: 3, played: 15, won: 6, draw: 6, lost: 3, league: 2),
-                    Standing(id: 205, rank: 5, teamName: "성남 FC", points: 20, goalsDiff: 0, played: 15, won: 5, draw: 5, lost: 5, league: 2),
-                    Standing(id: 206, rank: 6, teamName: "FC 안양", points: 18, goalsDiff: -2, played: 15, won: 4, draw: 6, lost: 5, league: 2),
-                    Standing(id: 207, rank: 7, teamName: "부천 FC 1995", points: 16, goalsDiff: -3, played: 15, won: 3, draw: 7, lost: 5, league: 2),
-                    Standing(id: 208, rank: 8, teamName: "충남아산 FC", points: 14, goalsDiff: -5, played: 15, won: 3, draw: 5, lost: 7, league: 2)
+                    Standing(id: 201, rank: 1, teamName: "부산 아이파크", points: 31, goalsDiff: 10, played: 15, won: 9, draw: 4, lost: 2, league: 2, group: nil, form: "WDWWL"),
+                    Standing(id: 202, rank: 2, teamName: "수원 삼성", points: 29, goalsDiff: 8, played: 15, won: 8, draw: 5, lost: 2, league: 2, group: nil, form: "DWLWW"),
+                    Standing(id: 203, rank: 3, teamName: "서울 이랜드", points: 26, goalsDiff: 5, played: 15, won: 7, draw: 5, lost: 3, league: 2, group: nil, form: "LWWWD"),
+                    Standing(id: 204, rank: 4, teamName: "전남 드래곤즈", points: 24, goalsDiff: 3, played: 15, won: 6, draw: 6, lost: 3, league: 2, group: nil, form: "DLWDL"),
+                    Standing(id: 205, rank: 5, teamName: "성남 FC", points: 20, goalsDiff: 0, played: 15, won: 5, draw: 5, lost: 5, league: 2, group: nil, form: "DWLWW"),
+                    Standing(id: 206, rank: 6, teamName: "FC 안양", points: 18, goalsDiff: -2, played: 15, won: 4, draw: 6, lost: 5, league: 2, group: nil, form: "WLDLD"),
+                    Standing(id: 207, rank: 7, teamName: "부천 FC 1995", points: 16, goalsDiff: -3, played: 15, won: 3, draw: 7, lost: 5, league: 2, group: nil, form: "LLWWD"),
+                    Standing(id: 208, rank: 8, teamName: "충남아산 FC", points: 14, goalsDiff: -5, played: 15, won: 3, draw: 5, lost: 7, league: 2, group: nil, form: "WLDLL")
                 ]
             }
         }
