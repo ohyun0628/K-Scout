@@ -3,43 +3,43 @@ import SwiftUI
 // MARK: - K-League Team Emblem URL Resolver
 public func teamEmblemURL(for teamName: String) -> String {
     if teamName.contains("울산") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/7/75/Ulsan_HD_FC_crest.svg/200px-Ulsan_HD_FC_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/982.png"
     } else if teamName.contains("전북") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/a/ab/Jeonbuk_Hyundai_Motors_FC_crest.svg/200px-Jeonbuk_Hyundai_Motors_FC_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/983.png"
     } else if teamName.contains("포항") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/5/52/Pohang_Steelers_crest.svg/200px-Pohang_Steelers_crest.svg.png"
-    } else if teamName.contains("서울") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/1/15/FC_Seoul_Crest.svg/200px-FC_Seoul_Crest.svg.png"
-    } else if teamName.contains("강원") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/1/17/Gangwon_FC_crest.svg/200px-Gangwon_FC_crest.svg.png"
-    } else if teamName.contains("대구") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/a/a2/Daegu_FC_crest.svg/200px-Daegu_FC_crest.svg.png"
-    } else if teamName.contains("인천") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/6/6f/Incheon_United_FC_crest.svg/200px-Incheon_United_FC_crest.svg.png"
-    } else if teamName.contains("제주") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/6/61/Jeju_United_FC_crest.svg/200px-Jeju_United_FC_crest.svg.png"
-    } else if teamName.contains("광주") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/4/4b/Gwangju_FC_crest.svg/200px-Gwangju_FC_crest.svg.png"
-    } else if teamName.contains("대전") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/d/d4/Daejeon_Hana_Citizen_crest.svg/200px-Daejeon_Hana_Citizen_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/984.png"
     } else if teamName.contains("수원 FC") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/5/5f/Suwon_FC_crest.svg/200px-Suwon_FC_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/2032.png"
+    } else if teamName.contains("수원 삼성") || teamName.contains("수원블루윙즈") {
+        return "https://media.api-sports.io/football/teams/986.png"
+    } else if teamName.contains("서울") {
+        return "https://media.api-sports.io/football/teams/985.png"
+    } else if teamName.contains("대전") {
+        return "https://media.api-sports.io/football/teams/994.png"
+    } else if teamName.contains("강원") {
+        return "https://media.api-sports.io/football/teams/989.png"
+    } else if teamName.contains("광주") {
+        return "https://media.api-sports.io/football/teams/993.png"
+    } else if teamName.contains("대구") {
+        return "https://media.api-sports.io/football/teams/991.png"
+    } else if teamName.contains("인천") {
+        return "https://media.api-sports.io/football/teams/992.png"
+    } else if teamName.contains("제주") {
+        return "https://media.api-sports.io/football/teams/990.png"
     } else if teamName.contains("김천") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/4/49/Gimcheon_Sangmu_FC_crest.svg/200px-Gimcheon_Sangmu_FC_crest.svg.png"
-    } else if teamName.contains("수원 삼성") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/d/da/Suwon_Samsung_Bluewings_Crest.svg/200px-Suwon_Samsung_Bluewings_Crest.svg.png"
+        return "https://media.api-sports.io/football/teams/2938.png"
     } else if teamName.contains("부산") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/d/df/Busan_IPark_crest.svg/200px-Busan_IPark_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/2030.png"
     } else if teamName.contains("전남") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/7/7b/Jeonnam_Dragons_crest.svg/200px-Jeonnam_Dragons_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/2031.png"
     } else if teamName.contains("성남") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/4/47/Seongnam_FC_crest.svg/200px-Seongnam_FC_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/987.png"
     } else if teamName.contains("안양") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/1/14/FC_Anyang_crest.svg/200px-FC_Anyang_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/2033.png"
     } else if teamName.contains("부천") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/8/87/Bucheon_FC_1995_crest.svg/200px-Bucheon_FC_1995_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/2034.png"
     } else if teamName.contains("아산") {
-        return "https://upload.wikimedia.org/wikipedia/ko/thumb/5/59/Chungnam_Asan_FC_crest.svg/200px-Chungnam_Asan_FC_crest.svg.png"
+        return "https://media.api-sports.io/football/teams/3222.png"
     }
     return ""
 }
@@ -72,7 +72,14 @@ struct RemoteImageView: View {
     
     private func loadImage() {
         guard let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, _, _ in
+        var request = URLRequest(url: url)
+        request.setValue("Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148", forHTTPHeaderField: "User-Agent")
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                print("Error loading remote image: \(error.localizedDescription)")
+                return
+            }
             if let data = data, let loadedImage = UIImage(data: data) {
                 DispatchQueue.main.async {
                     self.uiImage = loadedImage
