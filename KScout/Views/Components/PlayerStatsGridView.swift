@@ -136,6 +136,7 @@ struct PlayerStatsGridView: View {
                                     .foregroundColor(selectedStatType == col.type ? Color.brandNavy : .primary)
                                     .frame(width: col.width, height: 52, alignment: .center)
                                     .background(selectedStatType == col.type ? Color.brandNavy.opacity(0.03) : Color.clear)
+                            }
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
