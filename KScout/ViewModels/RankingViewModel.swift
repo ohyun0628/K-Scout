@@ -17,7 +17,72 @@ class RankingViewModel: ObservableObject {
     }
     
     func filteredPlayerRankings(forLeague league: Int, type: String) -> [PlayerRanking] {
-        return playerRankings.filter { $0.league == league && $0.type == type }.sorted { $0.rank < $1.rank }
+        // 1. 해당 리그의 선수들만 필터링
+        let leaguePlayers = playerRankings.filter { $0.league == league }
+        
+        // 2. 선수 이름 기준 중복 제거 (득점/도움/기타 리스트에 동일 인물이 겹칠 수 있으므로)
+        var uniquePlayers: [PlayerRanking] = []
+        var seenNames = Set<String>()
+        for p in leaguePlayers {
+            if !seenNames.contains(p.playerName) {
+                seenNames.insert(p.playerName)
+                uniquePlayers.append(p)
+            }
+        }
+        
+        // 3. 선택된 성적 타입별 내림차순 정렬
+        let sorted: [PlayerRanking]
+        switch type {
+        case "goals":
+            sorted = uniquePlayers.sorted { $0.goals > $1.goals }
+        case "assists":
+            sorted = uniquePlayers.sorted { $0.assists > $1.assists }
+        case "points":
+            sorted = uniquePlayers.sorted { $0.attackPoints > $1.attackPoints }
+        case "mom":
+            sorted = uniquePlayers.sorted { $0.momCount > $1.momCount }
+        case "rating":
+            sorted = uniquePlayers.sorted { $0.avgRating > $1.avgRating }
+        case "best11":
+            sorted = uniquePlayers.sorted { $0.best11Count > $1.best11Count }
+        case "goalsPer90":
+            sorted = uniquePlayers.sorted { $0.goalsPer90 > $1.goalsPer90 }
+        case "pointsPer90":
+            sorted = uniquePlayers.sorted { $0.pointsPer90 > $1.pointsPer90 }
+        case "shots":
+            sorted = uniquePlayers.sorted { $0.shots > $1.shots }
+        case "shotsOnTarget":
+            sorted = uniquePlayers.sorted { $0.shotsOnTarget > $1.shotsOnTarget }
+        case "minutes":
+            sorted = uniquePlayers.sorted { $0.playedMinutes > $1.playedMinutes }
+        default:
+            sorted = uniquePlayers.sorted { $0.statCount > $1.statCount }
+        }
+        
+        // 4. 정렬된 순서대로 새롭게 rank 값을 1위부터 순서대로 다시 매겨서 리턴
+        return sorted.enumerated().map { (index, player) in
+            PlayerRanking(
+                id: player.id,
+                rank: index + 1,
+                playerName: player.playerName,
+                teamName: player.teamName,
+                statCount: player.statCount,
+                played: player.played,
+                league: player.league,
+                type: type, // 현재 카테고리 정보 전달
+                goals: player.goals,
+                assists: player.assists,
+                attackPoints: player.attackPoints,
+                momCount: player.momCount,
+                avgRating: player.avgRating,
+                best11Count: player.best11Count,
+                goalsPer90: player.goalsPer90,
+                pointsPer90: player.pointsPer90,
+                shots: player.shots,
+                shotsOnTarget: player.shotsOnTarget,
+                playedMinutes: player.playedMinutes
+            )
+        }
     }
     
     func fetchAllData(season: Int) {

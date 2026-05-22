@@ -52,10 +52,10 @@ struct PlayerRankingRow: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.gray.opacity(0.8))
                 
-                Text(statString(for: player.statCount, type: player.type))
-                    .font(.system(size: 17, weight: .bold))
+                Text(statString(for: player))
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundColor(Color.brandNavy)
-                    .frame(width: 55, alignment: .trailing)
+                    .frame(width: 75, alignment: .trailing)
             }
         }
         .padding(.horizontal, 16)
@@ -63,11 +63,32 @@ struct PlayerRankingRow: View {
         .background(Color.white)
     }
     
-    private func statString(for count: Int, type: String) -> String {
-        if type == "goals" {
-            return "\(count)골"
-        } else {
-            return "\(count)도움"
+    private func statString(for player: PlayerRanking) -> String {
+        switch player.type {
+        case "goals":
+            return "\(player.goals)골"
+        case "assists":
+            return "\(player.assists)도움"
+        case "points":
+            return "\(player.attackPoints)P"
+        case "mom":
+            return "\(player.momCount)회"
+        case "rating":
+            return String(format: "%.2f점", player.avgRating)
+        case "best11":
+            return "\(player.best11Count)회"
+        case "goalsPer90":
+            return String(format: "%.2f골", player.goalsPer90)
+        case "pointsPer90":
+            return String(format: "%.2fP", player.pointsPer90)
+        case "shots":
+            return "\(player.shots)슈팅"
+        case "shotsOnTarget":
+            return "\(player.shotsOnTarget)유효"
+        case "minutes":
+            return "\(player.playedMinutes)분"
+        default:
+            return "\(player.statCount)"
         }
     }
     

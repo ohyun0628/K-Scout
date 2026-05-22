@@ -95,40 +95,24 @@ struct RankingView: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 12)
                     
-                    // 4. 선수 순위일 때만 나타나는 득점 / 도움 서브 토글 바
+                    // 4. 선수 순위일 때만 나타나는 다기능 서브 토글 바 (네이버 스포츠 스타일 가로 스크롤)
                     if mainTab == 1 {
-                        HStack(spacing: 12) {
-                            Button(action: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                    selectedStatType = "goals"
-                                }
-                            }) {
-                                Text("득점 순위")
-                                    .font(.system(size: 13, weight: .bold))
-                                    .foregroundColor(selectedStatType == "goals" ? .white : .gray)
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 14)
-                                    .background(selectedStatType == "goals" ? Color.brandNavy : Color(UIColor.secondarySystemBackground))
-                                    .cornerRadius(8)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                statSelectorButton(title: "득점", type: "goals")
+                                statSelectorButton(title: "도움", type: "assists")
+                                statSelectorButton(title: "공격포인트", type: "points")
+                                statSelectorButton(title: "MOM", type: "mom")
+                                statSelectorButton(title: "평균 평점", type: "rating")
+                                statSelectorButton(title: "베스트 11", type: "best11")
+                                statSelectorButton(title: "90분당 득점", type: "goalsPer90")
+                                statSelectorButton(title: "90분당 공포", type: "pointsPer90")
+                                statSelectorButton(title: "슈팅", type: "shots")
+                                statSelectorButton(title: "유효 슈팅", type: "shotsOnTarget")
+                                statSelectorButton(title: "출전 시간", type: "minutes")
                             }
-                            
-                            Button(action: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                    selectedStatType = "assists"
-                                }
-                            }) {
-                                Text("도움 순위")
-                                    .font(.system(size: 13, weight: .bold))
-                                    .foregroundColor(selectedStatType == "assists" ? .white : .gray)
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 14)
-                                    .background(selectedStatType == "assists" ? Color.brandNavy : Color(UIColor.secondarySystemBackground))
-                                    .cornerRadius(8)
-                            }
-                            
-                            Spacer()
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.horizontal, 16)
                         .padding(.bottom, 12)
                     }
                     
@@ -201,6 +185,23 @@ struct RankingView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
             viewModel.fetchAllData(season: viewModel.currentSeason)
+        }
+    }
+    
+    // MARK: - Helper Views
+    private func statSelectorButton(title: String, type: String) -> some View {
+        Button(action: {
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                selectedStatType = type
+            }
+        }) {
+            Text(title)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(selectedStatType == type ? .white : .gray)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 14)
+                .background(selectedStatType == type ? Color.brandNavy : Color(UIColor.secondarySystemBackground))
+                .cornerRadius(8)
         }
     }
 }
