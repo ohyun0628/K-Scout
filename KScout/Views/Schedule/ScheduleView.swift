@@ -71,6 +71,24 @@ struct ScheduleView: View {
                                 .padding(.top, 60)
                             Spacer()
                         }
+                    } else if viewModel.selectedSeason == 2026 {
+                        VStack(spacing: 20) {
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.system(size: 60))
+                                .foregroundColor(.gray.opacity(0.8))
+                                .padding(.top, 60)
+                            
+                            Text("2026 시즌 일정 준비 중")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(Color.brandNavy)
+                            
+                            Text("2026 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
+                                .font(.system(size: 14))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .lineSpacing(5)
+                        }
+                        .frame(maxWidth: .infinity)
                     } else if filteredMatches.isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "sportscourt")
