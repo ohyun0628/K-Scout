@@ -2,46 +2,61 @@ import SwiftUI
 
 // MARK: - K-League Team Emblem URL Resolver
 public func teamEmblemURL(for teamName: String) -> String {
+    let teamId: String
     if teamName.contains("울산") {
-        return "https://media.api-sports.io/football/teams/982.png"
-    } else if teamName.contains("전북") {
-        return "https://media.api-sports.io/football/teams/983.png"
-    } else if teamName.contains("포항") {
-        return "https://media.api-sports.io/football/teams/984.png"
-    } else if teamName.contains("수원 FC") {
-        return "https://media.api-sports.io/football/teams/2032.png"
+        teamId = "K01"
     } else if teamName.contains("수원 삼성") || teamName.contains("수원블루윙즈") {
-        return "https://media.api-sports.io/football/teams/986.png"
-    } else if teamName.contains("서울") {
-        return "https://media.api-sports.io/football/teams/985.png"
-    } else if teamName.contains("대전") {
-        return "https://media.api-sports.io/football/teams/994.png"
-    } else if teamName.contains("강원") {
-        return "https://media.api-sports.io/football/teams/989.png"
-    } else if teamName.contains("광주") {
-        return "https://media.api-sports.io/football/teams/993.png"
-    } else if teamName.contains("대구") {
-        return "https://media.api-sports.io/football/teams/991.png"
-    } else if teamName.contains("인천") {
-        return "https://media.api-sports.io/football/teams/992.png"
+        teamId = "K02"
+    } else if teamName.contains("포항") {
+        teamId = "K03"
     } else if teamName.contains("제주") {
-        return "https://media.api-sports.io/football/teams/990.png"
-    } else if teamName.contains("김천") {
-        return "https://media.api-sports.io/football/teams/2938.png"
+        teamId = "K04"
+    } else if teamName.contains("전북") {
+        teamId = "K05"
     } else if teamName.contains("부산") {
-        return "https://media.api-sports.io/football/teams/2030.png"
+        teamId = "K06"
     } else if teamName.contains("전남") {
-        return "https://media.api-sports.io/football/teams/2031.png"
+        teamId = "K07"
     } else if teamName.contains("성남") {
-        return "https://media.api-sports.io/football/teams/987.png"
-    } else if teamName.contains("안양") {
-        return "https://media.api-sports.io/football/teams/2033.png"
+        teamId = "K08"
+    } else if teamName.contains("서울 FC") || teamName.contains("FC 서울") || (teamName == "서울" && !teamName.contains("이랜드")) {
+        teamId = "K09"
+    } else if teamName.contains("대전") {
+        teamId = "K10"
+    } else if teamName.contains("대구") {
+        teamId = "K17"
+    } else if teamName.contains("인천") {
+        teamId = "K18"
+    } else if teamName.contains("경남") {
+        teamId = "K20"
+    } else if teamName.contains("강원") {
+        teamId = "K21"
+    } else if teamName.contains("광주") {
+        teamId = "K22"
     } else if teamName.contains("부천") {
-        return "https://media.api-sports.io/football/teams/2034.png"
+        teamId = "K26"
+    } else if teamName.contains("안양") {
+        teamId = "K27"
+    } else if teamName.contains("수원 FC") {
+        teamId = "K29"
+    } else if teamName.contains("이랜드") {
+        teamId = "K31"
+    } else if teamName.contains("안산") {
+        teamId = "K32"
     } else if teamName.contains("아산") {
-        return "https://media.api-sports.io/football/teams/3222.png"
+        teamId = "K34"
+    } else if teamName.contains("김천") {
+        teamId = "K35"
+    } else if teamName.contains("김포") {
+        teamId = "K36"
+    } else if teamName.contains("청주") {
+        teamId = "K37"
+    } else if teamName.contains("천안") {
+        teamId = "K38"
+    } else {
+        return ""
     }
-    return ""
+    return "https://www.kleague.com/assets/images/emblem/emblem_\(teamId).png"
 }
 
 // MARK: - Reusable Remote Image View (for compatibility with older iOS SDKs without AsyncImage)
