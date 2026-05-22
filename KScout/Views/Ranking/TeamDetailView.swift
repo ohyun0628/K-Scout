@@ -11,39 +11,30 @@ struct TeamDetailView: View {
     
     var body: some View {
         ZStack {
-            // 다크 모드 프리미엄 그라데이션 백그라운드
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 10/255, green: 18/255, blue: 36/255),
-                    Color(red: 20/255, green: 38/255, blue: 74/255)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .edgesIgnoringSafeArea(.all)
+            // 네이버 스포츠 스타일의 깨끗한 그레이톤 백그라운드
+            Color(UIColor.systemGroupedBackground)
+                .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                // 1. 커스텀 프리미엄 내비게이션 바
+                // 1. 커스텀 라이트 테마 내비게이션 바
                 customNavBar
                 
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        // 2. 글래스모피즘 헤더 카드 (팀 정보)
+                    VStack(spacing: 16) {
+                        // 2. 프리미엄 화이트 프로필 카드 (팀 정보)
                         profileHeaderCard
                         
-                        // 3. 주요 시즌 성적 스탯 그리드
+                        // 3. 주요 성적 스탯 그리드
                         statsGrid
                         
-                        // 4. 슬라이더 타입 세그먼트 컨트롤 탭
+                        // 4. 네이버 스포츠 스타일 탭 셀렉터
                         tabSelector
                         
-                        // 5. 선택된 탭 콘텐츠 영역
+                        // 5. 콘텐츠 영역
                         if viewModel.isLoading {
                             VStack {
                                 Spacer()
                                 ProgressView("기록을 불러오는 중...")
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .foregroundColor(.white.opacity(0.7))
                                 Spacer()
                             }
                             .frame(height: 200)
@@ -55,7 +46,7 @@ struct TeamDetailView: View {
                             }
                         }
                     }
-                    .padding(.bottom, 24)
+                    .padding(.vertical, 16)
                 }
             }
         }
@@ -67,7 +58,7 @@ struct TeamDetailView: View {
     
     // MARK: - Subviews
     
-    // 1. 내비게이션 바
+    // 1. 라이트 테마 내비게이션 바
     private var customNavBar: some View {
         HStack {
             Button(action: {
@@ -77,9 +68,9 @@ struct TeamDetailView: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 16, weight: .bold))
                     Text("순위표")
-                        .font(.system(size: 15, weight: .medium))
+                        .font(.system(size: 15, weight: .semibold))
                 }
-                .foregroundColor(.white)
+                .foregroundColor(Color.brandNavy)
                 .padding(.vertical, 8)
             }
             
@@ -87,93 +78,79 @@ struct TeamDetailView: View {
             
             Text("\(String(viewModel.season)) 시즌")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundColor(Color.brandNavy)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .background(Color.white.opacity(0.12))
+                .background(Color.brandNavy.opacity(0.08))
                 .cornerRadius(20)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        .background(Color.white)
+        .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
     }
     
-    // 2. 프로필 헤더 카드
+    // 2. 화이트 프로필 헤더 카드
     private var profileHeaderCard: some View {
-        HStack(spacing: 20) {
-            // 골드 그라데이션 서클 테두리가 들어간 팀 엠블럼 프레임
+        HStack(spacing: 16) {
+            // 팀 서클 엠블럼
             ZStack {
                 Circle()
-                    .stroke(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color(red: 255/255, green: 215/255, blue: 0/255),
-                                Color(red: 212/255, green: 175/255, blue: 55/255).opacity(0.1)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 3
-                    )
-                    .frame(width: 80, height: 80)
-                    .shadow(color: Color(red: 255/255, green: 215/255, blue: 0/255).opacity(0.2), radius: 6)
+                    .fill(logoColor(for: viewModel.standing.teamName).opacity(0.1))
+                    .frame(width: 74, height: 74)
                 
                 Circle()
-                    .fill(Color.white.opacity(0.06))
+                    .stroke(logoColor(for: viewModel.standing.teamName).opacity(0.3), lineWidth: 2)
                     .frame(width: 74, height: 74)
                 
                 Text(String(viewModel.standing.teamName.prefix(2)))
-                    .font(.system(size: 24, weight: .black))
-                    .foregroundColor(.white)
+                    .font(.system(size: 22, weight: .black))
+                    .foregroundColor(logoColor(for: viewModel.standing.teamName))
             }
             
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .center, spacing: 8) {
                     Text(viewModel.standing.teamName)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundColor(.white)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.primary)
                     
                     Text(viewModel.standing.league == 1 ? "K리그1" : "K리그2")
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundColor(.secondary)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background(Color.white.opacity(0.12))
+                        .background(Color(.systemGray6))
                         .cornerRadius(6)
                 }
                 
-                // 골드 테마 랭킹 뱃지
+                // 순위 정보 뱃지
                 HStack(spacing: 4) {
                     Image(systemName: "crown.fill")
-                        .font(.system(size: 12))
-                        .foregroundColor(Color(red: 255/255, green: 215/255, blue: 0/255))
+                        .font(.system(size: 11))
+                        .foregroundColor(Color(red: 230/255, green: 170/255, blue: 0/255))
                     
                     Text("리그 \(viewModel.standing.rank)위")
-                        .font(.system(size: 14, weight: .black))
-                        .foregroundColor(Color(red: 255/255, green: 215/255, blue: 0/255))
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(Color(red: 21/255, green: 112/255, blue: 183/255))
                 }
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 9)
                 .padding(.vertical, 4)
-                .background(Color(red: 255/255, green: 215/255, blue: 0/255).opacity(0.12))
+                .background(Color(red: 21/255, green: 112/255, blue: 183/255).opacity(0.08))
                 .cornerRadius(8)
             }
             
             Spacer()
         }
-        .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.04))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
-        )
+        .padding(16)
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
         .padding(.horizontal, 16)
     }
     
     // 3. 주요 스탯 그리드
     private var statsGrid: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             statCard(title: "승점", value: "\(viewModel.standing.points)", isHighlight: true)
             statCard(title: "경기수", value: "\(viewModel.standing.played)", isHighlight: false)
             statCard(title: "승/무/패", value: "\(viewModel.standing.won)승\(viewModel.standing.draw)무\(viewModel.standing.lost)패", isHighlight: false)
@@ -183,27 +160,24 @@ struct TeamDetailView: View {
     }
     
     private func statCard(title: String, value: String, isHighlight: Bool) -> some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 5) {
             Text(title)
                 .font(.system(size: 10, weight: .medium))
-                .foregroundColor(.white.opacity(0.4))
+                .foregroundColor(.secondary)
             
             Text(value)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(isHighlight ? Color(red: 255/255, green: 215/255, blue: 0/255) : .white)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(isHighlight ? Color(red: 21/255, green: 112/255, blue: 183/255) : .primary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(Color.white.opacity(0.03))
+        .padding(.vertical, 10)
+        .background(Color.white)
         .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white.opacity(0.06), lineWidth: 1)
-        )
+        .shadow(color: Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
     }
     
-    // 4. 슬라이더 세그먼트 셀렉터
+    // 4. 네이버 스포츠 스타일 탭 셀렉터
     private var tabSelector: some View {
         HStack(spacing: 0) {
             Button(action: {
@@ -211,33 +185,37 @@ struct TeamDetailView: View {
                     selectedTab = 0
                 }
             }) {
-                Text("경기 일정 및 결과")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(selectedTab == 0 ? .white : .white.opacity(0.4))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(selectedTab == 0 ? Color.white.opacity(0.12) : Color.clear)
-                    .cornerRadius(10)
+                VStack(spacing: 8) {
+                    Text("경기 일정 및 결과")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(selectedTab == 0 ? Color.brandNavy : .gray)
+                    
+                    Rectangle()
+                        .fill(selectedTab == 0 ? Color.brandNavy : Color.clear)
+                        .frame(height: 3)
+                }
             }
+            .frame(maxWidth: .infinity)
             
             Button(action: {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                     selectedTab = 1
                 }
             }) {
-                Text("선수단 득점 현황")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(selectedTab == 1 ? .white : .white.opacity(0.4))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(selectedTab == 1 ? Color.white.opacity(0.12) : Color.clear)
-                    .cornerRadius(10)
+                VStack(spacing: 8) {
+                    Text("선수단 득점 현황")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(selectedTab == 1 ? Color.brandNavy : .gray)
+                    
+                    Rectangle()
+                        .fill(selectedTab == 1 ? Color.brandNavy : Color.clear)
+                        .frame(height: 3)
+                }
             }
+            .frame(maxWidth: .infinity)
         }
-        .padding(4)
-        .background(Color.black.opacity(0.3))
-        .cornerRadius(12)
-        .padding(.horizontal, 16)
+        .background(Color.white)
+        .shadow(color: Color.black.opacity(0.02), radius: 2, x: 0, y: 1)
     }
     
     // 5. 경기 일정 리스트 뷰
@@ -245,47 +223,50 @@ struct TeamDetailView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("전체 경기 정보")
                 .font(.system(size: 15, weight: .bold))
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundColor(Color.brandNavy)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 4)
+                .padding(.top, 4)
             
             if viewModel.fixtures.isEmpty {
                 VStack(spacing: 8) {
                     Image(systemName: "calendar.badge.exclamationmark")
                         .font(.system(size: 32))
-                        .foregroundColor(.white.opacity(0.3))
+                        .foregroundColor(.gray.opacity(0.5))
                     Text("경기 정보가 없습니다.")
                         .font(.system(size: 13))
-                        .foregroundColor(.white.opacity(0.5))
+                        .foregroundColor(.gray)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 40)
+                .background(Color.white)
+                .cornerRadius(14)
+                .padding(.horizontal, 16)
             } else {
                 ForEach(viewModel.fixtures) { match in
                     HStack(spacing: 12) {
-                        // 결과에 따른 전적 서클 뱃지
+                        // 결과에 따른 전적 서클 뱃지 (네이버 톤 매칭)
                         if match.status == "FT" {
                             winLossBadge(for: match)
                         } else {
                             Circle()
-                                .fill(Color.white.opacity(0.08))
+                                .fill(Color(.systemGray6))
                                 .frame(width: 32, height: 32)
                                 .overlay(
                                     Text("예")
                                         .font(.system(size: 11, weight: .bold))
-                                        .foregroundColor(.white.opacity(0.4))
+                                        .foregroundColor(.secondary)
                                 )
                         }
                         
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
                                 Text(match.time)
-                                    .font(.system(size: 11, weight: .semibold))
-                                    .foregroundColor(.white.opacity(0.4))
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundColor(.secondary)
                                 Spacer()
                                 Text(match.stadium)
                                     .font(.system(size: 11))
-                                    .foregroundColor(.white.opacity(0.3))
+                                    .foregroundColor(.gray)
                                     .lineLimit(1)
                             }
                             
@@ -293,27 +274,27 @@ struct TeamDetailView: View {
                                 // 홈 팀
                                 Text(match.homeTeam)
                                     .font(.system(size: 14, weight: match.homeTeam == viewModel.standing.teamName ? .bold : .medium))
-                                    .foregroundColor(match.homeTeam == viewModel.standing.teamName ? Color(red: 255/255, green: 215/255, blue: 0/255) : .white)
+                                    .foregroundColor(match.homeTeam == viewModel.standing.teamName ? Color.brandNavy : .primary)
                                     .lineLimit(1)
                                 
                                 Spacer()
                                 
-                                // 스코어 전광판 스타일
+                                // 스코어보드 스타일
                                 if let homeScore = match.homeScore, let awayScore = match.awayScore {
                                     Text("\(homeScore) : \(awayScore)")
                                         .font(.system(size: 14, weight: .bold, design: .monospaced))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(Color.brandNavy)
                                         .padding(.horizontal, 8)
                                         .padding(.vertical, 2)
-                                        .background(Color.black.opacity(0.4))
+                                        .background(Color(.systemGray6))
                                         .cornerRadius(6)
                                 } else {
                                     Text("VS")
                                         .font(.system(size: 12, weight: .bold))
-                                        .foregroundColor(.white.opacity(0.3))
+                                        .foregroundColor(.secondary)
                                         .padding(.horizontal, 8)
                                         .padding(.vertical, 2)
-                                        .background(Color.black.opacity(0.2))
+                                        .background(Color(.systemGray6))
                                         .cornerRadius(6)
                                 }
                                 
@@ -322,25 +303,22 @@ struct TeamDetailView: View {
                                 // 원정 팀
                                 Text(match.awayTeam)
                                     .font(.system(size: 14, weight: match.awayTeam == viewModel.standing.teamName ? .bold : .medium))
-                                    .foregroundColor(match.awayTeam == viewModel.standing.teamName ? Color(red: 255/255, green: 215/255, blue: 0/255) : .white)
+                                    .foregroundColor(match.awayTeam == viewModel.standing.teamName ? Color.brandNavy : .primary)
                                     .lineLimit(1)
                             }
                         }
                     }
                     .padding(14)
-                    .background(Color.white.opacity(0.03))
+                    .background(Color.white)
                     .cornerRadius(14)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color.white.opacity(0.05), lineWidth: 1)
-                    )
+                    .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                     .padding(.horizontal, 16)
                 }
             }
         }
     }
     
-    // 승무패 광채 뱃지
+    // 승무패 광채 뱃지 (네이버 스포츠 전적 서클 기준 매칭)
     @ViewBuilder
     private func winLossBadge(for match: MockMatch) -> some View {
         let isHome = match.homeTeam == viewModel.standing.teamName
@@ -349,20 +327,30 @@ struct TeamDetailView: View {
             let isDraw = homeScore == awayScore
             
             let text = isWin ? "승" : (isDraw ? "무" : "패")
-            let color = isWin ? Color.green : (isDraw ? Color.gray : Color.red)
+            
+            // 승: 초록계열, 무: 회색계열, 패: 파란계열
+            let textColor = isWin ? Color(red: 2/255, green: 114/255, blue: 76/255) :
+                            (isDraw ? Color(red: 102/255, green: 102/255, blue: 102/255) : Color(red: 21/255, green: 112/255, blue: 183/255))
+            let bgColor = isWin ? Color(red: 224/255, green: 245/255, blue: 233/255) :
+                          (isDraw ? Color(red: 242/255, green: 242/255, blue: 242/255) : Color(red: 230/255, green: 242/255, blue: 250/255))
+            let borderColor = isWin ? Color(red: 136/255, green: 218/255, blue: 181/255) :
+                              (isDraw ? Color(red: 217/255, green: 217/255, blue: 217/255) : Color(red: 163/255, green: 204/255, blue: 235/255))
             
             Circle()
-                .fill(color)
+                .fill(bgColor)
                 .frame(width: 32, height: 32)
                 .overlay(
                     Text(text)
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(.white)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(textColor)
                 )
-                .shadow(color: color.opacity(0.3), radius: 4)
+                .overlay(
+                    Circle()
+                        .stroke(borderColor, lineWidth: 0.5)
+                )
         } else {
             Circle()
-                .fill(Color.gray)
+                .fill(Color(.systemGray5))
                 .frame(width: 32, height: 32)
         }
     }
@@ -372,39 +360,42 @@ struct TeamDetailView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("선수단 주요 기록")
                 .font(.system(size: 15, weight: .bold))
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundColor(Color.brandNavy)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 4)
+                .padding(.top, 4)
             
             if viewModel.squad.isEmpty {
                 VStack(spacing: 8) {
                     Image(systemName: "person.3")
                         .font(.system(size: 32))
-                        .foregroundColor(.white.opacity(0.3))
+                        .foregroundColor(.gray.opacity(0.5))
                     Text("선수단 기록 정보가 없습니다.")
                         .font(.system(size: 13))
-                        .foregroundColor(.white.opacity(0.5))
+                        .foregroundColor(.gray)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 40)
+                .background(Color.white)
+                .cornerRadius(14)
+                .padding(.horizontal, 16)
             } else {
                 ForEach(Array(viewModel.squad.enumerated()), id: \.element.id) { index, player in
                     HStack(spacing: 12) {
                         ZStack {
                             Circle()
-                                .fill(Color.white.opacity(0.06))
+                                .fill(Color(.systemGray6))
                                 .frame(width: 32, height: 32)
                             
                             Text("\(index + 1)")
                                 .font(.system(size: 12, weight: .bold))
-                                .foregroundColor(.white.opacity(0.8))
+                                .foregroundColor(.secondary)
                         }
                         
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 6) {
                                 Text(player.name)
                                     .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.primary)
                                 
                                 let role = getPlayerRole(player: player)
                                 Text(role)
@@ -412,29 +403,26 @@ struct TeamDetailView: View {
                                     .foregroundColor(roleColor(role: role))
                                     .padding(.horizontal, 5)
                                     .padding(.vertical, 1)
-                                    .background(roleColor(role: role).opacity(0.15))
+                                    .background(roleColor(role: role).opacity(0.12))
                                     .cornerRadius(4)
                             }
                             
                             Text(player.teamName)
                                 .font(.system(size: 11))
-                                .foregroundColor(.white.opacity(0.4))
+                                .foregroundColor(.secondary)
                         }
                         
                         Spacer()
                         
                         HStack(spacing: 12) {
-                            statBadge(title: "득점", value: "\(player.goals)골", color: .green)
-                            statBadge(title: "도움", value: "\(player.assists)도움", color: .blue)
+                            statBadge(title: "득점", value: "\(player.goals)골", color: Color(red: 2/255, green: 114/255, blue: 76/255))
+                            statBadge(title: "도움", value: "\(player.assists)도움", color: Color(red: 21/255, green: 112/255, blue: 183/255))
                         }
                     }
                     .padding(14)
-                    .background(Color.white.opacity(0.03))
+                    .background(Color.white)
                     .cornerRadius(14)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color.white.opacity(0.05), lineWidth: 1)
-                    )
+                    .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                     .padding(.horizontal, 16)
                 }
             }
@@ -445,14 +433,14 @@ struct TeamDetailView: View {
         HStack(spacing: 4) {
             Text(title)
                 .font(.system(size: 11))
-                .foregroundColor(.white.opacity(0.4))
+                .foregroundColor(.secondary)
             
             Text(value)
                 .font(.system(size: 12, weight: .bold))
                 .foregroundColor(color)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
-                .background(color.opacity(0.15))
+                .background(color.opacity(0.08))
                 .cornerRadius(4)
         }
     }
@@ -476,5 +464,49 @@ struct TeamDetailView: View {
         case "DF": return .blue
         default: return .gray
         }
+    }
+    
+    // 로고 매칭 헬퍼
+    private func logoColor(for teamName: String) -> Color {
+        if teamName.contains("울산") {
+            return Color(red: 0.0, green: 0.2, blue: 0.6)
+        } else if teamName.contains("전북") {
+            return Color(red: 0.1, green: 0.6, blue: 0.1)
+        } else if teamName.contains("포항") {
+            return Color(red: 0.1, green: 0.1, blue: 0.1)
+        } else if teamName.contains("수원 FC") {
+            return Color(red: 0.05, green: 0.15, blue: 0.35)
+        } else if teamName.contains("수원 삼성") {
+            return Color(red: 0.0, green: 0.3, blue: 0.8)
+        } else if teamName.contains("서울") {
+            return Color(red: 0.8, green: 0.1, blue: 0.1)
+        } else if teamName.contains("대전") {
+            return Color(red: 0.0, green: 0.35, blue: 0.25)
+        } else if teamName.contains("강원") {
+            return Color(red: 0.95, green: 0.5, blue: 0.1)
+        } else if teamName.contains("광주") {
+            return Color(red: 0.9, green: 0.7, blue: 0.0)
+        } else if teamName.contains("대구") {
+            return Color(red: 0.35, green: 0.65, blue: 0.85)
+        } else if teamName.contains("인천") {
+            return Color(red: 0.0, green: 0.25, blue: 0.5)
+        } else if teamName.contains("제주") {
+            return Color(red: 0.9, green: 0.35, blue: 0.0)
+        } else if teamName.contains("김천") {
+            return Color(red: 0.75, green: 0.1, blue: 0.15)
+        } else if teamName.contains("부산") {
+            return Color(red: 0.8, green: 0.05, blue: 0.05)
+        } else if teamName.contains("전남") {
+            return Color(red: 0.95, green: 0.75, blue: 0.0)
+        } else if teamName.contains("성남") {
+            return Color(red: 0.15, green: 0.15, blue: 0.15)
+        } else if teamName.contains("안양") {
+            return Color(red: 0.35, green: 0.15, blue: 0.55)
+        } else if teamName.contains("부천") {
+            return Color(red: 0.8, green: 0.0, blue: 0.1)
+        } else if teamName.contains("충남아산") {
+            return Color(red: 0.0, green: 0.45, blue: 0.75)
+        }
+        return Color.brandNavy
     }
 }
