@@ -13,19 +13,16 @@ struct PlayerDetailView: View {
                 VStack(spacing: 20) {
                     // 선수 기본 인포 카드
                     VStack(spacing: 12) {
-                        // 프로필 이니셜 배지
-                        Circle()
-                            .fill(logoColor(for: player.teamName).opacity(0.1))
-                            .frame(width: 80, height: 80)
-                            .overlay(
-                                Circle()
-                                    .stroke(logoColor(for: player.teamName), lineWidth: 3)
-                            )
-                            .overlay(
-                                Text(String(player.name.prefix(1)))
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundColor(logoColor(for: player.teamName))
-                            )
+                        // 선수 프로필 이미지 (실사 사진 또는 이니셜 원형 배지)
+                        if let photoUrl = player.photo, !photoUrl.isEmpty {
+                            RemoteImageView(urlString: photoUrl, size: 80, fallback: AnyView(fallbackAvatar), isCircle: true)
+                                .overlay(
+                                    Circle()
+                                        .stroke(logoColor(for: player.teamName), lineWidth: 3)
+                                )
+                        } else {
+                            fallbackAvatar
+                        }
                         
                         VStack(spacing: 4) {
                             Text(player.name)
@@ -130,6 +127,21 @@ struct PlayerDetailView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
+    }
+    
+    private var fallbackAvatar: some View {
+        Circle()
+            .fill(logoColor(for: player.teamName).opacity(0.1))
+            .frame(width: 80, height: 80)
+            .overlay(
+                Circle()
+                    .stroke(logoColor(for: player.teamName), lineWidth: 3)
+            )
+            .overlay(
+                Text(String(player.name.prefix(1)))
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(logoColor(for: player.teamName))
+            )
     }
     
     // K리그 실전 매칭을 위한 팀별 브랜드 컬러 매핑 함수 (동일 로직 유지)
