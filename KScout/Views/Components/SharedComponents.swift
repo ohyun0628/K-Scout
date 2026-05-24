@@ -59,6 +59,48 @@ public func teamEmblemURL(for teamName: String) -> String {
     return "https://www.kleague.com/assets/images/emblem/emblem_\(teamId).png"
 }
 
+// MARK: - K-League Player Photo URL Resolver
+public func resolvedPlayerPhotoURL(for playerName: String) -> String? {
+    let photos: [String: String] = [
+        "주민규": "https://media.api-sports.io/football/players/34427.png",
+        "일류첸코": "https://media.api-sports.io/football/players/25276.png",
+        "야고": "https://media.api-sports.io/football/players/35821.png",
+        "이상헌": "https://media.api-sports.io/football/players/34442.png",
+        "이동경": "https://media.api-sports.io/football/players/34431.png",
+        "김지현": "https://media.api-sports.io/football/players/114674.png",
+        "이승우": "https://media.api-sports.io/football/players/2914.png",
+        "정재희": "https://media.api-sports.io/football/players/34355.png",
+        "안데르손": "https://media.api-sports.io/football/players/9292.png",
+        "유리 조나탄": "https://media.api-sports.io/football/players/109209.png",
+        "김대원": "https://media.api-sports.io/football/players/34438.png",
+        "세징야": "https://media.api-sports.io/football/players/34484.png",
+        "황문기": "https://media.api-sports.io/football/players/41647.png",
+        "송민규": "https://media.api-sports.io/football/players/34598.png",
+        "기성용": "https://media.api-sports.io/football/players/2902.png",
+        "루빅손": "https://media.api-sports.io/football/players/47706.png",
+        "엄원상": "https://media.api-sports.io/football/players/34428.png",
+        "서진수": "https://media.api-sports.io/football/players/34430.png",
+        "완델손": "https://media.api-sports.io/football/players/34569.png",
+        "무고사": "https://media.api-sports.io/football/players/34822.png",
+        "뮬리치": "https://media.api-sports.io/football/players/79138.png",
+        "루페타": "https://media.api-sports.io/football/players/99152.png",
+        "호날두": "https://media.api-sports.io/football/players/34547.png",
+        "바사니": "https://media.api-sports.io/football/players/143639.png",
+        "브루노": "https://media.api-sports.io/football/players/9621.png",
+        "페신": "https://media.api-sports.io/football/players/80537.png",
+        "발디비아": "https://media.api-sports.io/football/players/10567.png",
+        "플라나": "https://media.api-sports.io/football/players/47757.png",
+        "라마스": "https://media.api-sports.io/football/players/41215.png",
+        "제르소": "https://media.api-sports.io/football/players/51267.png",
+        "아코스티": "https://media.api-sports.io/football/players/14292.png",
+        "홍창범": "https://media.api-sports.io/football/players/644913.png",
+        "카즈키": "https://media.api-sports.io/football/players/32926.png",
+        "이한도": "https://media.api-sports.io/football/players/34517.png",
+        "김찬": "https://media.api-sports.io/football/players/34580.png"
+    ]
+    return photos[playerName]
+}
+
 // MARK: - Reusable Remote Image View (for compatibility with older iOS SDKs without AsyncImage)
 struct RemoteImageView: View {
     let urlString: String
@@ -150,7 +192,8 @@ struct PlayerAvatarView: View {
     var size: CGFloat = 42
     
     var body: some View {
-        if let urlStr = photoURL, !urlStr.isEmpty {
+        let resolvedURL = photoURL ?? resolvedPlayerPhotoURL(for: playerName)
+        if let urlStr = resolvedURL, !urlStr.isEmpty {
             RemoteImageView(urlString: urlStr, size: size, fallback: AnyView(fallbackAvatar), isCircle: true)
         } else {
             fallbackAvatar

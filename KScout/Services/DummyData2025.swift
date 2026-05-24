@@ -92,7 +92,34 @@ struct DummyData2025 {
             PlayerRanking(id: UUID(), rank: 10, playerName: "김찬", teamName: "부산 아이파크", statCount: 4, played: 31, league: 2, type: "assists")
         ]
         
-        return goalsL1 + assistsL1 + goalsL2 + assistsL2
+        let allRankings = goalsL1 + assistsL1 + goalsL2 + assistsL2
+        return allRankings.map { r in
+            PlayerRanking(
+                id: r.id,
+                rank: r.rank,
+                playerName: r.playerName,
+                teamName: r.teamName,
+                statCount: r.statCount,
+                played: r.played,
+                league: r.league,
+                type: r.type,
+                photoURL: resolvedPlayerPhotoURL(for: r.playerName) ?? r.photoURL,
+                goals: r.goals,
+                assists: r.assists,
+                attackPoints: r.attackPoints,
+                momCount: r.momCount,
+                avgRating: r.avgRating,
+                best11Count: r.best11Count,
+                goalsPer90: r.goalsPer90,
+                pointsPer90: r.pointsPer90,
+                shots: r.shots,
+                shotsOnTarget: r.shotsOnTarget,
+                playedMinutes: r.playedMinutes,
+                pkGoals: r.pkGoals,
+                fouls: r.fouls,
+                yellowCards: r.yellowCards
+            )
+        }
     }
     
     // MARK: - 2025 시즌 경기 일정 (Match Schedules - 풍부한 데이터 세트 구성)
