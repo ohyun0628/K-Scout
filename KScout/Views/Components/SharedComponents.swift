@@ -270,12 +270,16 @@ struct PlayerAvatarView: View {
                 .frame(width: size, height: size)
             
             Circle()
-                .stroke(sharedLogoColor(for: teamName), lineWidth: 1.5)
+                .stroke(sharedLogoColor(for: teamName).opacity(0.5), lineWidth: 1.0)
                 .frame(width: size, height: size)
             
-            Text(String(playerName.prefix(1)))
-                .font(.system(size: size * 0.4, weight: .bold))
-                .foregroundColor(sharedLogoColor(for: teamName))
+            Image(systemName: "person.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: size * 0.55, height: size * 0.55)
+                .foregroundColor(sharedLogoColor(for: teamName).opacity(0.6))
+                .offset(y: size * 0.06)
+                .clipShape(Circle())
         }
     }
 }
