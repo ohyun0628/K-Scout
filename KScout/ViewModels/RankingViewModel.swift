@@ -78,6 +78,7 @@ class RankingViewModel: ObservableObject {
                 played: player.played,
                 league: player.league,
                 type: type, // 현재 카테고리 정보 전달
+                photoURL: player.photoURL,
                 goals: player.goals,
                 assists: player.assists,
                 attackPoints: player.attackPoints,
@@ -289,7 +290,8 @@ class RankingViewModel: ObservableObject {
                             statCount: statCount,
                             played: item.statistics.first?.games.appearances ?? 0,
                             league: league,
-                            type: type
+                            type: type,
+                            photoURL: item.player.photo
                         )
                     }
                     
