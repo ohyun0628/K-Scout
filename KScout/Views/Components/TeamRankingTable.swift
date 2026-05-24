@@ -47,49 +47,45 @@ struct TeamRankingTable: View {
                     .padding(.horizontal, 4)
             }
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                VStack(spacing: 0) {
-                    // 네이버 스포츠 스타일 테이블 헤더
-                    HStack(spacing: 0) {
-                        Text("순위")
-                            .frame(width: 28, alignment: .center)
-                        Text("팀명")
-                            .frame(width: 105, alignment: .leading)
-                            .padding(.leading, 6)
-                        Text("승점")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(Color(red: 2/255, green: 114/255, blue: 76/255)) // 네이버 특유의 초록/파란 스탯 강조색
-                            .frame(width: 32, alignment: .center)
-                        Text("경기")
-                            .frame(width: 26, alignment: .center)
-                        Text("승")
-                            .frame(width: 22, alignment: .center)
-                        Text("무")
-                            .frame(width: 22, alignment: .center)
-                        Text("패")
-                            .frame(width: 22, alignment: .center)
-                        Text("득실")
-                            .frame(width: 28, alignment: .center)
-                        Text("최근 5경기")
-                            .frame(width: 95, alignment: .center)
-                            .padding(.leading, 10)
-                    }
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.gray)
-                    .padding(.vertical, 10)
-                    .background(Color(UIColor.secondarySystemBackground).opacity(0.5))
-                    
-                    Divider()
-                    
-                    // 팀 로우 목록
-                    ForEach(teams) { team in
-                        teamRow(team)
-                        if team.id != teams.last?.id {
-                            Divider()
-                        }
+            VStack(spacing: 0) {
+                // 네이버 스포츠 스타일 테이블 헤더
+                HStack(spacing: 0) {
+                    Text("순위")
+                        .frame(width: 24, alignment: .center)
+                    Text("팀명")
+                        .frame(minWidth: 70, maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 6)
+                    Text("승점")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(Color(red: 2/255, green: 114/255, blue: 76/255)) // 네이버 특유의 초록/파란 스탯 강조색
+                        .frame(width: 28, alignment: .center)
+                    Text("경기")
+                        .frame(width: 24, alignment: .center)
+                    Text("승")
+                        .frame(width: 18, alignment: .center)
+                    Text("무")
+                        .frame(width: 18, alignment: .center)
+                    Text("패")
+                        .frame(width: 18, alignment: .center)
+                    Text("득실")
+                        .frame(width: 24, alignment: .center)
+                    Text("최근 5경기")
+                        .frame(width: 88, alignment: .center)
+                }
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(.gray)
+                .padding(.vertical, 10)
+                .background(Color(UIColor.secondarySystemBackground).opacity(0.5))
+                
+                Divider()
+                
+                // 팀 로우 목록
+                ForEach(teams) { team in
+                    teamRow(team)
+                    if team.id != teams.last?.id {
+                        Divider()
                     }
                 }
-                .frame(width: 381) // 전체 컬럼 가로폭 고정으로 줄맞춤 보장
             }
             .background(Color.white)
             .cornerRadius(12)
@@ -105,11 +101,11 @@ struct TeamRankingTable: View {
                 Text("\(team.rank)")
                     .font(.system(size: 13, weight: team.rank <= 3 ? .bold : .medium))
                     .foregroundColor(team.rank <= 3 ? Color.brandNavy : .gray)
-                    .frame(width: 28, alignment: .center)
+                    .frame(width: 24, alignment: .center)
                 
                 // 2. 팀명 (엠블럼 + 텍스트 + 이동 기호 '>')
-                HStack(spacing: 5) {
-                    TeamLogoView(teamName: team.teamName, size: 20)
+                HStack(spacing: 4) {
+                    TeamLogoView(teamName: team.teamName, size: 18)
                     
                     Text(team.teamName)
                         .font(.system(size: 13, weight: .semibold))
@@ -117,50 +113,51 @@ struct TeamRankingTable: View {
                         .lineLimit(1)
                     
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 8, weight: .bold))
+                        .font(.system(size: 7, weight: .bold))
                         .foregroundColor(.gray.opacity(0.4))
                 }
-                .frame(width: 105, alignment: .leading)
+                .frame(minWidth: 70, maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 6)
                 
                 // 3. 승점 (강조 색상 및 굵게 표시)
                 Text("\(team.points)")
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(Color(red: 21/255, green: 112/255, blue: 183/255))
-                    .frame(width: 32, alignment: .center)
+                    .frame(width: 28, alignment: .center)
                 
                 // 4. 경기수
                 Text("\(team.played)")
                     .font(.system(size: 13))
                     .foregroundColor(.primary)
-                    .frame(width: 26, alignment: .center)
+                    .frame(width: 24, alignment: .center)
                 
                 // 5. 승
                 Text("\(team.won)")
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
-                    .frame(width: 22, alignment: .center)
+                    .frame(width: 18, alignment: .center)
                 
                 // 6. 무
                 Text("\(team.draw)")
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
-                    .frame(width: 22, alignment: .center)
+                    .frame(width: 18, alignment: .center)
                 
                 // 7. 패
                 Text("\(team.lost)")
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
-                    .frame(width: 22, alignment: .center)
+                    .frame(width: 18, alignment: .center)
                 
                 // 8. 득실차
                 Text("\(team.goalsDiff > 0 ? "+" : "")\(team.goalsDiff)")
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(team.goalsDiff > 0 ? Color.red : (team.goalsDiff < 0 ? Color.blue : .primary))
-                    .frame(width: 28, alignment: .center)
+                    .frame(width: 24, alignment: .center)
                 
                 // 9. 최근 5경기 폼 뱃지
                 recentFormView(form: team.form)
+                    .frame(width: 88, alignment: .center)
             }
             .padding(.vertical, 12)
             .background(Color.white)
@@ -192,8 +189,6 @@ struct TeamRankingTable: View {
                     .foregroundColor(.gray)
             }
         }
-        .frame(width: 95, alignment: .center)
-        .padding(.leading, 10)
     }
     
     private func formText(for char: Character) -> String {
