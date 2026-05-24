@@ -128,7 +128,7 @@ struct PlayerStatsDetailSheet: View {
                                 .frame(width: 28, alignment: .center)
                                 
                                 // 동그란 실사 프로필 사진 이미지 뷰
-                                PlayerAvatarView(playerName: player.playerName, size: 42)
+                                PlayerAvatarView(playerName: player.playerName, teamName: player.teamName, photoURL: player.photoURL, size: 42)
                                 
                                 // 선수명 및 소속팀 (팀 로고 배지 추가)
                                 VStack(alignment: .leading, spacing: 3) {

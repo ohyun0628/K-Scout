@@ -145,29 +145,31 @@ struct TeamLogoView: View {
 // MARK: - Reusable Player Avatar View
 struct PlayerAvatarView: View {
     let playerName: String
+    let teamName: String
+    let photoURL: String?
     var size: CGFloat = 42
     
     var body: some View {
-        // Pravatar 실사 인물 사진 70장 중 이름 해시값에 맵핑
-        let imgIndex = abs(playerName.hashValue) % 70 + 1
-        let urlStr = "https://i.pravatar.cc/150?img=\(imgIndex)"
-        
-        RemoteImageView(urlString: urlStr, size: size, fallback: AnyView(fallbackAvatar), isCircle: true)
+        if let urlStr = photoURL, !urlStr.isEmpty {
+            RemoteImageView(urlString: urlStr, size: size, fallback: AnyView(fallbackAvatar), isCircle: true)
+        } else {
+            fallbackAvatar
+        }
     }
     
     private var fallbackAvatar: some View {
         ZStack {
             Circle()
-                .fill(Color(UIColor.secondarySystemBackground))
+                .fill(sharedLogoColor(for: teamName).opacity(0.1))
                 .frame(width: size, height: size)
             
-            Image(systemName: "person.fill")
-                .font(.system(size: size * 0.45))
-                .foregroundColor(.gray.opacity(0.6))
+            Circle()
+                .stroke(sharedLogoColor(for: teamName), lineWidth: 1.5)
+                .frame(width: size, height: size)
             
             Text(String(playerName.prefix(1)))
-                .font(.system(size: size * 0.35, weight: .bold))
-                .foregroundColor(Color.brandNavy.opacity(0.15))
+                .font(.system(size: size * 0.4, weight: .bold))
+                .foregroundColor(sharedLogoColor(for: teamName))
         }
     }
 }

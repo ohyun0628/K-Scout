@@ -58,7 +58,7 @@ struct PlayerStatsGridView: View {
                         .frame(width: 24)
                         
                         // 실사 프로필 사진 추가
-                        PlayerAvatarView(playerName: player.playerName, size: 28)
+                        PlayerAvatarView(playerName: player.playerName, teamName: player.teamName, photoURL: player.photoURL, size: 28)
                         
                         // 이름 & 팀
                         VStack(alignment: .leading, spacing: 2) {
