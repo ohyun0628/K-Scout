@@ -72,31 +72,29 @@ public func resolvedPlayerPhotoURL(for playerName: String) -> String? {
         "정재희": "https://media.api-sports.io/football/players/34355.png",
         "안데르손": "https://media.api-sports.io/football/players/9292.png",
         "유리 조나탄": "https://media.api-sports.io/football/players/109209.png",
-        "김대원": "https://media.api-sports.io/football/players/34438.png",
         "세징야": "https://media.api-sports.io/football/players/34484.png",
         "황문기": "https://media.api-sports.io/football/players/41647.png",
         "송민규": "https://media.api-sports.io/football/players/34598.png",
-        "기성용": "https://media.api-sports.io/football/players/2902.png",
         "루빅손": "https://media.api-sports.io/football/players/47706.png",
-        "엄원상": "https://media.api-sports.io/football/players/34428.png",
-        "서진수": "https://media.api-sports.io/football/players/34430.png",
         "완델손": "https://media.api-sports.io/football/players/34569.png",
         "무고사": "https://media.api-sports.io/football/players/34822.png",
         "뮬리치": "https://media.api-sports.io/football/players/79138.png",
         "루페타": "https://media.api-sports.io/football/players/99152.png",
-        "호날두": "https://media.api-sports.io/football/players/34547.png",
         "바사니": "https://media.api-sports.io/football/players/143639.png",
-        "브루노": "https://media.api-sports.io/football/players/9621.png",
         "페신": "https://media.api-sports.io/football/players/80537.png",
         "발디비아": "https://media.api-sports.io/football/players/10567.png",
         "플라나": "https://media.api-sports.io/football/players/47757.png",
-        "라마스": "https://media.api-sports.io/football/players/41215.png",
         "제르소": "https://media.api-sports.io/football/players/51267.png",
         "아코스티": "https://media.api-sports.io/football/players/14292.png",
-        "홍창범": "https://media.api-sports.io/football/players/644913.png",
         "카즈키": "https://media.api-sports.io/football/players/32926.png",
-        "이한도": "https://media.api-sports.io/football/players/34517.png",
-        "김찬": "https://media.api-sports.io/football/players/34580.png"
+        "김찬": "https://media.api-sports.io/football/players/34580.png",
+        "조영욱": "https://media.api-sports.io/football/players/34517.png",
+        "양민혁": "https://media.api-sports.io/football/players/423708.png",
+        "이호재": "https://media.api-sports.io/football/players/304972.png",
+        "린가드": "https://media.api-sports.io/football/players/900.png",
+        "조르지": "https://media.api-sports.io/football/players/277197.png",
+        "보야니치": "https://media.api-sports.io/football/players/48124.png",
+        "한승규": "https://media.api-sports.io/football/players/34386.png"
     ]
     return photos[playerName]
 }
@@ -192,7 +190,7 @@ struct PlayerAvatarView: View {
     var size: CGFloat = 42
     
     var body: some View {
-        let resolvedURL = photoURL ?? resolvedPlayerPhotoURL(for: playerName)
+        let resolvedURL = resolvedPlayerPhotoURL(for: playerName) ?? photoURL
         if let urlStr = resolvedURL, !urlStr.isEmpty {
             RemoteImageView(urlString: urlStr, size: size, fallback: AnyView(fallbackAvatar), isCircle: true)
         } else {
