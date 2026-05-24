@@ -9,6 +9,7 @@ struct PlayerRanking: Identifiable, Codable {
     let played: Int
     let league: Int
     let type: String
+    let photoURL: String?
     
     // K-Scout 가독성 및 정밀 분석을 위한 지표 추가
     var goals: Int
@@ -39,6 +40,7 @@ struct PlayerRanking: Identifiable, Codable {
         played: Int,
         league: Int,
         type: String,
+        photoURL: String? = nil,
         goals: Int? = nil,
         assists: Int? = nil,
         attackPoints: Int? = nil,
@@ -62,6 +64,7 @@ struct PlayerRanking: Identifiable, Codable {
         self.played = played
         self.league = league
         self.type = type
+        self.photoURL = photoURL
         
         // 기본값 세팅 및 득점/도움 기반 공격포인트 연산
         let g = goals ?? (type == "goals" ? statCount : Int.random(in: 1...5))
