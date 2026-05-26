@@ -11,4 +11,5 @@ struct MockMatch: Identifiable {
     let stadium: String
     let league: Int // 1 for K리그1, 2 for K리그2
     let dayOffset: Int // Offset from selected date (e.g. 0 for "목 18", -3 for "월 15")
+    var dateString: String? = nil // e.g. "2026-05-26"
 }
