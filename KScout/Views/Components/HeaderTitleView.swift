@@ -94,8 +94,8 @@ struct YearMonthPickerSheet: View {
     @Binding var selectedYear: Int
     @Binding var selectedMonth: Int
     
-    let years = Array(2010...2026).reversed()
-    let months = Array(1...12)
+    let years: [Int] = Array((2010...2026).reversed())
+    let months: [Int] = Array(1...12)
     
     var body: some View {
         VStack {
@@ -109,7 +109,7 @@ struct YearMonthPickerSheet: View {
                         Text("\(String(year))년").tag(year)
                     }
                 }
-                .pickerStyle(.wheel)
+                .pickerStyle(WheelPickerStyle())
                 .frame(maxWidth: .infinity)
                 
                 Picker("월", selection: $selectedMonth) {
@@ -117,7 +117,7 @@ struct YearMonthPickerSheet: View {
                         Text("\(month)월").tag(month)
                     }
                 }
-                .pickerStyle(.wheel)
+                .pickerStyle(WheelPickerStyle())
                 .frame(maxWidth: .infinity)
             }
             .padding(.horizontal)
