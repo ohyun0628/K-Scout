@@ -9,7 +9,7 @@ struct HeaderTitleView: View {
     var selectedSeason: Binding<Int>? = nil
     var selectedMonth: Binding<Int>? = nil
     
-    let seasons = [2026, 2025, 2024, 2023, 2022]
+    let seasons: [Int] = Array((2016...2026).reversed())
     
     @State private var showDatePicker = false
     
