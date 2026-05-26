@@ -373,7 +373,7 @@ class ScheduleViewModel: ObservableObject {
                 MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
                 MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: league, dayOffset: 1),
                 MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
-                MockMatch(homeTeam: "강원 FC", away 중앙: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
+                MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
             ]
         }
         
