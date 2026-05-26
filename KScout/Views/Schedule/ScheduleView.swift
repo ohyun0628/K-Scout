@@ -13,7 +13,7 @@ struct ScheduleView: View {
             
             let monthStr = String(format: "%02d", viewModel.selectedMonth)
             let dayStr = String(format: "%02d", viewModel.selectedDay)
-            let targetDateString = "\(viewModel.selectedSeason)-\(monthStr)-\(dayStr)"
+            let targetDateString = "\(String(viewModel.selectedSeason))-\(monthStr)-\(dayStr)"
             
             if let matchDate = match.dateString {
                 return matchDate == targetDateString
@@ -98,11 +98,11 @@ struct ScheduleView: View {
                                 .foregroundColor(.gray.opacity(0.8))
                                 .padding(.top, 60)
                             
-                            Text("\(viewModel.selectedSeason) 시즌 일정 준비 중")
+                            Text("\(String(viewModel.selectedSeason)) 시즌 일정 준비 중")
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(Color.brandNavy)
                             
-                            Text("\(viewModel.selectedSeason) 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
+                            Text("\(String(viewModel.selectedSeason)) 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
                                 .font(.system(size: 14))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -313,11 +313,11 @@ struct CalendarSheetView: View {
             HStack {
                 Menu {
                     ForEach(Array(2010...2026).reversed(), id: \.self) { year in
-                        Button("\(year)년") { viewingYear = year }
+                        Button("\(String(year))년") { viewingYear = year }
                     }
                 } label: {
                     HStack(spacing: 4) {
-                        Text("\(viewingYear)년")
+                        Text("\(String(viewingYear))년")
                             .font(.system(size: 18, weight: .bold))
                         Image(systemName: "chevron.down")
                             .font(.system(size: 14))
@@ -540,14 +540,25 @@ class ScheduleViewModel: ObservableObject {
         if season == 2025 {
             baseMatches = DummyData2025.matches.filter { $0.league == league }
         } else {
-            baseMatches = [
-                MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: league, dayOffset: 0),
-                MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: league, dayOffset: 0),
-                MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
-                MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: league, dayOffset: 1),
-                MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
-                MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
-            ]
+            if league == 1 {
+                baseMatches = [
+                    MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: 1, dayOffset: 0),
+                    MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
+                    MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: 1, dayOffset: 1),
+                    MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: 1, dayOffset: -1)
+                ]
+            } else {
+                baseMatches = [
+                    MockMatch(homeTeam: "수원 삼성", awayTeam: "부천 FC 1995", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "서울 이랜드", awayTeam: "전남 드래곤즈", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "목동종합운동장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "부산 아이파크", awayTeam: "충남아산 FC", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "부산아시아드주경기장", league: 2, dayOffset: 0),
+                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "김포 FC", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 2, dayOffset: 1),
+                    MockMatch(homeTeam: "천안 시티 FC", awayTeam: "화성 FC", homeScore: 0, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: 1),
+                    MockMatch(homeTeam: "경남 FC", awayTeam: "안산 그리너스", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "창원축구센터", league: 2, dayOffset: -1)
+                ]
+            }
         }
         
         let calendar = Calendar.current
