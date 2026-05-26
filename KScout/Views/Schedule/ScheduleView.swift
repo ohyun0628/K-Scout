@@ -243,13 +243,189 @@ struct ScheduleHeaderView: View {
                 .foregroundColor(.gray)
             }
             .sheet(isPresented: $showDatePicker) {
-                YearMonthPickerSheet(selectedYear: $selectedYear, selectedMonth: $selectedMonth)
+                CalendarSheetView(selectedYear: $selectedYear, selectedMonth: $selectedMonth, selectedDay: $selectedDay)
             }
         }
         .padding(.horizontal, 20)
         .padding(.top, 20)
         .padding(.bottom, 12)
         .background(Color.white)
+    }
+}
+
+    }
+}
+
+// MARK: - 네이버 스포츠 스타일 캘린더 바텀 시트
+struct CalendarSheetView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var selectedYear: Int
+    @Binding var selectedMonth: Int
+    @Binding var selectedDay: Int
+    
+    @State private var viewingYear: Int
+    @State private var viewingMonth: Int
+    
+    init(selectedYear: Binding<Int>, selectedMonth: Binding<Int>, selectedDay: Binding<Int>) {
+        self._selectedYear = selectedYear
+        self._selectedMonth = selectedMonth
+        self._selectedDay = selectedDay
+        self._viewingYear = State(initialValue: selectedYear.wrappedValue)
+        self._viewingMonth = State(initialValue: selectedMonth.wrappedValue)
+    }
+    
+    var currentYear: Int { Calendar.current.component(.year, from: Date()) }
+    var currentMonth: Int { Calendar.current.component(.month, from: Date()) }
+    var currentDay: Int { Calendar.current.component(.day, from: Date()) }
+    
+    let daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"]
+    
+    struct DayItem: Identifiable {
+        let id = UUID()
+        let day: Int // 0 means empty slot
+    }
+    
+    var daysInMonth: [DayItem] {
+        var days: [DayItem] = []
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = viewingYear
+        components.month = viewingMonth
+        
+        guard let date = calendar.date(from: components),
+              let range = calendar.range(of: .day, in: .month, for: date) else { return [] }
+              
+        let firstWeekday = calendar.component(.weekday, from: date)
+        
+        // 빈 공간 채우기
+        for _ in 1..<firstWeekday {
+            days.append(DayItem(day: 0))
+        }
+        
+        // 실제 날짜 채우기
+        for day in range {
+            days.append(DayItem(day: day))
+        }
+        
+        return days
+    }
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // 헤더
+            HStack {
+                Menu {
+                    ForEach(Array(2010...2026).reversed(), id: \.self) { year in
+                        Button("\(year)년") { viewingYear = year }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("\(viewingYear)년")
+                            .font(.system(size: 18, weight: .bold))
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 14))
+                    }
+                    .foregroundColor(.black)
+                }
+                
+                Spacer()
+                
+                HStack(spacing: 24) {
+                    Button(action: {
+                        if viewingMonth == 1 {
+                            viewingYear -= 1
+                            viewingMonth = 12
+                        } else {
+                            viewingMonth -= 1
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                    }
+                    
+                    Text("\(viewingMonth)월")
+                        .font(.system(size: 20, weight: .bold))
+                        .frame(width: 40)
+                    
+                    Button(action: {
+                        if viewingMonth == 12 {
+                            viewingYear += 1
+                            viewingMonth = 1
+                        } else {
+                            viewingMonth += 1
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.black)
+                    }
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 20))
+                        .foregroundColor(.gray)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 24)
+            
+            // 요일
+            HStack {
+                ForEach(daysOfWeek, id: \.self) { day in
+                    Text(day)
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.horizontal, 10)
+            
+            // 달력 그리드
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 20) {
+                ForEach(daysInMonth) { item in
+                    if item.day == 0 {
+                        Text("")
+                            .frame(height: 50)
+                    } else {
+                        let isToday = (viewingYear == currentYear && viewingMonth == currentMonth && item.day == currentDay)
+                        let isSelected = (viewingYear == selectedYear && viewingMonth == selectedMonth && item.day == selectedDay)
+                        
+                        Button(action: {
+                            selectedYear = viewingYear
+                            selectedMonth = viewingMonth
+                            selectedDay = item.day
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            VStack(spacing: 4) {
+                                Text(isToday ? "오늘" : "\(item.day)")
+                                    .font(.system(size: 16, weight: isToday || isSelected ? .bold : .regular))
+                                    .foregroundColor(isToday || isSelected ? .blue : .black)
+                                
+                                Text("•")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.gray.opacity(0.5))
+                            }
+                            .frame(width: 40, height: 50)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(isToday ? Color.blue.opacity(0.1) : Color.clear)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(isToday ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 1)
+                            )
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 10)
+            
+            Spacer()
+        }
     }
 }
 
