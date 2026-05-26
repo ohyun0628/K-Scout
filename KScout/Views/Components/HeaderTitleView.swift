@@ -73,8 +73,6 @@ struct HeaderTitleView: View {
         }
         .sheet(isPresented: $showDatePicker) {
             YearMonthPickerSheet(selectedYear: selectedSeason, selectedMonth: selectedMonth)
-                .presentationDetents([.height(300)])
-                .presentationDragIndicator(.visible)
         }
     }
     
