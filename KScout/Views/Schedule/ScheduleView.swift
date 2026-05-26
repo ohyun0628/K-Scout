@@ -400,20 +400,20 @@ struct CalendarSheetView: View {
                             VStack(spacing: 4) {
                                 Text(isToday ? "오늘" : "\(item.day)")
                                     .font(.system(size: 16, weight: isToday || isSelected ? .bold : .regular))
-                                    .foregroundColor(isToday || isSelected ? .blue : .black)
+                                    .foregroundColor(isSelected ? .white : (isToday ? .blue : .black))
                                 
                                 Text("•")
                                     .font(.system(size: 11))
-                                    .foregroundColor(.gray.opacity(0.5))
+                                    .foregroundColor(isSelected ? .white.opacity(0.8) : .gray.opacity(0.5))
                             }
                             .frame(width: 40, height: 50)
                             .background(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(isToday ? Color.blue.opacity(0.1) : Color.clear)
+                                    .fill(isSelected ? Color.blue : (isToday ? Color.blue.opacity(0.1) : Color.clear))
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(isToday ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 1)
+                                    .stroke(isToday && !isSelected ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 1)
                             )
                         }
                     }
