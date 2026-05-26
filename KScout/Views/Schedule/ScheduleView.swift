@@ -2,14 +2,25 @@ import SwiftUI
 
 struct ScheduleView: View {
     @StateObject private var viewModel = ScheduleViewModel()
-    @State private var selectedDayOffset = 0 // Offset from the middle date (0 corresponds to "목 18")
-    @State private var notificationSubscription: Set<UUID> = [] // 알림 설정한 경기 목록
+    @State private var notificationSubscription: Set<UUID> = []
     @State private var showAlert = false
     @State private var alertMessage = ""
     
     // 조건 필터링 경기 데이터
     private var filteredMatches: [MockMatch] {
-        viewModel.matches.filter { $0.league == viewModel.selectedLeague && $0.dayOffset == selectedDayOffset }
+        viewModel.matches.filter { match in
+            guard match.league == viewModel.selectedLeague else { return false }
+            
+            let monthStr = String(format: "%02d", viewModel.selectedMonth)
+            let dayStr = String(format: "%02d", viewModel.selectedDay)
+            let targetDateString = "\(viewModel.selectedSeason)-\(monthStr)-\(dayStr)"
+            
+            if let matchDate = match.dateString {
+                return matchDate == targetDateString
+            }
+            
+            return false
+        }
     }
     
     var body: some View {
@@ -19,8 +30,8 @@ struct ScheduleView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                // 1. 경기 일정 커스텀 헤더 타이틀 (시즌 선택 바인딩)
-                HeaderTitleView(title: "경기 일정", selectedSeason: $viewModel.selectedSeason)
+                // 1. 경기 일정 커스텀 헤더 타이틀 (시즌/월 선택 바인딩)
+                HeaderTitleView(title: "경기 일정", selectedSeason: $viewModel.selectedSeason, selectedMonth: $viewModel.selectedMonth)
                 
                 // 2. K리그1 / K리그2 세그먼트 셀렉터
                 HStack(spacing: 0) {
@@ -58,8 +69,8 @@ struct ScheduleView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 16)
                 
-                // 3. 주간 데이트 슬라이더
-                DateSliderView(selectedDayOffset: $selectedDayOffset)
+                // 3. 무한 가로 데이트 슬라이더
+                DateSliderView(selectedYear: $viewModel.selectedSeason, selectedMonth: $viewModel.selectedMonth, selectedDay: $viewModel.selectedDay)
                     .padding(.bottom, 8)
                 
                 // 4. 경기 카드 리스트 영역
@@ -71,18 +82,19 @@ struct ScheduleView: View {
                                 .padding(.top, 60)
                             Spacer()
                         }
-                    } else if viewModel.selectedSeason == 2026 {
+                    } else if viewModel.selectedSeason >= 2026 && filteredMatches.isEmpty {
+                        // 2026시즌 등 미래의 일정이 없을 경우
                         VStack(spacing: 20) {
                             Image(systemName: "calendar.badge.clock")
                                 .font(.system(size: 60))
                                 .foregroundColor(.gray.opacity(0.8))
                                 .padding(.top, 60)
                             
-                            Text("2026 시즌 일정 준비 중")
+                            Text("\(viewModel.selectedSeason) 시즌 일정 준비 중")
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(Color.brandNavy)
                             
-                            Text("2026 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
+                            Text("\(viewModel.selectedSeason) 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
                                 .font(.system(size: 14))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -126,7 +138,7 @@ struct ScheduleView: View {
             )
         }
         .onAppear {
-            viewModel.fetchSchedule(league: viewModel.selectedLeague, season: viewModel.selectedSeason)
+            viewModel.fetchSchedule()
         }
     }
     
@@ -150,30 +162,40 @@ class ScheduleViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var selectedLeague: Int = 1 {
-        didSet {
-            fetchSchedule(league: selectedLeague, season: selectedSeason)
-        }
+        didSet { fetchSchedule() }
     }
-    @Published var selectedSeason: Int = 2026 {
-        didSet {
-            fetchSchedule(league: selectedLeague, season: selectedSeason)
-        }
+    @Published var selectedSeason: Int {
+        didSet { fetchSchedule() }
     }
+    @Published var selectedMonth: Int {
+        didSet { fetchSchedule() }
+    }
+    @Published var selectedDay: Int
     
     private var apiMatches: [FixtureItem] = []
     
-    func fetchSchedule(league: Int, season: Int) {
+    init() {
+        let date = Date()
+        let calendar = Calendar.current
+        self.selectedSeason = calendar.component(.year, from: date)
+        self.selectedMonth = calendar.component(.month, from: date)
+        self.selectedDay = calendar.component(.day, from: date)
+    }
+    
+    func fetchSchedule() {
         self.isLoading = true
         self.errorMessage = nil
+        let league = self.selectedLeague
+        let season = self.selectedSeason
         
-        if season == 2026 {
+        if season >= 2026 {
             self.matches = []
             self.isLoading = false
             return
         }
         
         if season == 2025 {
-            self.matches = DummyData2025.matches.filter { $0.league == league }
+            self.loadMockData(league: league, season: season)
             self.isLoading = false
             return
         }
@@ -197,35 +219,15 @@ class ScheduleViewModel: ObservableObject {
     }
     
     private func mapApiMatchesToMockMatches(league: Int, season: Int) {
-        let calendar = Calendar.current
-        let today = Date()
-        
-        let weekday = calendar.component(.weekday, from: today)
-        let daysToThursday = 5 - weekday
-        
-        var offsetDates: [Int: String] = [:]
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        for offset in -3...3 {
-            let targetDate = calendar.date(byAdding: .day, value: daysToThursday + offset, to: today) ?? today
-            var components = calendar.dateComponents([.year, .month, .day], from: targetDate)
-            components.year = season
-            if let searchDate = calendar.date(from: components) {
-                offsetDates[offset] = dateFormatter.string(from: searchDate)
-            }
-        }
-        
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         
         let apiFiltered = apiMatches.compactMap { item -> MockMatch? in
             guard let matchDate = isoFormatter.date(from: item.fixture.date) else { return nil }
             let matchDateString = dateFormatter.string(from: matchDate)
-            
-            guard let offset = offsetDates.first(where: { $1 == matchDateString })?.key else {
-                return nil
-            }
             
             let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "HH:mm"
@@ -243,7 +245,7 @@ class ScheduleViewModel: ObservableObject {
                 displayTime = "종료"
             }
             
-            return MockMatch(
+            var match = MockMatch(
                 homeTeam: KoreanTranslationService.translateTeam(item.teams.home.name),
                 awayTeam: KoreanTranslationService.translateTeam(item.teams.away.name),
                 homeScore: item.goals.home,
@@ -252,71 +254,51 @@ class ScheduleViewModel: ObservableObject {
                 time: displayTime,
                 stadium: item.fixture.venue?.name ?? "경기장",
                 league: league,
-                dayOffset: offset
+                dayOffset: 0
             )
+            match.dateString = matchDateString
+            return match
         }
         
         self.matches = apiFiltered
     }
     
     private func loadMockData(league: Int, season: Int) {
-        if season >= 2026 {
-            if league == 1 {
-                self.matches = [
-                    MockMatch(homeTeam: "울산 HD FC", awayTeam: "전북 현대 모터스", homeScore: 2, awayScore: 1, status: "LIVE", time: "67'", stadium: "울산문수축구경기장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "FC 서울", awayTeam: "부천 FC 1995", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "포항 스틸러스", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 1, dayOffset: 0),
-                    
-                    MockMatch(homeTeam: "광주 FC", awayTeam: "FC 안양", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
-                    MockMatch(homeTeam: "제주 유나이티드", awayTeam: "강원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:30", stadium: "제주월드컵경기장", league: 1, dayOffset: 1),
-                    
-                    MockMatch(homeTeam: "김천 상무", awayTeam: "대전 하나 시티즌", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "김천종합운동장", league: 1, dayOffset: -1)
-                ]
-            } else {
-                self.matches = [
-                    MockMatch(homeTeam: "수원 삼성", awayTeam: "부산 아이파크", homeScore: 1, awayScore: 0, status: "LIVE", time: "85'", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "서울 이랜드", awayTeam: "수원 FC", homeScore: nil, awayScore: nil, status: "NS", time: "15:00", stadium: "목동종합운동장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "성남 FC", awayTeam: "대구 FC", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "탄천종합운동장", league: 2, dayOffset: 0),
-                    
-                    MockMatch(homeTeam: "전남 드래곤즈", awayTeam: "충남아산 FC", homeScore: nil, awayScore: nil, status: "NS", time: "19:00", stadium: "광양축구전용구장", league: 2, dayOffset: 1),
-                    MockMatch(homeTeam: "안산 그리너스", awayTeam: "경남 FC", homeScore: 0, awayScore: 2, status: "FT", time: "종료", stadium: "안산와스타디움", league: 2, dayOffset: -1)
-                ]
-            }
-        } else if season == 2025 {
-            if league == 1 {
-                self.matches = [
-                    MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "김천 상무", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "대전 하나 시티즌", awayTeam: "포항 스틸러스", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "대전월드컵경기장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "FC 서울", awayTeam: "강원 FC", homeScore: 3, awayScore: 2, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
-                    
-                    MockMatch(homeTeam: "FC 안양", awayTeam: "광주 FC", homeScore: 1, awayScore: 2, status: "FT", time: "종료", stadium: "안양종합운동장", league: 1, dayOffset: 1),
-                    MockMatch(homeTeam: "울산 HD FC", awayTeam: "수원 FC", homeScore: 0, awayScore: 0, status: "FT", time: "종료", stadium: "울산문수축구경기장", league: 1, dayOffset: 1),
-                    
-                    MockMatch(homeTeam: "제주 유나이티드", awayTeam: "대구 FC", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "제주월드컵경기장", league: 1, dayOffset: -1)
-                ]
-            } else {
-                self.matches = [
-                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "부천 FC 1995", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "수원 삼성", awayTeam: "서울 이랜드", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "전남 드래곤즈", awayTeam: "부산 아이파크", homeScore: 0, awayScore: 2, status: "FT", time: "종료", stadium: "광양축구전용구장", league: 2, dayOffset: 0),
-                    
-                    MockMatch(homeTeam: "성남 FC", awayTeam: "충남아산 FC", homeScore: 1, awayScore: 3, status: "FT", time: "종료", stadium: "탄천종합운동장", league: 2, dayOffset: 1),
-                    MockMatch(homeTeam: "천안 시티 FC", awayTeam: "김포 FC", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: -1)
-                ]
-            }
+        var baseMatches: [MockMatch] = []
+        
+        if season == 2025 {
+            baseMatches = DummyData2025.matches.filter { $0.league == league }
         } else {
-            // 2024년 및 이전 디폴트 데이터 (종료된 시즌이므로 완료 상태로 표시)
-            self.matches = [
+            // 과거 시즌 더미 데이터
+            baseMatches = [
                 MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: league, dayOffset: 0),
                 MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: league, dayOffset: 0),
                 MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
-                
                 MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: league, dayOffset: 1),
                 MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
-                
                 MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
             ]
         }
+        
+        // 더미 데이터의 dayOffset을 이용해 현재 선택된 년/월에 가짜 dateString을 주입
+        let calendar = Calendar.current
+        var dateComponents = DateComponents()
+        dateComponents.year = self.selectedSeason
+        dateComponents.month = self.selectedMonth
+        dateComponents.day = self.selectedDay
+        let centerDate = calendar.date(from: dateComponents) ?? Date()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let mappedMatches = baseMatches.map { match -> MockMatch in
+            var newMatch = match
+            let fakeDate = calendar.date(byAdding: .day, value: match.dayOffset, to: centerDate) ?? centerDate
+            newMatch.dateString = dateFormatter.string(from: fakeDate)
+            return newMatch
+        }
+        
+        self.matches = mappedMatches
     }
 }
 
