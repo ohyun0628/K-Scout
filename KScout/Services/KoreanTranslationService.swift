@@ -272,7 +272,153 @@ struct KoreanTranslationService {
         
         "oberdan": "오베르단",
         
-        "kornelius hansen": "코르넬리우스"
+        "kornelius hansen": "코르넬리우스",
+        
+        // K-Scout 추가 영문 선수명 번역 테이블 (2024 시즌 및 API-Football 대응)
+        "g. ludwigson": "루빅손",
+        "gustav ludwigson": "루빅손",
+        "ludwigson": "루빅손",
+        
+        "jorge luiz": "조르지",
+        "jorge": "조르지",
+        
+        "hwang mun-ki": "황문기",
+        "mun-ki hwang": "황문기",
+        
+        "d. bojanić": "보야니치",
+        "bojanić": "보야니치",
+        "darijan bojanić": "보야니치",
+        "bojanic": "보야니치",
+        "d. bojanic": "보야니치",
+        
+        "han seung-gyu": "한승규",
+        "seung-gyu han": "한승규",
+        
+        "lee ho-jae": "이호재",
+        "ho-jae lee": "이호재",
+        
+        "j. lingard": "린가드",
+        "jesse lingard": "린가드",
+        "lingard": "린가드",
+        
+        "yang min-hyuk": "양민혁",
+        "yang min-hyeok": "양민혁",
+        "min-hyuk yang": "양민혁",
+        "min-hyeok yang": "양민혁",
+        
+        "lee myung-jae": "이명재",
+        "myung-jae lee": "이명재",
+        
+        "lee jin-hyun": "이진현",
+        "jin-hyun lee": "이진현",
+        
+        "doo hyeon-seok": "두현석",
+        "hyeon-seok doo": "두현석",
+        
+        "jeong seung-won": "정승원",
+        "seung-won jeong": "정승원",
+        
+        "jeong jae-hee": "정재희",
+        "jae-hee jeong": "정재희",
+        
+        "lee chung-yong": "이청용",
+        "chung-yong lee": "이청용",
+        
+        "bruno mota": "브루노",
+        "bruno lamas": "라마스",
+        
+        "yun ju-tae": "윤주태",
+        "ju-tae yun": "윤주태",
+        
+        "ha nam": "하남",
+        "nam ha": "하남",
+        
+        "won ki-jong": "원기종",
+        "ki-jong won": "원기종",
+        
+        "seong-woo park": "박성우",
+        "hye-seong kim": "김혜성",
+        
+        "juninho rocha": "주닝요",
+        "juninho": "주닝요",
+        
+        "kim jong-min": "김종민",
+        "jong-min kim": "김종민",
+        
+        "bruno silva": "브루노 실바",
+        
+        "byeon gyung-jun": "변경준",
+        "gyung-jun byeon": "변경준",
+        
+        "b. arabuli": "아라불리",
+        "bachana arabuli": "아라불리",
+        
+        "matheus oliveira": "마테우스",
+        
+        "jucie lupeta": "루페타",
+        "lupeta": "루페타",
+        
+        "osmar": "오스마르",
+        
+        "lim min-hyeok": "임민혁",
+        "min-hyeok lim": "임민혁",
+        
+        "park min-seo": "박민서",
+        "min-seo park": "박민서",
+        
+        "lee dong-su": "이동수",
+        "dong-su lee": "이동수",
+        
+        "yoon jae-seok": "윤재석",
+        "jae-seok yoon": "윤재석",
+        
+        "p. mlapa": "음라파",
+        "peniel mlapa": "음라파",
+        
+        "cho ji-hun": "조지훈",
+        "ji-hun cho": "조지훈",
+        
+        "park tae-yong": "박태용",
+        "tae-yong park": "박태용",
+        
+        "jeong jae-min": "정재민",
+        "jae-min jeong": "정재민",
+        
+        "lee jun-ho": "이준호",
+        "jun-ho lee": "이준호",
+        
+        "moon seon-min": "문선민",
+        "seon-min moon": "문선민",
+        
+        "kim in-gyun": "김인균",
+        "in-gyun kim": "김인균",
+        
+        "goh young-jun": "고영준",
+        "young-jun goh": "고영준",
+        
+        "cheon seong-hoon": "천성훈",
+        "seong-hoon cheon": "천성훈",
+        
+        "eom ji-sung": "엄지성",
+        "ji-sung eom": "엄지성",
+        
+        "willyan": "윌리안",
+        
+        "go jae-hyeon": "고재현",
+        "jae-hyeon go": "고재현",
+        
+        "a. paločević": "팔로세비치",
+        "palocivic": "팔로세비치",
+        "palocevic": "팔로세비치",
+        
+        "leandro ribeiro": "레안드로",
+        "leandro": "레안드로",
+        
+        "kim do-hyeok": "김도혁",
+        "do-hyeok kim": "김도혁",
+        
+        "seol young-woo": "설영우",
+        "young-woo seol": "설영우"
     ]
     
     // 팀명 번역 함수

@@ -62,15 +62,12 @@ struct FavoriteView: View {
     @ViewBuilder
     private func playerRow(_ player: Player) -> some View {
         HStack(spacing: 14) {
-            // 선수 프로필 이니셜 원형 배지
-            Circle()
-                .fill(logoColor(for: player.teamName).opacity(0.1))
-                .frame(width: 44, height: 44)
-                .overlay(
-                    Text(String(player.name.prefix(1)))
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(logoColor(for: player.teamName))
-                )
+            // 선수 프로필 이미지 (실사 사진 또는 이니셜 원형 배지)
+            if let photoUrl = player.photo, !photoUrl.isEmpty {
+                RemoteImageView(urlString: photoUrl, size: 44, fallback: AnyView(fallbackAvatar(for: player)), isCircle: true)
+            } else {
+                fallbackAvatar(for: player)
+            }
             
             // 선수 기본 정보
             VStack(alignment: .leading, spacing: 4) {
@@ -121,6 +118,17 @@ struct FavoriteView: View {
         .background(Color.white)
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.015), radius: 6, x: 0, y: 3)
+    }
+    
+    private func fallbackAvatar(for player: Player) -> some View {
+        Circle()
+            .fill(logoColor(for: player.teamName).opacity(0.1))
+            .frame(width: 44, height: 44)
+            .overlay(
+                Text(String(player.name.prefix(1)))
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(logoColor(for: player.teamName))
+            )
     }
     
     // K리그 실전 매칭을 위한 팀별 브랜드 컬러 매핑 함수 (동일 로직 유지)

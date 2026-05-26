@@ -44,6 +44,10 @@
 		CEA59C792FBB49350028046D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA59C782FBB49340028046D /* LoginView.swift */; };
 		CEA59C7B2FBB50380028046D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEA59C7A2FBB50380028046D /* GoogleService-Info.plist */; };
 		CEA59C7E2FBB56400028046D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CEA59C7D2FBB56400028046D /* FirebaseAuth */; };
+		CE7055912FBC2EDC00147E7E /* KoreanTranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */; };
+		CE7055932FBC2EDC00147E7E /* DummyData2025.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055922FBC2EDC00147E7E /* DummyData2025.swift */; };
+		CE7055952FBC2EDC00147E7E /* TeamDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */; };
+		CE7055972FBC2EDC00147E7E /* TeamDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,6 +89,10 @@
 		CEA59C682FBB26730028046D /* SplashView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		CEA59C782FBB49340028046D /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		CEA59C7A2FBB50380028046D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KoreanTranslationService.swift; sourceTree = "<group>"; };
+		CE7055922FBC2EDC00147E7E /* DummyData2025.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2025.swift; sourceTree = "<group>"; };
+		CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamDetailViewModel.swift; sourceTree = "<group>"; };
+		CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +176,7 @@
 			children = (
 				CEA59C532FBB26730028046D /* RankingViewModel.swift */,
 				CE70551D2FBC2EDB00147E7E /* SearchViewModel.swift */,
+				CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */,
 			);
 			name = ViewModels;
 			path = "../../K-Scout/KScout/ViewModels";
@@ -203,6 +212,8 @@
 				CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */,
 				CEA59C5B2FBB26730028046D /* NetworkManager.swift */,
 				CEA59C5C2FBB26730028046D /* APIEndpoint.swift */,
+				CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */,
+				CE7055922FBC2EDC00147E7E /* DummyData2025.swift */,
 			);
 			name = Services;
 			path = "../../K-Scout/KScout/Services";
@@ -229,6 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				CEA59C602FBB26730028046D /* RankingView.swift */,
+				CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */,
 			);
 			path = Ranking;
 			sourceTree = "<group>";
@@ -377,6 +389,10 @@
 				CE70551C2FBC2EDB00147E7E /* HeaderTitleView.swift in Sources */,
 				CE70551E2FBC2EDB00147E7E /* SearchViewModel.swift in Sources */,
 				CE7055202FBC2EDB00147E7E /* PlayerDetailView.swift in Sources */,
+				CE7055912FBC2EDC00147E7E /* KoreanTranslationService.swift in Sources */,
+				CE7055932FBC2EDC00147E7E /* DummyData2025.swift in Sources */,
+				CE7055952FBC2EDC00147E7E /* TeamDetailViewModel.swift in Sources */,
+				CE7055972FBC2EDC00147E7E /* TeamDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
