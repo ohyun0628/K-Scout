@@ -5,6 +5,10 @@ struct DateSliderView: View {
     @Binding var selectedMonth: Int
     @Binding var selectedDay: Int
     
+    var currentYear: Int { Calendar.current.component(.year, from: Date()) }
+    var currentMonth: Int { Calendar.current.component(.month, from: Date()) }
+    var currentDay: Int { Calendar.current.component(.day, from: Date()) }
+    
     // 선택된 달의 일수 계산
     var daysInMonth: Int {
         var components = DateComponents()
@@ -34,32 +38,45 @@ struct DateSliderView: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
+                HStack(spacing: 8) {
                     ForEach(1...daysInMonth, id: \.self) { day in
+                        let isToday = (selectedYear == currentYear && selectedMonth == currentMonth && day == currentDay)
+                        let isSelected = (selectedDay == day)
+                        let activeColor = Color.blue
+                        
                         Button(action: {
                             withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
                                 selectedDay = day
                             }
                         }) {
-                            VStack(spacing: 6) {
-                                Text(weekdayString(for: day))
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundColor(selectedDay == day ? Color.brandNavy : .gray)
+                            VStack(spacing: 8) {
+                                Text(isToday ? "오늘" : weekdayString(for: day))
+                                    .font(.system(size: 13, weight: isToday ? .bold : .medium))
+                                    .foregroundColor(isSelected || isToday ? activeColor : .gray)
                                 
                                 Text("\(day)")
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundColor(selectedDay == day ? .white : Color.brandNavy)
-                                    .frame(width: 36, height: 36)
-                                    .background(selectedDay == day ? Color.brandNavy : Color.clear)
-                                    .clipShape(Circle())
+                                    .font(.system(size: 16, weight: isSelected ? .bold : .regular))
+                                    .foregroundColor(isSelected || isToday ? activeColor : .black)
+                                
+                                Rectangle()
+                                    .fill(isSelected ? activeColor : Color.clear)
+                                    .frame(height: 3)
+                                    .padding(.horizontal, 4)
                             }
+                            .frame(width: 44)
                         }
                         .id(day)
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.bottom, 6)
+                .padding(.top, 10)
             }
+            .background(Color.white)
+            .overlay(
+                Divider()
+                    .background(Color.gray.opacity(0.2))
+                , alignment: .bottom
+            )
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     proxy.scrollTo(selectedDay, anchor: .center)
@@ -78,7 +95,5 @@ struct DateSliderView: View {
                 }
             }
         }
-        .padding(.vertical, 10)
-        .background(Color.white)
     }
 }

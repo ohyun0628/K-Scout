@@ -25,15 +25,26 @@ struct ScheduleView: View {
     
     var body: some View {
         ZStack {
-            // 그레이 베이스 백그라운드
+            // 그레이 베이스 백그라운드 (#F2F4F7과 유사한 색상)
             Color(UIColor.systemGroupedBackground)
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                // 1. 경기 일정 커스텀 헤더 타이틀 (시즌/월 선택 바인딩)
-                HeaderTitleView(title: "경기 일정", selectedSeason: $viewModel.selectedSeason, selectedMonth: $viewModel.selectedMonth)
+                // 1. 네이버 스포츠 스타일 중앙 정렬 헤더
+                ScheduleHeaderView(
+                    selectedYear: $viewModel.selectedSeason,
+                    selectedMonth: $viewModel.selectedMonth,
+                    selectedDay: $viewModel.selectedDay
+                )
                 
-                // 2. K리그1 / K리그2 세그먼트 셀렉터
+                // 2. 무한 가로 데이트 슬라이더 (파란색 밑줄 스타일)
+                DateSliderView(
+                    selectedYear: $viewModel.selectedSeason,
+                    selectedMonth: $viewModel.selectedMonth,
+                    selectedDay: $viewModel.selectedDay
+                )
+                
+                // 3. K리그1 / K리그2 세그먼트 셀렉터 (간격 조정)
                 HStack(spacing: 0) {
                     Button(action: {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
@@ -67,11 +78,8 @@ struct ScheduleView: View {
                 .background(Color(UIColor.secondarySystemBackground))
                 .cornerRadius(12)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 16)
-                
-                // 3. 무한 가로 데이트 슬라이더
-                DateSliderView(selectedYear: $viewModel.selectedSeason, selectedMonth: $viewModel.selectedMonth, selectedDay: $viewModel.selectedDay)
-                    .padding(.bottom, 8)
+                .padding(.top, 16)
+                .padding(.bottom, 12)
                 
                 // 4. 경기 카드 리스트 영역
                 ScrollView(showsIndicators: false) {
@@ -142,7 +150,6 @@ struct ScheduleView: View {
         }
     }
     
-    // 알림 설정 토글 비즈니스 로직
     private func toggleNotification(for match: MockMatch) {
         if notificationSubscription.contains(match.id) {
             notificationSubscription.remove(match.id)
@@ -152,6 +159,97 @@ struct ScheduleView: View {
             alertMessage = "\(match.homeTeam) vs \(match.awayTeam) 경기 시작 15분 전에 푸시 알림을 보내드립니다!"
         }
         showAlert = true
+    }
+}
+
+// MARK: - 네이버 스포츠 스타일 중앙 정렬 헤더
+struct ScheduleHeaderView: View {
+    @Binding var selectedYear: Int
+    @Binding var selectedMonth: Int
+    @Binding var selectedDay: Int
+    @State private var showDatePicker = false
+    
+    var body: some View {
+        HStack {
+            // 최근 버튼
+            Button(action: {
+                let date = Date()
+                let calendar = Calendar.current
+                selectedYear = calendar.component(.year, from: date)
+                selectedMonth = calendar.component(.month, from: date)
+                selectedDay = calendar.component(.day, from: date)
+            }) {
+                Text("최근")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundColor(.gray)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                    )
+            }
+            
+            Spacer()
+            
+            // 중앙 연/월 텍스트 및 좌우 화살표
+            HStack(spacing: 16) {
+                Button(action: {
+                    if selectedMonth == 1 {
+                        selectedYear -= 1
+                        selectedMonth = 12
+                    } else {
+                        selectedMonth -= 1
+                    }
+                    selectedDay = 1
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.black)
+                }
+                
+                Text(String(format: "%d.%02d", selectedYear, selectedMonth))
+                    .font(.system(size: 22, weight: .heavy))
+                    .foregroundColor(.black)
+                
+                Button(action: {
+                    if selectedMonth == 12 {
+                        selectedYear += 1
+                        selectedMonth = 1
+                    } else {
+                        selectedMonth += 1
+                    }
+                    selectedDay = 1
+                }) {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.black)
+                }
+            }
+            
+            Spacer()
+            
+            // 달력 아이콘 (바텀 시트 띄우기)
+            Button(action: {
+                showDatePicker = true
+            }) {
+                HStack(spacing: 2) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 17))
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10, weight: .bold))
+                        .padding(.top, 2)
+                }
+                .foregroundColor(.gray)
+            }
+            .sheet(isPresented: $showDatePicker) {
+                YearMonthPickerSheet(selectedYear: $selectedYear, selectedMonth: $selectedMonth)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
+        .padding(.bottom, 12)
+        .background(Color.white)
     }
 }
 
@@ -269,18 +367,16 @@ class ScheduleViewModel: ObservableObject {
         if season == 2025 {
             baseMatches = DummyData2025.matches.filter { $0.league == league }
         } else {
-            // 과거 시즌 더미 데이터
             baseMatches = [
                 MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: league, dayOffset: 0),
                 MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: league, dayOffset: 0),
                 MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: league, dayOffset: 0),
                 MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: league, dayOffset: 1),
                 MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: league, dayOffset: 1),
-                MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
+                MockMatch(homeTeam: "강원 FC", away 중앙: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: league, dayOffset: -1)
             ]
         }
         
-        // 더미 데이터의 dayOffset을 이용해 현재 선택된 년/월에 가짜 dateString을 주입
         let calendar = Calendar.current
         var dateComponents = DateComponents()
         dateComponents.year = self.selectedSeason
