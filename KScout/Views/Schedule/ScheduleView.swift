@@ -34,7 +34,8 @@ struct ScheduleView: View {
                 ScheduleHeaderView(
                     selectedYear: $viewModel.selectedSeason,
                     selectedMonth: $viewModel.selectedMonth,
-                    selectedDay: $viewModel.selectedDay
+                    selectedDay: $viewModel.selectedDay,
+                    matches: viewModel.matches
                 )
                 
                 // 2. 무한 가로 데이트 슬라이더 (파란색 밑줄 스타일)
@@ -167,6 +168,8 @@ struct ScheduleHeaderView: View {
     @Binding var selectedYear: Int
     @Binding var selectedMonth: Int
     @Binding var selectedDay: Int
+    var matches: [MockMatch]
+    
     @State private var showDatePicker = false
     
     var body: some View {
@@ -243,7 +246,7 @@ struct ScheduleHeaderView: View {
                 .foregroundColor(.gray)
             }
             .sheet(isPresented: $showDatePicker) {
-                CalendarSheetView(selectedYear: $selectedYear, selectedMonth: $selectedMonth, selectedDay: $selectedDay)
+                CalendarSheetView(selectedYear: $selectedYear, selectedMonth: $selectedMonth, selectedDay: $selectedDay, matches: matches)
             }
         }
         .padding(.horizontal, 20)
@@ -259,6 +262,7 @@ struct CalendarSheetView: View {
     @Binding var selectedYear: Int
     @Binding var selectedMonth: Int
     @Binding var selectedDay: Int
+    var matches: [MockMatch]
     
     @State private var viewingYear: Int
     @State private var viewingMonth: Int
@@ -390,6 +394,8 @@ struct CalendarSheetView: View {
                     } else {
                         let isToday = (viewingYear == currentYear && viewingMonth == currentMonth && item.day == currentDay)
                         let isSelected = (viewingYear == selectedYear && viewingMonth == selectedMonth && item.day == selectedDay)
+                        let dateStr = String(format: "%04d-%02d-%02d", viewingYear, viewingMonth, item.day)
+                        let count = matches.filter { $0.dateString == dateStr }.count
                         
                         Button(action: {
                             selectedYear = viewingYear
@@ -402,9 +408,19 @@ struct CalendarSheetView: View {
                                     .font(.system(size: 16, weight: isToday || isSelected ? .bold : .regular))
                                     .foregroundColor(isSelected ? .white : (isToday ? .blue : .black))
                                 
-                                Text("•")
-                                    .font(.system(size: 11))
-                                    .foregroundColor(isSelected ? .white.opacity(0.8) : .gray.opacity(0.5))
+                                if count > 0 {
+                                    Text("\(count)")
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundColor(isSelected ? .white : Color.brandNavy)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(isSelected ? Color.white.opacity(0.3) : Color.brandNavy.opacity(0.1))
+                                        .cornerRadius(4)
+                                } else {
+                                    Text(" ")
+                                        .font(.system(size: 11))
+                                        .padding(.vertical, 2)
+                                }
                             }
                             .frame(width: 40, height: 50)
                             .background(
@@ -432,15 +448,11 @@ class ScheduleViewModel: ObservableObject {
     @Published var matches: [MockMatch] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var selectedLeague: Int = 1 {
-        didSet { fetchSchedule() }
-    }
+    @Published var selectedLeague: Int = 1
     @Published var selectedSeason: Int {
         didSet { fetchSchedule() }
     }
-    @Published var selectedMonth: Int {
-        didSet { fetchSchedule() }
-    }
+    @Published var selectedMonth: Int
     @Published var selectedDay: Int
     
     private var apiMatches: [FixtureItem] = []
@@ -456,7 +468,6 @@ class ScheduleViewModel: ObservableObject {
     func fetchSchedule() {
         self.isLoading = true
         self.errorMessage = nil
-        let league = self.selectedLeague
         let season = self.selectedSeason
         
         if season >= 2026 {
@@ -466,37 +477,63 @@ class ScheduleViewModel: ObservableObject {
         }
         
         if season == 2025 {
-            self.loadMockData(league: league, season: season)
+            self.loadMockData(season: season)
             self.isLoading = false
             return
         }
         
-        NetworkManager.shared.request(endpoint: .fixtures(league: league, season: season)) { (result: Result<[FixtureItem], NetworkError>) in
+        let dispatchGroup = DispatchGroup()
+        var allApiMatches: [MockMatch] = []
+        var anyFailure = false
+        
+        // K리그 1
+        dispatchGroup.enter()
+        NetworkManager.shared.request(endpoint: .fixtures(league: 1, season: season)) { (result: Result<[FixtureItem], NetworkError>) in
             DispatchQueue.main.async {
-                self.isLoading = false
                 switch result {
                 case .success(let items):
-                    if items.isEmpty {
-                        self.loadMockData(league: league, season: season)
-                    } else {
-                        self.apiMatches = items
-                        self.mapApiMatchesToMockMatches(league: league, season: season)
-                    }
+                    let mapped = self.mapItemsToMock(items: items, league: 1)
+                    allApiMatches.append(contentsOf: mapped)
                 case .failure:
-                    self.loadMockData(league: league, season: season)
+                    anyFailure = true
                 }
+                dispatchGroup.leave()
+            }
+        }
+        
+        // K리그 2
+        dispatchGroup.enter()
+        NetworkManager.shared.request(endpoint: .fixtures(league: 2, season: season)) { (result: Result<[FixtureItem], NetworkError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let items):
+                    let mapped = self.mapItemsToMock(items: items, league: 2)
+                    allApiMatches.append(contentsOf: mapped)
+                case .failure:
+                    anyFailure = true
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.isLoading = false
+            if anyFailure || allApiMatches.isEmpty {
+                self.loadMockData(season: season)
+            } else {
+                self.matches = allApiMatches
             }
         }
     }
     
-    private func mapApiMatchesToMockMatches(league: Int, season: Int) {
+    private func mapItemsToMock(items: [FixtureItem], league: Int) -> [MockMatch] {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        let apiFiltered = apiMatches.compactMap { item -> MockMatch? in
+        return items.compactMap { item -> MockMatch? in
             guard let matchDate = isoFormatter.date(from: item.fixture.date) else { return nil }
             let matchDateString = dateFormatter.string(from: matchDate)
             
@@ -530,35 +567,31 @@ class ScheduleViewModel: ObservableObject {
             match.dateString = matchDateString
             return match
         }
-        
-        self.matches = apiFiltered
     }
     
-    private func loadMockData(league: Int, season: Int) {
+    private func loadMockData(season: Int) {
         var baseMatches: [MockMatch] = []
         
         if season == 2025 {
-            baseMatches = DummyData2025.matches.filter { $0.league == league }
+            baseMatches = DummyData2025.matches
         } else {
-            if league == 1 {
-                baseMatches = [
-                    MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: 1, dayOffset: 0),
-                    MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
-                    MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: 1, dayOffset: 1),
-                    MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: 1, dayOffset: -1)
-                ]
-            } else {
-                baseMatches = [
-                    MockMatch(homeTeam: "수원 삼성", awayTeam: "부천 FC 1995", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "서울 이랜드", awayTeam: "전남 드래곤즈", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "목동종합운동장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "부산 아이파크", awayTeam: "충남아산 FC", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "부산아시아드주경기장", league: 2, dayOffset: 0),
-                    MockMatch(homeTeam: "인천 유나이티드", awayTeam: "김포 FC", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 2, dayOffset: 1),
-                    MockMatch(homeTeam: "천안 시티 FC", awayTeam: "화성 FC", homeScore: 0, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: 1),
-                    MockMatch(homeTeam: "경남 FC", awayTeam: "안산 그리너스", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "창원축구센터", league: 2, dayOffset: -1)
-                ]
-            }
+            let l1 = [
+                MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
+                MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
+                MockMatch(homeTeam: "수원 FC", awayTeam: "대전 하나 시티즌", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "수원종합운동장", league: 1, dayOffset: 0),
+                MockMatch(homeTeam: "광주 FC", awayTeam: "인천 유나이티드", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "광주축구전용구장", league: 1, dayOffset: 1),
+                MockMatch(homeTeam: "대구 FC", awayTeam: "제주 유나이티드", homeScore: 0, awayScore: 1, status: "FT", time: "종료", stadium: "DGB대구은행파크", league: 1, dayOffset: 1),
+                MockMatch(homeTeam: "강원 FC", awayTeam: "김천 상무", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "강릉종합운동장", league: 1, dayOffset: -1)
+            ]
+            let l2 = [
+                MockMatch(homeTeam: "수원 삼성", awayTeam: "부천 FC 1995", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "수원월드컵경기장", league: 2, dayOffset: 0),
+                MockMatch(homeTeam: "서울 이랜드", awayTeam: "전남 드래곤즈", homeScore: 1, awayScore: 1, status: "FT", time: "종료", stadium: "목동종합운동장", league: 2, dayOffset: 0),
+                MockMatch(homeTeam: "부산 아이파크", awayTeam: "충남아산 FC", homeScore: 2, awayScore: 0, status: "FT", time: "종료", stadium: "부산아시아드주경기장", league: 2, dayOffset: 0),
+                MockMatch(homeTeam: "인천 유나이티드", awayTeam: "김포 FC", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "인천축구전용경기장", league: 2, dayOffset: 1),
+                MockMatch(homeTeam: "천안 시티 FC", awayTeam: "화성 FC", homeScore: 0, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: 1),
+                MockMatch(homeTeam: "경남 FC", awayTeam: "안산 그리너스", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "창원축구센터", league: 2, dayOffset: -1)
+            ]
+            baseMatches = l1 + l2
         }
         
         let calendar = Calendar.current
