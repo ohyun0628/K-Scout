@@ -253,9 +253,6 @@ struct ScheduleHeaderView: View {
     }
 }
 
-    }
-}
-
 // MARK: - 네이버 스포츠 스타일 캘린더 바텀 시트
 struct CalendarSheetView: View {
     @Environment(\.presentationMode) var presentationMode
