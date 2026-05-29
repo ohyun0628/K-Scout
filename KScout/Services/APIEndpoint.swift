@@ -3,6 +3,7 @@ import Foundation
 enum APIEndpoint {
     case standings(league: Int, season: Int)
     case fixtures(league: Int, season: Int, team: Int? = nil)
+    case fixtureDetail(id: Int)
     case players(team: Int, season: Int)
     case playerSearch(query: String, league: Int, season: Int)
     case topScorers(league: Int, season: Int)
@@ -15,7 +16,7 @@ enum APIEndpoint {
     var path: String {
         switch self {
         case .standings: return "/standings"
-        case .fixtures: return "/fixtures"
+        case .fixtures, .fixtureDetail: return "/fixtures"
         case .players, .playerSearch: return "/players"
         case .topScorers: return "/players/topscorers"
         case .topAssists: return "/players/topassists"
@@ -42,6 +43,10 @@ enum APIEndpoint {
                 items.append(URLQueryItem(name: "team", value: String(teamId)))
             }
             return items
+        case .fixtureDetail(let id):
+            return [
+                URLQueryItem(name: "id", value: String(id))
+            ]
         case .players(let team, let season):
             return [
                 URLQueryItem(name: "team", value: String(team)),

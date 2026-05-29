@@ -94,6 +94,7 @@ class TeamDetailViewModel: ObservableObject {
             }
             
             return MockMatch(
+                apiId: item.fixture.id,
                 homeTeam: KoreanTranslationService.translateTeam(item.teams.home.name),
                 awayTeam: KoreanTranslationService.translateTeam(item.teams.away.name),
                 homeScore: item.goals.home,

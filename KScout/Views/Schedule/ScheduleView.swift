@@ -124,13 +124,16 @@ struct ScheduleView: View {
                     } else {
                         LazyVStack(spacing: 14) {
                             ForEach(filteredMatches) { match in
-                                MatchCardView(
-                                    match: match,
-                                    isSubscribed: notificationSubscription.contains(match.id),
-                                    onNotificationToggle: {
-                                        toggleNotification(for: match)
-                                    }
-                                )
+                                NavigationLink(destination: MatchDetailView(match: match)) {
+                                    MatchCardView(
+                                        match: match,
+                                        isSubscribed: notificationSubscription.contains(match.id),
+                                        onNotificationToggle: {
+                                            toggleNotification(for: match)
+                                        }
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                         .padding(.vertical, 12)
@@ -559,6 +562,7 @@ class ScheduleViewModel: ObservableObject {
             }
             
             var match = MockMatch(
+                apiId: item.fixture.id,
                 homeTeam: KoreanTranslationService.translateTeam(item.teams.home.name),
                 awayTeam: KoreanTranslationService.translateTeam(item.teams.away.name),
                 homeScore: item.goals.home,
