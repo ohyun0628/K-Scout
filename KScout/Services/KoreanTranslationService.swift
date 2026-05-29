@@ -2,6 +2,17 @@ import Foundation
 
 struct KoreanTranslationService {
     
+    // 로마자 성씨 매핑
+    private static let surnames: [String: String] = [
+        "kim": "김", "lee": "이", "park": "박", "choi": "최", "jeong": "정", "jung": "정", "kang": "강", "cho": "조", "jo": "조", "yoon": "윤", "yun": "윤", "jang": "장", "lim": "임", "im": "임", "han": "한", "oh": "오", "seo": "서", "shin": "신", "kwon": "권", "hwang": "황", "ahn": "안", "an": "안", "song": "송", "jeon": "전", "hong": "홍", "ko": "고", "go": "고", "goh": "고", "moon": "문", "mun": "문", "yang": "양", "son": "손", "bae": "배", "baek": "백", "heo": "허", "huh": "허", "nam": "남", "sim": "심", "shim": "심", "no": "노", "noh": "노", "kwak": "곽", "woo": "우", "gu": "구", "koo": "구", "ha": "하", "doo": "두", "do": "두", "ryu": "류", "seol": "설", "ma": "마", "bang": "방", "won": "원", "um": "엄", "eom": "엄", "yeon": "연", "you": "유", "yoo": "유", "yu": "유", "chun": "천", "cheon": "천", "paik": "백", "joung": "정", "jeung": "정", "myung": "명", "myeong": "명"
+    ]
+    
+    // 로마자 이름(음절) 매핑
+    private static let syllables: [String: String] = [
+        "min": "민", "kyu": "규", "gyu": "규", "joon": "준", "jun": "준", "ho": "호", "hyung": "형", "hyeong": "형", "geun": "근", "gun": "건", "geon": "건", "ju": "주", "joo": "주", "yong": "용", "young": "영", "yeong": "영", "seung": "승", "woo": "우", "won": "원", "sang": "상", "jin": "진", "su": "수", "soo": "수", "jae": "재", "hyun": "현", "hyeon": "현", "tae": "태", "dong": "동", "kyung": "경", "gyeong": "경", "suk": "석", "seok": "석", "ji": "지", "hoon": "훈", "hun": "훈", "sung": "성", "seong": "성", "dae": "대", "il": "일", "lok": "록", "rok": "록", "chul": "철", "cheul": "철", "garam": "가람", "bum": "범", "beom": "범", "chang": "창", "ki": "기", "gi": "기", "jong": "종", "nam": "남", "myung": "명", "myeong": "명", "chung": "청", "cheong": "청", "yeon": "연", "eun": "은", "ha": "하", "in": "인", "do": "도", "hyuk": "혁", "hyeok": "혁", "gwang": "광", "kwang": "광", "chan": "찬", "bin": "빈", "hwan": "환", "ryong": "룡", "wook": "욱", "yoon": "윤", "yun": "윤", "kwan": "관", "gwan": "관", "mo": "모", "pyo": "표", "sol": "솔", "seo": "서", "seon": "선", "sun": "선", "bo": "보", "je": "제", "hwi": "휘", "san": "산", "yeop": "엽", "yup": "엽", "hak": "학", "ryeol": "렬", "ryul": "률", "ryun": "륜", "ryeo": "려", "joong": "중", "jung": "중", "jeong": "정", "hee": "희", "hi": "희", "bi": "비", "kug": "국", "gook": "국", "guk": "국", "wan": "완", "uk": "욱", "ok": "옥", "chong": "총", "che": "체", "baek": "백", "paek": "백", "bong": "봉", "kwon": "권", "gwon": "권", "kang": "강", "gang": "강", "dan": "단", "dal": "달", "dam": "담", "rim": "림", "lim": "림", "chin": "진", "chun": "춘", "choon": "춘", "sam": "삼", "shik": "식", "sik": "식", "shin": "신", "sin": "신", "ah": "아", "a": "아", "oh": "오", "o": "오", "on": "온", "song": "송", "ye": "예", "jo": "조", "cho": "조", "chu": "추", "choo": "추", "chi": "치", "po": "포", "heung": "흥", "hyo": "효", "hye": "혜", "duk": "덕", "deok": "덕", "pil": "필", "ui": "의"
+    ]
+
+    
     // 팀명 한글 번역 딕셔너리
     private static let teamDictionary: [String: String] = [
         "ulsan hyundai": "울산 HD",
@@ -537,8 +548,36 @@ struct KoreanTranslationService {
             }
         }
         
-        // 한글 이름 Romanized 정규화 패턴 매칭 시도 (예: "Gue-sung Cho" -> "조규성" 자동 매핑 룰)
-        // 기본 딕셔너리에 대부분 매핑되므로 미번역 시 원본 리턴
+        // 3. 한글 이름 Romanized 정규화 패턴 동적 매칭 시도 (예: "Joon-Ho Hong" -> "홍준호")
+        if let decodedName = decodeRomanizedKorean(key) {
+            return decodedName
+        }
+        
         return name
+    }
+    
+    // 자동 영문 -> 한글 변환기 (Heuristic Decoder)
+    private static func decodeRomanizedKorean(_ cleanName: String) -> String? {
+        // "Choi Young-Jun" -> ["choi", "young", "jun"]
+        var components = cleanName.components(separatedBy: CharacterSet(charactersIn: " -"))
+        components = components.filter { !$0.isEmpty }
+        
+        guard components.count == 3 else { return nil }
+        
+        // 3어절일 때 (Last First First) -> 예: Kim Hyung Geun
+        if let last = surnames[components[0]], 
+           let first1 = syllables[components[1]], 
+           let first2 = syllables[components[2]] {
+            return "\(last)\(first1)\(first2)"
+        }
+        
+        // 3어절일 때 (First First Last) -> 예: Joon Ho Hong
+        if let last = surnames[components[2]], 
+           let first1 = syllables[components[0]], 
+           let first2 = syllables[components[1]] {
+            return "\(last)\(first1)\(first2)"
+        }
+        
+        return nil
     }
 }
