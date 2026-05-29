@@ -91,7 +91,7 @@ struct ScheduleView: View {
                                 .padding(.top, 60)
                             Spacer()
                         }
-                    } else if viewModel.selectedSeason >= 2026 && filteredMatches.isEmpty {
+                    } else if viewModel.selectedSeason >= 2025 && filteredMatches.isEmpty {
                         // 2026시즌 등 미래의 일정이 없을 경우
                         VStack(spacing: 20) {
                             Image(systemName: "calendar.badge.clock")
@@ -99,11 +99,11 @@ struct ScheduleView: View {
                                 .foregroundColor(.gray.opacity(0.8))
                                 .padding(.top, 60)
                             
-                            Text("\(String(viewModel.selectedSeason)) 시즌 일정 준비 중")
+                            Text("\(String(viewModel.selectedSeason)) 시즌 경기 일정 준비중입니다.")
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(Color.brandNavy)
                             
-                            Text("\(String(viewModel.selectedSeason)) 시즌 경기 일정은 준비 중입니다.\n이전 시즌(2025년 이하) 정보를 조회해 주세요.")
+                            Text("22~24년도만 제공중입니다")
                                 .font(.system(size: 14))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -199,8 +199,10 @@ struct ScheduleHeaderView: View {
             HStack(spacing: 16) {
                 Button(action: {
                     if selectedMonth == 1 {
-                        selectedYear -= 1
-                        selectedMonth = 12
+                        if selectedYear > 2022 {
+                            selectedYear -= 1
+                            selectedMonth = 12
+                        }
                     } else {
                         selectedMonth -= 1
                     }
@@ -267,10 +269,11 @@ struct CalendarSheetView: View {
     @State private var viewingYear: Int
     @State private var viewingMonth: Int
     
-    init(selectedYear: Binding<Int>, selectedMonth: Binding<Int>, selectedDay: Binding<Int>) {
+    init(selectedYear: Binding<Int>, selectedMonth: Binding<Int>, selectedDay: Binding<Int>, matches: [MockMatch]) {
         self._selectedYear = selectedYear
         self._selectedMonth = selectedMonth
         self._selectedDay = selectedDay
+        self.matches = matches
         self._viewingYear = State(initialValue: selectedYear.wrappedValue)
         self._viewingMonth = State(initialValue: selectedMonth.wrappedValue)
     }
@@ -316,7 +319,7 @@ struct CalendarSheetView: View {
             // 헤더
             HStack {
                 Menu {
-                    ForEach(Array(2010...2026).reversed(), id: \.self) { year in
+                    ForEach([2026, 2025, 2024, 2023, 2022], id: \.self) { year in
                         Button("\(String(year))년") { viewingYear = year }
                     }
                 } label: {
@@ -334,8 +337,10 @@ struct CalendarSheetView: View {
                 HStack(spacing: 24) {
                     Button(action: {
                         if viewingMonth == 1 {
-                            viewingYear -= 1
-                            viewingMonth = 12
+                            if viewingYear > 2022 {
+                                viewingYear -= 1
+                                viewingMonth = 12
+                            }
                         } else {
                             viewingMonth -= 1
                         }
