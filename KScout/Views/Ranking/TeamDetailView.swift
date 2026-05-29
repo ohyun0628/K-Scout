@@ -203,7 +203,7 @@ struct TeamDetailView: View {
                 }
             }) {
                 VStack(spacing: 8) {
-                    Text("선수단 득점 현황")
+                    Text("선수단 득점 도움 현황")
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(selectedTab == 1 ? Color.brandNavy : .gray)
                     
@@ -393,7 +393,7 @@ struct TeamDetailView: View {
                         
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 6) {
-                                Text(player.name)
+                                Text(KoreanTranslationService.translatePlayer(player.name))
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.primary)
                                 
@@ -437,6 +437,8 @@ struct TeamDetailView: View {
             
             Text(value)
                 .font(.system(size: 12, weight: .bold))
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .foregroundColor(color)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
