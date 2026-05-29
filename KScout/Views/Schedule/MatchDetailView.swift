@@ -213,8 +213,8 @@ struct MatchDetailView: View {
                         .foregroundColor(Color.brandNavy)
                     
                     HStack(alignment: .top, spacing: 16) {
-                        substitutesColumn(lineup: homeLineup, isHome: true)
-                        substitutesColumn(lineup: awayLineup, isHome: false)
+                        substitutesColumn(lineup: homeLineup, isHome: true, events: events)
+                        substitutesColumn(lineup: awayLineup, isHome: false, events: events)
                     }
                     .padding(.horizontal, 16)
                 }
@@ -343,8 +343,8 @@ struct MatchDetailView: View {
         }
     }
     
-    private func substitutesColumn(lineup: FixtureLineup, isHome: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+    private func substitutesColumn(lineup: FixtureLineup, isHome: Bool, events: [FixtureEvent]) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text(lineup.team.name)
                     .font(.system(size: 13, weight: .bold))
@@ -354,27 +354,81 @@ struct MatchDetailView: View {
             .padding(.bottom, 4)
             .overlay(
                 Rectangle()
-                    .fill(isHome ? Color.brandNavy : Color.gray)
+                    .fill(isHome ? Color(red: 200/255, green: 60/255, blue: 60/255) : Color(red: 60/255, green: 120/255, blue: 230/255))
                     .frame(height: 2),
                 alignment: .bottom
             )
             
             if let subs = lineup.substitutes {
                 ForEach(subs, id: \.player.name) { item in
-                    HStack(spacing: 8) {
-                        Text("\(item.player.number ?? 0)")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(isHome ? Color.brandNavy : .gray)
-                            .frame(width: 18, alignment: .leading)
+                    let subInEvent = events.first { $0.type == "subst" && $0.assist?.id == item.player.id }
+                    let isSubbedIn = subInEvent != nil
+                    let replacedPlayerName = subInEvent?.player.name
+                    let subTime = subInEvent?.time.elapsed
+                    let scoredGoal = events.contains { $0.type == "Goal" && $0.player.id == item.player.id }
+                    
+                    HStack(spacing: 12) {
+                        // Profile Image with Badge
+                        ZStack(alignment: .topLeading) {
+                            if let playerId = item.player.id {
+                                AsyncImage(url: URL(string: "https://media.api-sports.io/football/players/\(playerId).png")) { phase in
+                                    switch phase {
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 36, height: 36)
+                                            .clipShape(Circle())
+                                    default:
+                                        Circle().fill(Color(.systemGray5)).frame(width: 36, height: 36)
+                                            .overlay(Image(systemName: "person.fill").foregroundColor(.gray))
+                                    }
+                                }
+                            } else {
+                                Circle().fill(Color(.systemGray5)).frame(width: 36, height: 36)
+                                    .overlay(Image(systemName: "person.fill").foregroundColor(.gray))
+                            }
+                            
+                            if isSubbedIn {
+                                Image(systemName: "arrow.right")
+                                    .font(.system(size: 8, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding(3)
+                                    .background(Circle().fill(Color(red: 120/255, green: 200/255, blue: 100/255)))
+                                    .offset(x: -4, y: -4)
+                            }
+                        }
                         
-                        Text(KoreanTranslationService.translatePlayer(item.player.name))
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(.primary)
+                        // Number
+                        Text("\(item.player.number ?? 0)")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(isHome ? Color(red: 200/255, green: 60/255, blue: 60/255) : Color(red: 60/255, green: 120/255, blue: 230/255))
+                            .frame(width: 22, alignment: .center)
+                        
+                        // Name & Details
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 4) {
+                                Text(KoreanTranslationService.translatePlayer(item.player.name))
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.primary)
+                                
+                                if scoredGoal {
+                                    Image(systemName: "soccerball")
+                                        .font(.system(size: 11))
+                                }
+                            }
+                            
+                            if isSubbedIn, let replaced = replacedPlayerName, let time = subTime {
+                                Text("\(KoreanTranslationService.translatePlayer(replaced)) \(time)'")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.gray)
+                            }
+                        }
                     }
                 }
             }
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(Color.white)
         .cornerRadius(10)
