@@ -183,9 +183,10 @@ struct MatchDetailView: View {
                 let awayLineup = lineups[1]
                 
                 // Graphical Pitch
+                let events = viewModel.fixtureDetails?.events ?? []
                 VStack(spacing: 0) {
                     // Away Team (Top Half)
-                    teamPitchHalfView(lineup: awayLineup, isTop: true)
+                    teamPitchHalfView(lineup: awayLineup, isTop: true, events: events)
                     
                     // Center Line
                     Rectangle()
@@ -198,7 +199,7 @@ struct MatchDetailView: View {
                         )
                     
                     // Home Team (Bottom Half)
-                    teamPitchHalfView(lineup: homeLineup, isTop: false)
+                    teamPitchHalfView(lineup: homeLineup, isTop: false, events: events)
                 }
                 .background(Color(red: 91/255, green: 157/255, blue: 96/255)) // Grass Green
                 .cornerRadius(16)
@@ -223,7 +224,7 @@ struct MatchDetailView: View {
         }
     }
     
-    private func teamPitchHalfView(lineup: FixtureLineup, isTop: Bool) -> some View {
+    private func teamPitchHalfView(lineup: FixtureLineup, isTop: Bool, events: [FixtureEvent]) -> some View {
         VStack(spacing: 0) {
             // Team Header Banner
             HStack {
@@ -249,15 +250,15 @@ struct MatchDetailView: View {
                 // Calculate spacing based on half pitch height
                 VStack(spacing: 20) {
                     if isTop {
-                        pitchRow(players: gks)
-                        pitchRow(players: defs)
-                        pitchRow(players: mids)
-                        pitchRow(players: fwds)
+                        pitchRow(players: gks, events: events)
+                        pitchRow(players: defs, events: events)
+                        pitchRow(players: mids, events: events)
+                        pitchRow(players: fwds, events: events)
                     } else {
-                        pitchRow(players: fwds)
-                        pitchRow(players: mids)
-                        pitchRow(players: defs)
-                        pitchRow(players: gks)
+                        pitchRow(players: fwds, events: events)
+                        pitchRow(players: mids, events: events)
+                        pitchRow(players: defs, events: events)
+                        pitchRow(players: gks, events: events)
                     }
                 }
                 .padding(.vertical, 20)
@@ -265,7 +266,7 @@ struct MatchDetailView: View {
         }
     }
     
-    private func pitchRow(players: [LineupPlayerInfo]) -> some View {
+    private func pitchRow(players: [LineupPlayerInfo], events: [FixtureEvent]) -> some View {
         HStack(spacing: 0) {
             ForEach(players, id: \.player.name) { item in
                 VStack(spacing: 4) {
@@ -294,6 +295,35 @@ struct MatchDetailView: View {
                             Image(systemName: "person.fill")
                                 .font(.system(size: 16))
                                 .foregroundColor(.gray)
+                        }
+                        
+                        let playerEvents = events.filter { $0.player.id == item.player.id || $0.assist?.id == item.player.id }
+                        let scoredGoal = playerEvents.contains { $0.type == "Goal" && $0.player.id == item.player.id }
+                        let madeAssist = playerEvents.contains { $0.type == "Goal" && $0.assist?.id == item.player.id }
+                        let subbedOut = playerEvents.contains { $0.type == "subst" && $0.player.id == item.player.id }
+                        
+                        if scoredGoal {
+                            Image(systemName: "soccerball")
+                                .font(.system(size: 13))
+                                .foregroundColor(.black)
+                                .background(Circle().fill(Color.white))
+                                .offset(x: -12, y: 12)
+                        } else if madeAssist {
+                            Image(systemName: "shoe.fill")
+                                .font(.system(size: 10))
+                                .foregroundColor(.black)
+                                .padding(3)
+                                .background(Circle().fill(Color.white))
+                                .offset(x: 12, y: -12)
+                        }
+                        
+                        if subbedOut {
+                            Image(systemName: "arrow.left")
+                                .font(.system(size: 8, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(3)
+                                .background(Circle().fill(Color.red))
+                                .offset(x: -12, y: -12)
                         }
                     }
                     
