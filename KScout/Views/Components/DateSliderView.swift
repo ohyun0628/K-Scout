@@ -1,82 +1,99 @@
 import SwiftUI
 
 struct DateSliderView: View {
-    @Binding var selectedDayOffset: Int
+    @Binding var selectedYear: Int
+    @Binding var selectedMonth: Int
+    @Binding var selectedDay: Int
     
-    // 현재 날짜를 기준으로 월~일요일 범위 동적 계산 (목요일을 offset 0으로 정렬)
-    var dateItems: [(dayName: String, dayNumber: String, offset: Int)] {
+    var currentYear: Int { Calendar.current.component(.year, from: Date()) }
+    var currentMonth: Int { Calendar.current.component(.month, from: Date()) }
+    var currentDay: Int { Calendar.current.component(.day, from: Date()) }
+    
+    // 선택된 달의 일수 계산
+    var daysInMonth: Int {
+        var components = DateComponents()
+        components.year = selectedYear
+        components.month = selectedMonth
         let calendar = Calendar.current
-        let today = Date()
-        
-        let weekday = calendar.component(.weekday, from: today)
-        let weekdayNames = ["일", "월", "화", "수", "목", "금", "토"]
-        
-        // 목요일(5)을 기준점(offset 0)으로 설정
-        let daysToThursday = 5 - weekday
-        
-        return (-3...3).map { offset in
-            let targetDate = calendar.date(byAdding: .day, value: daysToThursday + offset, to: today) ?? today
-            let dayNum = String(calendar.component(.day, from: targetDate))
-            let wday = calendar.component(.weekday, from: targetDate)
-            let name = weekdayNames[wday - 1]
-            return (dayName: name, dayNumber: dayNum, offset: offset)
+        guard let date = calendar.date(from: components),
+              let range = calendar.range(of: .day, in: .month, for: date) else { return 30 }
+        return range.count
+    }
+    
+    // 특정 일자의 요일 반환
+    func weekdayString(for day: Int) -> String {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = selectedYear
+        components.month = selectedMonth
+        components.day = day
+        if let date = calendar.date(from: components) {
+            let weekday = calendar.component(.weekday, from: date)
+            let weekdayNames = ["일", "월", "화", "수", "목", "금", "토"]
+            return weekdayNames[weekday - 1]
         }
+        return ""
     }
     
     var body: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 0) {
-                ForEach(dateItems, id: \.offset) { item in
-                    Button(action: {
-                        withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
-                            selectedDayOffset = item.offset
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(1...daysInMonth, id: \.self) { day in
+                        let isToday = (selectedYear == currentYear && selectedMonth == currentMonth && day == currentDay)
+                        let isSelected = (selectedDay == day)
+                        let activeColor = Color.blue
+                        
+                        Button(action: {
+                            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                                selectedDay = day
+                            }
+                        }) {
+                            VStack(spacing: 8) {
+                                Text(isToday ? "오늘" : weekdayString(for: day))
+                                    .font(.system(size: 13, weight: isToday ? .bold : .medium))
+                                    .foregroundColor(isSelected || isToday ? activeColor : .gray)
+                                
+                                Text("\(day)")
+                                    .font(.system(size: 16, weight: isSelected ? .bold : .regular))
+                                    .foregroundColor(isSelected || isToday ? activeColor : .black)
+                                
+                                Rectangle()
+                                    .fill(isSelected ? activeColor : Color.clear)
+                                    .frame(height: 3)
+                                    .padding(.horizontal, 4)
+                            }
+                            .frame(width: 44)
                         }
-                    }) {
-                        VStack(spacing: 6) {
-                            Text(item.dayName)
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(selectedDayOffset == item.offset ? Color.brandNavy : .gray)
-                            
-                            Text(item.dayNumber)
-                                .font(.system(size: 15, weight: .bold))
-                                .foregroundColor(selectedDayOffset == item.offset ? .white : Color.brandNavy)
-                                .frame(width: 36, height: 36)
-                                .background(selectedDayOffset == item.offset ? Color.brandNavy : Color.clear)
-                                .clipShape(Circle())
-                        }
-                        .frame(maxWidth: .infinity)
+                        .id(day)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 10)
+            }
+            .background(Color.white)
+            .overlay(
+                Divider()
+                    .background(Color.gray.opacity(0.2))
+                , alignment: .bottom
+            )
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    proxy.scrollTo(selectedDay, anchor: .center)
+                }
+            }
+            .onChange(of: selectedDay) { newDay in
+                withAnimation {
+                    proxy.scrollTo(newDay, anchor: .center)
+                }
+            }
+            .onChange(of: selectedMonth) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation {
+                        proxy.scrollTo(selectedDay, anchor: .center)
                     }
                 }
             }
-            .padding(.horizontal, 8)
-            .padding(.bottom, 6)
-            
-            // 데코레이션 슬라이더 바
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(Color.gray.opacity(0.12))
-                    .frame(height: 3)
-                
-                GeometryReader { geo in
-                    let step = geo.size.width / 7
-                    let index = CGFloat(selectedDayOffset + 3) // offset -3~3 -> index 0~6
-                    
-                    Capsule()
-                        .fill(Color.brandNavy)
-                        .frame(width: step - 16, height: 3)
-                        .offset(x: index * step + 8)
-                }
-                .frame(height: 3)
-            }
-            .padding(.horizontal, 16)
         }
-        .padding(.vertical, 10)
-        .background(Color.white)
-    }
-}
-
-struct DateSliderView_Previews: PreviewProvider {
-    static var previews: some View {
-        DateSliderView(selectedDayOffset: .constant(0))
     }
 }
