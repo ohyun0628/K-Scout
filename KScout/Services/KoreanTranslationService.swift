@@ -418,7 +418,14 @@ struct KoreanTranslationService {
         "do-hyeok kim": "김도혁",
         
         "seol young-woo": "설영우",
-        "young-woo seol": "설영우"
+        "young-woo seol": "설영우",
+        
+        "kang sang-woo": "강상우",
+        "sang-woo kang": "강상우",
+        
+        "choi woo-jin": "최우진",
+        "woo-jin choi": "최우진",
+        "c. woo-jin": "최우진"
     ]
     
     // 팀명 번역 함수
