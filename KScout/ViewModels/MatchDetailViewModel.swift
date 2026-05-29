@@ -63,9 +63,57 @@ class MatchDetailViewModel: ObservableObject {
             StatDetail(type: "Passes %", value: .string("78%"))
         ]
         
+        let homeStartXI = [
+            LineupPlayerInfo(player: LineupPlayer(id: 1, name: "Jo Hyeon-Woo", number: 21, pos: "G")),
+            LineupPlayerInfo(player: LineupPlayer(id: 2, name: "Seol Young-Woo", number: 66, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 3, name: "Kim Young-Gwon", number: 19, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 4, name: "Jung Seung-Hyun", number: 15, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 5, name: "Lee Myung-Jae", number: 13, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 6, name: "Um Won-Sang", number: 11, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 7, name: "Lee Kyu-Seong", number: 24, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 8, name: "Ko Seung-Beom", number: 8, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 9, name: "Lee Chung-Yong", number: 27, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 10, name: "Joo Min-Kyu", number: 18, pos: "F")),
+            LineupPlayerInfo(player: LineupPlayer(id: 11, name: "Gustav Ludwigson", number: 17, pos: "F"))
+        ]
+        
+        let awayStartXI = [
+            LineupPlayerInfo(player: LineupPlayer(id: 12, name: "Song Bum-Keun", number: 1, pos: "G")),
+            LineupPlayerInfo(player: LineupPlayer(id: 13, name: "Kim Jin-Su", number: 23, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 14, name: "Hong Jeong-Ho", number: 26, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 15, name: "Park Jin-Seop", number: 4, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 16, name: "Ahn Hyeon-Beom", number: 94, pos: "D")),
+            LineupPlayerInfo(player: LineupPlayer(id: 17, name: "Moon Seon-Min", number: 27, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 18, name: "Paik Seung-Ho", number: 8, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 19, name: "Song Min-Kyu", number: 17, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 20, name: "Lee Yeong-Jae", number: 13, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 21, name: "Tiago Orobó", number: 9, pos: "F")),
+            LineupPlayerInfo(player: LineupPlayer(id: 22, name: "Hernandes", number: 10, pos: "F"))
+        ]
+        
+        let homeSubs = [
+            LineupPlayerInfo(player: LineupPlayer(id: 23, name: "Jo Su-Huk", number: 1, pos: "G")),
+            LineupPlayerInfo(player: LineupPlayer(id: 24, name: "Ataru", number: 33, pos: "M")),
+            LineupPlayerInfo(player: LineupPlayer(id: 25, name: "Kim Min-Woo", number: 10, pos: "M"))
+        ]
+        
+        let awaySubs = [
+            LineupPlayerInfo(player: LineupPlayer(id: 26, name: "Kim Jeong-Hoon", number: 13, pos: "G")),
+            LineupPlayerInfo(player: LineupPlayer(id: 27, name: "Han Kyo-Won", number: 7, pos: "F")),
+            LineupPlayerInfo(player: LineupPlayer(id: 28, name: "Jeon Byung-Kwan", number: 11, pos: "M"))
+        ]
+        
         let lineups = [
-            FixtureLineup(team: homeTeam, formation: "4-3-3", startXI: [], substitutes: []),
-            FixtureLineup(team: awayTeam, formation: "4-4-2", startXI: [], substitutes: [])
+            FixtureLineup(team: homeTeam, formation: "4-4-2", startXI: homeStartXI, substitutes: homeSubs),
+            FixtureLineup(team: awayTeam, formation: "4-2-3-1", startXI: awayStartXI, substitutes: awaySubs)
+        ]
+        
+        let mockEvents = [
+            FixtureEvent(time: EventTime(elapsed: 15, extra: nil), team: homeTeam, player: EventPlayer(id: 10, name: "Joo Min-Kyu"), assist: EventPlayer(id: 6, name: "Um Won-Sang"), type: "Goal", detail: "Normal Goal"),
+            FixtureEvent(time: EventTime(elapsed: 32, extra: nil), team: awayTeam, player: EventPlayer(id: 13, name: "Kim Jin-Su"), assist: nil, type: "Card", detail: "Yellow Card"),
+            FixtureEvent(time: EventTime(elapsed: 45, extra: 2), team: awayTeam, player: EventPlayer(id: 21, name: "Tiago Orobó"), assist: EventPlayer(id: 19, name: "Song Min-Kyu"), type: "Goal", detail: "Header"),
+            FixtureEvent(time: EventTime(elapsed: 60, extra: nil), team: homeTeam, player: EventPlayer(id: 24, name: "Ataru"), assist: EventPlayer(id: 7, name: "Lee Kyu-Seong"), type: "subst", detail: "Substitution 1"),
+            FixtureEvent(time: EventTime(elapsed: 88, extra: nil), team: homeTeam, player: EventPlayer(id: 11, name: "Gustav Ludwigson"), assist: EventPlayer(id: 2, name: "Seol Young-Woo"), type: "Goal", detail: "Normal Goal")
         ]
         
         let statistics = [
@@ -78,7 +126,7 @@ class MatchDetailViewModel: ObservableObject {
             league: LeagueInfo(id: match.league, name: "K League", season: 2024),
             teams: TeamMatchInfo(home: homeTeam, away: awayTeam),
             goals: GoalScoreInfo(home: match.homeScore, away: match.awayScore),
-            events: [],
+            events: mockEvents,
             lineups: lineups,
             statistics: statistics
         )
