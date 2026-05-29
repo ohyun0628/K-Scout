@@ -275,9 +275,26 @@ struct MatchDetailView: View {
                             .frame(width: 32, height: 32)
                             .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
                         
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 16))
-                            .foregroundColor(.gray)
+                        if let playerId = item.player.id {
+                            AsyncImage(url: URL(string: "https://media.api-sports.io/football/players/\(playerId).png")) { phase in
+                                switch phase {
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 32, height: 32)
+                                        .clipShape(Circle())
+                                default:
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        } else {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray)
+                        }
                     }
                     
                     HStack(spacing: 2) {
