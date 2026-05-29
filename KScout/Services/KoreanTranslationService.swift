@@ -425,7 +425,10 @@ struct KoreanTranslationService {
         
         "choi woo-jin": "최우진",
         "woo-jin choi": "최우진",
-        "c. woo-jin": "최우진"
+        "c. woo-jin": "최우진",
+        
+        "valdívia": "발디비아",
+        "fessin": "페신"
     ]
     
     // 팀명 번역 함수
