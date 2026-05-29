@@ -31,11 +31,11 @@ struct MatchDetailView: View {
                             .frame(height: 200)
                         } else {
                             if selectedTab == 0 {
-                                lineupsView
+                                statsView // 전력
                             } else if selectedTab == 1 {
-                                eventsView
+                                lineupsView // 라인업
                             } else {
-                                statsView
+                                eventsView // 기록
                             }
                         }
                     }
@@ -144,9 +144,9 @@ struct MatchDetailView: View {
     
     private var tabSelector: some View {
         HStack(spacing: 0) {
-            tabButton(title: "라인업", index: 0)
-            tabButton(title: "타임라인", index: 1)
-            tabButton(title: "상세 스탯", index: 2)
+            tabButton(title: "전력", index: 0)
+            tabButton(title: "라인업", index: 1)
+            tabButton(title: "기록", index: 2)
         }
         .background(Color.white)
         .cornerRadius(12)
@@ -177,83 +177,161 @@ struct MatchDetailView: View {
     }
     
     private var lineupsView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 24) {
             if let lineups = viewModel.fixtureDetails?.lineups, lineups.count == 2 {
-                HStack(alignment: .top, spacing: 16) {
-                    teamLineupView(lineup: lineups[0], isHome: true)
-                    teamLineupView(lineup: lineups[1], isHome: false)
+                let homeLineup = lineups[0]
+                let awayLineup = lineups[1]
+                
+                // Graphical Pitch
+                VStack(spacing: 0) {
+                    // Away Team (Top Half)
+                    teamPitchHalfView(lineup: awayLineup, isTop: true)
+                    
+                    // Center Line
+                    Rectangle()
+                        .fill(Color.white.opacity(0.3))
+                        .frame(height: 2)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                                .frame(width: 60, height: 60)
+                        )
+                    
+                    // Home Team (Bottom Half)
+                    teamPitchHalfView(lineup: homeLineup, isTop: false)
                 }
+                .background(Color(red: 91/255, green: 157/255, blue: 96/255)) // Grass Green
+                .cornerRadius(16)
+                .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
                 .padding(.horizontal, 16)
+                
+                // Substitutes
+                VStack(spacing: 12) {
+                    Text("후보선수")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(Color.brandNavy)
+                    
+                    HStack(alignment: .top, spacing: 16) {
+                        substitutesColumn(lineup: homeLineup, isHome: true)
+                        substitutesColumn(lineup: awayLineup, isHome: false)
+                    }
+                    .padding(.horizontal, 16)
+                }
             } else {
                 emptyStateView(message: "라인업 정보가 없습니다.")
             }
         }
     }
     
-    private func teamLineupView(lineup: FixtureLineup, isHome: Bool) -> some View {
-        VStack(alignment: isHome ? .leading : .trailing, spacing: 12) {
+    private func teamPitchHalfView(lineup: FixtureLineup, isTop: Bool) -> some View {
+        VStack(spacing: 0) {
+            // Team Header Banner
             HStack {
-                if !isHome { Spacer() }
-                Text(lineup.formation ?? "포메이션 미정")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color.brandNavy)
-                    .cornerRadius(6)
-                if isHome { Spacer() }
+                Text(lineup.team.name)
+                    .font(.system(size: 14, weight: .bold))
+                Text(lineup.formation ?? "")
+                    .font(.system(size: 13, weight: .medium))
+                    .opacity(0.9)
+                Spacer()
             }
+            .foregroundColor(.white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color.black.opacity(0.15))
             
-            VStack(alignment: isHome ? .leading : .trailing, spacing: 8) {
-                Text("선발 명단")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.secondary)
+            // Players
+            if let startXI = lineup.startXI {
+                let gks = startXI.filter { $0.player.pos == "G" }
+                let defs = startXI.filter { $0.player.pos == "D" }
+                let mids = startXI.filter { $0.player.pos == "M" }
+                let fwds = startXI.filter { $0.player.pos == "F" }
                 
-                if let startXI = lineup.startXI {
-                    ForEach(startXI, id: \.player.name) { item in
-                        playerRow(player: item.player, isHome: isHome)
+                // Calculate spacing based on half pitch height
+                VStack(spacing: 20) {
+                    if isTop {
+                        pitchRow(players: gks)
+                        pitchRow(players: defs)
+                        pitchRow(players: mids)
+                        pitchRow(players: fwds)
+                    } else {
+                        pitchRow(players: fwds)
+                        pitchRow(players: mids)
+                        pitchRow(players: defs)
+                        pitchRow(players: gks)
                     }
                 }
-                
-                Text("교체 명단")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundColor(.secondary)
-                    .padding(.top, 8)
-                
-                if let subs = lineup.substitutes {
-                    ForEach(subs, id: \.player.name) { item in
-                        playerRow(player: item.player, isHome: isHome)
-                    }
-                }
+                .padding(.vertical, 20)
             }
         }
-        .frame(maxWidth: .infinity, alignment: isHome ? .leading : .trailing)
-        .padding(16)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
     }
     
-    private func playerRow(player: LineupPlayer, isHome: Bool) -> some View {
-        HStack(spacing: 8) {
-            if !isHome {
-                Text(KoreanTranslationService.translatePlayer(player.name))
-                    .font(.system(size: 13, weight: .medium))
-                
-                Text("\(player.number ?? 0)")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.gray)
-                    .frame(width: 20, alignment: .trailing)
-            } else {
-                Text("\(player.number ?? 0)")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.gray)
-                    .frame(width: 20, alignment: .leading)
-                
-                Text(KoreanTranslationService.translatePlayer(player.name))
-                    .font(.system(size: 13, weight: .medium))
+    private func pitchRow(players: [LineupPlayerInfo]) -> some View {
+        HStack(spacing: 0) {
+            ForEach(players, id: \.player.name) { item in
+                VStack(spacing: 4) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: 32, height: 32)
+                            .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
+                        
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(.gray)
+                    }
+                    
+                    HStack(spacing: 2) {
+                        Text("\(item.player.number ?? 0)")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundColor(.white)
+                        Text(KoreanTranslationService.translatePlayer(item.player.name))
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                    }
+                    .frame(width: 50)
+                }
+                .frame(maxWidth: .infinity)
             }
         }
+    }
+    
+    private func substitutesColumn(lineup: FixtureLineup, isHome: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(lineup.team.name)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+            .padding(.bottom, 4)
+            .overlay(
+                Rectangle()
+                    .fill(isHome ? Color.brandNavy : Color.gray)
+                    .frame(height: 2),
+                alignment: .bottom
+            )
+            
+            if let subs = lineup.substitutes {
+                ForEach(subs, id: \.player.name) { item in
+                    HStack(spacing: 8) {
+                        Text("\(item.player.number ?? 0)")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(isHome ? Color.brandNavy : .gray)
+                            .frame(width: 18, alignment: .leading)
+                        
+                        Text(KoreanTranslationService.translatePlayer(item.player.name))
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.primary)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(color: Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
     }
     
     private var eventsView: some View {
