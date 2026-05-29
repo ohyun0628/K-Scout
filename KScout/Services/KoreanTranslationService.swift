@@ -428,7 +428,33 @@ struct KoreanTranslationService {
         "c. woo-jin": "최우진",
         
         "valdívia": "발디비아",
-        "fessin": "페신"
+        "fessin": "페신",
+        
+        "an jae-jun": "안재준",
+        "jae-jun an": "안재준",
+        "gleyson": "글레이손",
+        "guilherme castro": "카스트로",
+        "ho-yeung sung": "성호영",
+        "sung ho-yeung": "성호영",
+        "hyun-kyu lee": "이현규",
+        "lee hyun-kyu": "이현규",
+        "joon-ho lee": "이준호",
+        "lee joon-ho": "이준호",
+        "kim chan": "김찬",
+        "chan kim": "김찬",
+        "kim jin-gyu": "김진규",
+        "jin-gyu kim": "김진규",
+        "l. mina": "미나",
+        "luis mina": "미나",
+        "lee jong-ho": "이종호",
+        "jong-ho lee": "이종호",
+        "m. ishida": "마사",
+        "ishida": "마사",
+        "p. makrillos": "마크릴로스",
+        "makrillos": "마크릴로스",
+        "paulo": "파울로",
+        "reis": "헤이스",
+        "ronan": "호난"
     ]
     
     // 팀명 번역 함수
