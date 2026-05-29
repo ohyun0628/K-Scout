@@ -277,20 +277,12 @@ struct MatchDetailView: View {
                             .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
                         
                         if let playerId = item.player.id {
-                            AsyncImage(url: URL(string: "https://media.api-sports.io/football/players/\(playerId).png")) { phase in
-                                switch phase {
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 32, height: 32)
-                                        .clipShape(Circle())
-                                default:
-                                    Image(systemName: "person.fill")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.gray)
-                                }
-                            }
+                            RemoteImageView(
+                                urlString: "https://media.api-sports.io/football/players/\(playerId).png",
+                                size: 32,
+                                fallback: AnyView(Image(systemName: "person.fill").font(.system(size: 16)).foregroundColor(.gray)),
+                                isCircle: true
+                            )
                         } else {
                             Image(systemName: "person.fill")
                                 .font(.system(size: 16))
@@ -371,19 +363,12 @@ struct MatchDetailView: View {
                         // Profile Image with Badge
                         ZStack(alignment: .topLeading) {
                             if let playerId = item.player.id {
-                                AsyncImage(url: URL(string: "https://media.api-sports.io/football/players/\(playerId).png")) { phase in
-                                    switch phase {
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 36, height: 36)
-                                            .clipShape(Circle())
-                                    default:
-                                        Circle().fill(Color(.systemGray5)).frame(width: 36, height: 36)
-                                            .overlay(Image(systemName: "person.fill").foregroundColor(.gray))
-                                    }
-                                }
+                                RemoteImageView(
+                                    urlString: "https://media.api-sports.io/football/players/\(playerId).png",
+                                    size: 36,
+                                    fallback: AnyView(Circle().fill(Color(.systemGray5)).frame(width: 36, height: 36).overlay(Image(systemName: "person.fill").foregroundColor(.gray))),
+                                    isCircle: true
+                                )
                             } else {
                                 Circle().fill(Color(.systemGray5)).frame(width: 36, height: 36)
                                     .overlay(Image(systemName: "person.fill").foregroundColor(.gray))
