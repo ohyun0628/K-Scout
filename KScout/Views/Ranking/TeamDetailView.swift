@@ -308,12 +308,13 @@ struct TeamDetailView: View {
                                     .lineLimit(1)
                             }
                         }
+                        }
+                        .padding(14)
+                        .background(Color.white)
+                        .cornerRadius(14)
+                        .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
+                        .padding(.horizontal, 16)
                     }
-                    .padding(14)
-                    .background(Color.white)
-                    .cornerRadius(14)
-                    .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
-                    .padding(.horizontal, 16)
                     .buttonStyle(PlainButtonStyle())
                 }
             }
