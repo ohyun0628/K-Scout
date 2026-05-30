@@ -846,3 +846,63 @@ struct MatchDetailView: View {
         .padding(.top, 40)
     }
 }
+
+struct MatchStatComparisonRow: View {
+    let title: String
+    let homeVal: String
+    let awayVal: String
+    
+    var body: some View {
+        let hStr = homeVal.replacingOccurrences(of: "%", with: "")
+        let aStr = awayVal.replacingOccurrences(of: "%", with: "")
+        let hNum = Double(hStr) ?? 0
+        let aNum = Double(aStr) ?? 0
+        let total = (hNum + aNum > 0) ? (hNum + aNum) : 1
+        
+        let hRatio = hNum / total
+        let aRatio = aNum / total
+        
+        return HStack(spacing: 8) {
+            // Home Bar
+            HStack(spacing: 8) {
+                Text(homeVal)
+                    .font(.system(size: 12, weight: .medium))
+                    .frame(width: 35, alignment: .trailing)
+                
+                GeometryReader { geo in
+                    ZStack(alignment: .trailing) {
+                        RoundedRectangle(cornerRadius: 2).fill(Color.gray.opacity(0.15))
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color(red: 0.85, green: 0.75, blue: 0.3))
+                            .frame(width: geo.size.width * CGFloat(hRatio))
+                    }
+                }
+                .frame(height: 6)
+            }
+            
+            // Title
+            Text(title)
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+                .frame(width: 65, alignment: .center)
+            
+            // Away Bar
+            HStack(spacing: 8) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 2).fill(Color.gray.opacity(0.15))
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color(red: 0.2, green: 0.3, blue: 0.6))
+                            .frame(width: geo.size.width * CGFloat(aRatio))
+                    }
+                }
+                .frame(height: 6)
+                
+                Text(awayVal)
+                    .font(.system(size: 12, weight: .medium))
+                    .frame(width: 35, alignment: .leading)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
