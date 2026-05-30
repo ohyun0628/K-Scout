@@ -424,16 +424,14 @@ struct MatchDetailView: View {
             if let events = viewModel.fixtureDetails?.events, !events.isEmpty {
                 ForEach(Array(events.enumerated()), id: \.offset) { index, event in
                     HStack {
-                        let isHome = event.team.name == viewModel.match.homeTeam
-                        
-                        if !isHome { Spacer() }
+                        if event.team.name != viewModel.match.homeTeam { Spacer() }
                         
                         HStack(spacing: 8) {
                             Text("\(event.time.elapsed)'")
                                 .font(.system(size: 12, weight: .bold))
                                 .foregroundColor(Color.brandNavy)
                             
-                            VStack(alignment: isHome ? .leading : .trailing) {
+                            VStack(alignment: event.team.name == viewModel.match.homeTeam ? .leading : .trailing) {
                                 Text(KoreanTranslationService.translatePlayer(event.player.name ?? ""))
                                     .font(.system(size: 14, weight: .bold))
                                 
@@ -447,7 +445,7 @@ struct MatchDetailView: View {
                         .cornerRadius(10)
                         .shadow(color: Color.black.opacity(0.02), radius: 2, x: 0, y: 1)
                         
-                        if isHome { Spacer() }
+                        if event.team.name == viewModel.match.homeTeam { Spacer() }
                     }
                     .padding(.horizontal, 16)
                 }
@@ -557,31 +555,38 @@ struct MatchDetailView: View {
     private func formBoxes(forms: [String]) -> some View {
         HStack(spacing: 4) {
             ForEach(0..<forms.count, id: \.self) { i in
-                let form = forms[i]
-                let text: String
-                let color: Color
-                
-                if form == "W" {
-                    text = "승"
-                    color = Color.green
-                } else if form == "D" {
-                    text = "무"
-                    color = Color.gray
-                } else if form == "L" {
-                    text = "패"
-                    color = Color.blue
-                } else {
-                    text = "-"
-                    color = Color.gray.opacity(0.5)
-                }
-                
-                Text(text)
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(color)
-                    .frame(width: 22, height: 22)
-                    .background(Color.white)
-                    .overlay(RoundedRectangle(cornerRadius: 3).stroke(color.opacity(0.5), lineWidth: 1))
+                FormBoxView(form: forms[i])
             }
+        }
+    }
+    
+    struct FormBoxView: View {
+        let form: String
+        
+        var body: some View {
+            let text: String
+            let color: Color
+            
+            if form == "W" {
+                text = "승"
+                color = Color.green
+            } else if form == "D" {
+                text = "무"
+                color = Color.gray
+            } else if form == "L" {
+                text = "패"
+                color = Color.blue
+            } else {
+                text = "-"
+                color = Color.gray.opacity(0.5)
+            }
+            
+            return Text(text)
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(color)
+                .frame(width: 22, height: 22)
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 3).stroke(color.opacity(0.5), lineWidth: 1))
         }
     }
     
@@ -589,10 +594,9 @@ struct MatchDetailView: View {
         HStack(spacing: 12) {
             // Home Bar
             GeometryReader { geo in
-                let width = geo.size.width * CGFloat(homeValue / maxVal)
                 RoundedRectangle(cornerRadius: 2)
                     .fill(homeColor)
-                    .frame(width: width)
+                    .frame(width: geo.size.width * CGFloat(homeValue / maxVal))
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .frame(height: 6)
@@ -612,10 +616,9 @@ struct MatchDetailView: View {
             
             // Away Bar
             GeometryReader { geo in
-                let width = geo.size.width * CGFloat(awayValue / maxVal)
                 RoundedRectangle(cornerRadius: 2)
                     .fill(awayColor)
-                    .frame(width: width)
+                    .frame(width: geo.size.width * CGFloat(awayValue / maxVal))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(height: 6)
