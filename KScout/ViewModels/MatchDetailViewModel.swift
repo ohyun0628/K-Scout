@@ -191,24 +191,26 @@ class MatchDetailViewModel: ObservableObject {
     
     // MARK: - Helper Methods
     private func isTeamMatch(apiName: String, targetName: String, rawTargetName: String) -> Bool {
-        let translated = KoreanTranslationService.translateTeam(apiName).replacingOccurrences(of: " ", with: "")
+        let translatedApi = KoreanTranslationService.translateTeam(apiName).replacingOccurrences(of: " ", with: "")
+        let translatedTarget = KoreanTranslationService.translateTeam(rawTargetName).replacingOccurrences(of: " ", with: "")
+        
+        if translatedApi == translatedTarget { return true }
+        if translatedApi.contains(translatedTarget) || translatedTarget.contains(translatedApi) { return true }
+        if apiName.lowercased() == rawTargetName.lowercased() { return true }
+        
         let lowerApi = apiName.lowercased()
+        let lowerTarget = rawTargetName.lowercased()
         
-        if translated.contains(targetName) || targetName.contains(translated) || apiName == targetName { return true }
-        if translated.contains(rawTargetName.replacingOccurrences(of: " ", with: "")) || rawTargetName.replacingOccurrences(of: " ", with: "").contains(translated) { return true }
-        
-        // Comprehensive K-League Fallbacks
-        let fallbacks = [
-            ("전북", "jeonbuk"), ("울산", "ulsan"), ("포항", "pohang"), ("서울", "seoul"),
-            ("제주", "jeju"), ("대구", "daegu"), ("인천", "incheon"), ("김천", "gimcheon"),
-            ("성남", "seongnam"), ("강원", "gangwon"), ("대전", "daejeon"), ("광주", "gwangju"),
-            ("수원", "suwon"), ("경남", "gyeongnam"), ("안산", "ansan"), ("부천", "bucheon"),
-            ("이랜드", "e-land"), ("부산", "busan"), ("전남", "jeonnam"), ("아산", "asan"),
-            ("김포", "gimpo"), ("천안", "cheonan"), ("청주", "cheongju"), ("안양", "anyang")
+        // K-League English Keywords for robust matching
+        // Since both API endpoints (Fixtures & Standings) return English names, we match the core English keyword.
+        let keywords = [
+            "jeonbuk", "ulsan", "pohang", "seoul", "jeju", "daegu", "incheon", "gimcheon",
+            "seongnam", "gangwon", "daejeon", "gwangju", "suwon", "gyeongnam", "ansan",
+            "bucheon", "e-land", "busan", "jeonnam", "asan", "gimpo", "cheonan", "cheongju", "anyang"
         ]
         
-        for (kr, en) in fallbacks {
-            if (targetName.contains(kr) || rawTargetName.contains(kr)) && lowerApi.contains(en) {
+        for keyword in keywords {
+            if lowerApi.contains(keyword) && lowerTarget.contains(keyword) {
                 return true
             }
         }
