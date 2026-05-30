@@ -483,11 +483,17 @@ struct MatchDetailView: View {
             HStack(alignment: .top) {
                 // Home
                 VStack(spacing: 4) {
-                    Text(viewModel.match.homeTeam)
+                    Text(KoreanTranslationService.translateTeam(viewModel.match.homeTeam))
                         .font(.system(size: 18, weight: .bold))
-                    Text("8위 · 4승 4무 4패")
-                        .font(.system(size: 12))
-                        .foregroundColor(Color(red: 200/255, green: 60/255, blue: 60/255))
+                    if let stand = viewModel.homeStanding {
+                        Text("\(stand.rank)위 · \(stand.all.win)승 \(stand.all.draw)무 \(stand.all.lose)패")
+                            .font(.system(size: 12))
+                            .foregroundColor(Color(red: 200/255, green: 60/255, blue: 60/255))
+                    } else {
+                        Text("-위 · -승 -무 -패")
+                            .font(.system(size: 12))
+                            .foregroundColor(Color(red: 200/255, green: 60/255, blue: 60/255))
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 
@@ -498,18 +504,25 @@ struct MatchDetailView: View {
                 
                 // Away
                 VStack(spacing: 4) {
-                    Text(viewModel.match.awayTeam)
+                    Text(KoreanTranslationService.translateTeam(viewModel.match.awayTeam))
                         .font(.system(size: 18, weight: .bold))
-                    Text("2위 · 8승 2무 2패")
-                        .font(.system(size: 12))
-                        .foregroundColor(Color(red: 200/255, green: 60/255, blue: 60/255))
+                    if let stand = viewModel.awayStanding {
+                        Text("\(stand.rank)위 · \(stand.all.win)승 \(stand.all.draw)무 \(stand.all.lose)패")
+                            .font(.system(size: 12))
+                            .foregroundColor(Color(red: 60/255, green: 120/255, blue: 230/255))
+                    } else {
+                        Text("-위 · -승 -무 -패")
+                            .font(.system(size: 12))
+                            .foregroundColor(Color(red: 60/255, green: 120/255, blue: 230/255))
+                    }
                 }
                 .frame(maxWidth: .infinity)
             }
             
             // Recent Form
             HStack(alignment: .center) {
-                formBoxes(forms: ["D", "L", "W", "L", "D"])
+                let hForm = viewModel.homeStanding?.form?.map { String($0) } ?? ["-","-","-","-","-"]
+                formBoxes(forms: hForm)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 
                 Text("최근경기")
@@ -517,14 +530,22 @@ struct MatchDetailView: View {
                     .foregroundColor(.gray)
                     .frame(width: 60, alignment: .center)
                 
-                formBoxes(forms: ["W", "D", "L", "W", "W"])
+                let aForm = viewModel.awayStanding?.form?.map { String($0) } ?? ["-","-","-","-","-"]
+                formBoxes(forms: aForm)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             
             // Average Stats
             VStack(spacing: 12) {
-                statBarRow(title: "평균득점", homeValue: 1.41, awayValue: 1.41, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
-                statBarRow(title: "평균실점", homeValue: 1.25, awayValue: 0.75, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
+                let hPlayed = Double(viewModel.homeStanding?.all.played ?? 1)
+                let aPlayed = Double(viewModel.awayStanding?.all.played ?? 1)
+                let hGFor = Double(viewModel.homeStanding?.all.goals?.for ?? 0) / (hPlayed == 0 ? 1 : hPlayed)
+                let aGFor = Double(viewModel.awayStanding?.all.goals?.for ?? 0) / (aPlayed == 0 ? 1 : aPlayed)
+                let hGAgainst = Double(viewModel.homeStanding?.all.goals?.against ?? 0) / (hPlayed == 0 ? 1 : hPlayed)
+                let aGAgainst = Double(viewModel.awayStanding?.all.goals?.against ?? 0) / (aPlayed == 0 ? 1 : aPlayed)
+                
+                statBarRow(title: "평균득점", homeValue: hGFor, awayValue: aGFor, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
+                statBarRow(title: "평균실점", homeValue: hGAgainst, awayValue: aGAgainst, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
             }
             .padding(.top, 8)
         }
@@ -683,12 +704,22 @@ struct MatchDetailView: View {
                 )
                 .overlay(Divider().background(Color.gray.opacity(0.2)), alignment: .bottom)
                 
-                // Rows (Mock Data)
-                topPlayerRow(hName: "주민규", hG: 5, hA: 0, aName: "티아고", aG: 3, aA: 1)
-                topPlayerRow(hName: "엄지성", hG: 4, hA: 1, aName: "제르소", aG: 2, aA: 2)
-                topPlayerRow(hName: "고영준", hG: 2, hA: 1, aName: "정재희", aG: 2, aA: 1)
-                topPlayerRow(hName: "설영우", hG: 1, hA: 2, aName: "완델손", aG: 1, aA: 2)
-                topPlayerRow(hName: "이동경", hG: 1, hA: 1, aName: "조르지", aG: 2, aA: 0)
+                // Rows (API Data)
+                let limit = max(viewModel.homeTopPlayers.count, viewModel.awayTopPlayers.count, 5)
+                ForEach(0..<min(limit, 5), id: \.self) { i in
+                    let hPlayer = i < viewModel.homeTopPlayers.count ? viewModel.homeTopPlayers[i] : nil
+                    let aPlayer = i < viewModel.awayTopPlayers.count ? viewModel.awayTopPlayers[i] : nil
+                    
+                    let hName = KoreanTranslationService.translatePlayer(hPlayer?.player.name ?? "-")
+                    let hG = hPlayer?.statistics.first?.goals.total ?? 0
+                    let hA = hPlayer?.statistics.first?.assists?.total ?? 0
+                    
+                    let aName = KoreanTranslationService.translatePlayer(aPlayer?.player.name ?? "-")
+                    let aG = aPlayer?.statistics.first?.goals.total ?? 0
+                    let aA = aPlayer?.statistics.first?.assists?.total ?? 0
+                    
+                    topPlayerRow(hName: hName, hG: hG, hA: hA, aName: aName, aG: aG, aA: aA)
+                }
             }
             
             Text("탑플레이어는 팀 내 공격 포인트가 가장 많은 선수 기준입니다.")

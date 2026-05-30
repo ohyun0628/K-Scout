@@ -2,6 +2,11 @@ import Foundation
 
 class MatchDetailViewModel: ObservableObject {
     @Published var fixtureDetails: FixtureItem? = nil
+    @Published var homeStanding: TeamStandingData? = nil
+    @Published var awayStanding: TeamStandingData? = nil
+    @Published var homeTopPlayers: [PlayerRankingItem] = []
+    @Published var awayTopPlayers: [PlayerRankingItem] = []
+    
     @Published var isLoading = false
     @Published var errorMessage: String?
     
@@ -21,19 +26,78 @@ class MatchDetailViewModel: ObservableObject {
         self.isLoading = true
         self.errorMessage = nil
         
+        let dispatchGroup = DispatchGroup()
+        let season = 2024
+        let leagueId = match.league
+        
+        // 1. Fixture Detail
+        dispatchGroup.enter()
         NetworkManager.shared.request(endpoint: .fixtureDetail(id: apiId)) { (result: Result<[FixtureItem], NetworkError>) in
             DispatchQueue.main.async {
-                self.isLoading = false
                 switch result {
                 case .success(let items):
-                    if let first = items.first {
-                        self.fixtureDetails = first
-                    } else {
-                        self.generateMockDetails()
-                    }
-                case .failure:
-                    self.generateMockDetails()
+                    self.fixtureDetails = items.first
+                case .failure: break
                 }
+                dispatchGroup.leave()
+            }
+        }
+        
+        // 2. Standings
+        dispatchGroup.enter()
+        NetworkManager.shared.request(endpoint: .standings(league: leagueId, season: season)) { (result: Result<[StandingsResponse], NetworkError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let items):
+                    if let standings = items.first?.league.standings.first {
+                        let hTeamName = self.match.homeTeam.replacingOccurrences(of: " ", with: "")
+                        let aTeamName = self.match.awayTeam.replacingOccurrences(of: " ", with: "")
+                        
+                        self.homeStanding = standings.first { 
+                            let apiName = KoreanTranslationService.translateTeam($0.team.name).replacingOccurrences(of: " ", with: "")
+                            return apiName.contains(hTeamName) || hTeamName.contains(apiName) || $0.team.name == self.match.homeTeam
+                        }
+                        
+                        self.awayStanding = standings.first { 
+                            let apiName = KoreanTranslationService.translateTeam($0.team.name).replacingOccurrences(of: " ", with: "")
+                            return apiName.contains(aTeamName) || aTeamName.contains(apiName) || $0.team.name == self.match.awayTeam
+                        }
+                    }
+                case .failure: break
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        // 3. Top Scorers
+        dispatchGroup.enter()
+        NetworkManager.shared.request(endpoint: .topScorers(league: leagueId, season: season)) { (result: Result<[PlayerRankingItem], NetworkError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let items):
+                    let hTeamName = self.match.homeTeam.replacingOccurrences(of: " ", with: "")
+                    let aTeamName = self.match.awayTeam.replacingOccurrences(of: " ", with: "")
+                    
+                    self.homeTopPlayers = items.filter { item in
+                        guard let tName = item.statistics.first?.team.name else { return false }
+                        let apiName = KoreanTranslationService.translateTeam(tName).replacingOccurrences(of: " ", with: "")
+                        return apiName.contains(hTeamName) || hTeamName.contains(apiName) || tName == self.match.homeTeam
+                    }
+                    self.awayTopPlayers = items.filter { item in
+                        guard let tName = item.statistics.first?.team.name else { return false }
+                        let apiName = KoreanTranslationService.translateTeam(tName).replacingOccurrences(of: " ", with: "")
+                        return apiName.contains(aTeamName) || aTeamName.contains(apiName) || tName == self.match.awayTeam
+                    }
+                case .failure: break
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.isLoading = false
+            if self.fixtureDetails == nil {
+                self.generateMockDetails()
             }
         }
     }

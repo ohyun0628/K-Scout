@@ -148,6 +148,11 @@ struct StandingStatDetail: Decodable {
     let win: Int
     let draw: Int
     let lose: Int
+    let goals: GoalsData?
+}
+struct GoalsData: Decodable {
+    let `for`: Int?
+    let against: Int?
 }
 
 // 2. 선수 랭킹 (Top Scorers & Top Assists) DTO
