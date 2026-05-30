@@ -537,18 +537,23 @@ struct MatchDetailView: View {
             
             // Average Stats
             VStack(spacing: 12) {
-                let hPlayed = Double(viewModel.homeStanding?.all.played ?? 1)
-                let aPlayed = Double(viewModel.awayStanding?.all.played ?? 1)
-                let hGFor = Double(viewModel.homeStanding?.all.goals?.for ?? 0) / (hPlayed == 0 ? 1 : hPlayed)
-                let aGFor = Double(viewModel.awayStanding?.all.goals?.for ?? 0) / (aPlayed == 0 ? 1 : aPlayed)
-                let hGAgainst = Double(viewModel.homeStanding?.all.goals?.against ?? 0) / (hPlayed == 0 ? 1 : hPlayed)
-                let aGAgainst = Double(viewModel.awayStanding?.all.goals?.against ?? 0) / (aPlayed == 0 ? 1 : aPlayed)
+                let hGFor = safeAverage(played: viewModel.homeStanding?.all.played, goals: viewModel.homeStanding?.all.goals?.for)
+                let aGFor = safeAverage(played: viewModel.awayStanding?.all.played, goals: viewModel.awayStanding?.all.goals?.for)
+                let hGAgainst = safeAverage(played: viewModel.homeStanding?.all.played, goals: viewModel.homeStanding?.all.goals?.against)
+                let aGAgainst = safeAverage(played: viewModel.awayStanding?.all.played, goals: viewModel.awayStanding?.all.goals?.against)
                 
                 statBarRow(title: "평균득점", homeValue: hGFor, awayValue: aGFor, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
                 statBarRow(title: "평균실점", homeValue: hGAgainst, awayValue: aGAgainst, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
             }
             .padding(.top, 8)
         }
+    }
+    
+    private func safeAverage(played: Int?, goals: Int?) -> Double {
+        let p = Double(played ?? 0)
+        let g = Double(goals ?? 0)
+        if p == 0 { return 0 }
+        return g / p
     }
     
     private func formBoxes(forms: [String]) -> some View {
@@ -705,20 +710,28 @@ struct MatchDetailView: View {
                 .overlay(Divider().background(Color.gray.opacity(0.2)), alignment: .bottom)
                 
                 // Rows (API Data)
-                let limit = max(viewModel.homeTopPlayers.count, viewModel.awayTopPlayers.count, 5)
-                ForEach(0..<min(limit, 5), id: \.self) { i in
-                    let hPlayer = i < viewModel.homeTopPlayers.count ? viewModel.homeTopPlayers[i] : nil
-                    let aPlayer = i < viewModel.awayTopPlayers.count ? viewModel.awayTopPlayers[i] : nil
-                    
-                    let hName = KoreanTranslationService.translatePlayer(hPlayer?.player.name ?? "-")
-                    let hG = hPlayer?.statistics.first?.goals.total ?? 0
-                    let hA = hPlayer?.statistics.first?.assists?.total ?? 0
-                    
-                    let aName = KoreanTranslationService.translatePlayer(aPlayer?.player.name ?? "-")
-                    let aG = aPlayer?.statistics.first?.goals.total ?? 0
-                    let aA = aPlayer?.statistics.first?.assists?.total ?? 0
-                    
-                    topPlayerRow(hName: hName, hG: hG, hA: hA, aName: aName, aG: aG, aA: aA)
+                let hCount = viewModel.homeTopPlayers.count
+                let aCount = viewModel.awayTopPlayers.count
+                let maxCount = max(hCount, aCount)
+                let limit = min(maxCount, 5)
+                
+                if limit > 0 {
+                    ForEach(0..<limit, id: \.self) { i in
+                        let hPlayer = i < hCount ? viewModel.homeTopPlayers[i] : nil
+                        let aPlayer = i < aCount ? viewModel.awayTopPlayers[i] : nil
+                        
+                        let hName = KoreanTranslationService.translatePlayer(hPlayer?.player.name ?? "-")
+                        let hG = hPlayer?.statistics.first?.goals.total ?? 0
+                        let hA = hPlayer?.statistics.first?.assists?.total ?? 0
+                        
+                        let aName = KoreanTranslationService.translatePlayer(aPlayer?.player.name ?? "-")
+                        let aG = aPlayer?.statistics.first?.goals.total ?? 0
+                        let aA = aPlayer?.statistics.first?.assists?.total ?? 0
+                        
+                        topPlayerRow(hName: hName, hG: hG, hA: hA, aName: aName, aG: aG, aA: aA)
+                    }
+                } else {
+                    topPlayerRow(hName: "-", hG: 0, hA: 0, aName: "-", aG: 0, aA: 0)
                 }
             }
             
