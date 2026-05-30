@@ -35,7 +35,7 @@ struct MatchDetailView: View {
                             } else if selectedTab == 1 {
                                 lineupsView // 라인업
                             } else {
-                                eventsView // 기록
+                                recordsView // 기록
                             }
                         }
                     }
@@ -419,8 +419,85 @@ struct MatchDetailView: View {
         .shadow(color: Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
     }
     
-    private var eventsView: some View {
+    private var recordsView: some View {
+        VStack(spacing: 32) {
+            matchStatisticsSection
+            
+            Divider().background(Color.gray.opacity(0.2))
+            
+            eventsSection
+        }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 16)
+    }
+    
+    private var matchStatisticsSection: some View {
+        VStack(spacing: 16) {
+            Text("팀 기록")
+                .font(.system(size: 16, weight: .bold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            // Header with team names
+            HStack {
+                Text(KoreanTranslationService.translateTeam(viewModel.match.homeTeam))
+                    .font(.system(size: 14, weight: .bold))
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Text("VS")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(Color(white: 0.8))
+                    .padding(.horizontal, 12)
+                Text(KoreanTranslationService.translateTeam(viewModel.match.awayTeam))
+                    .font(.system(size: 14, weight: .bold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.bottom, 8)
+            
+            if let stats = viewModel.fixtureDetails?.statistics, stats.count == 2 {
+                let homeStats = stats[0].team.name == viewModel.match.homeTeam ? stats[0].statistics : stats[1].statistics
+                let awayStats = stats[1].team.name == viewModel.match.awayTeam ? stats[1].statistics : stats[0].statistics
+                
+                let targetTypes = [
+                    ("Ball Possession", "볼 점유율"),
+                    ("Total Shots", "슈팅"),
+                    ("Shots on Goal", "유효슈팅"),
+                    ("Corner Kicks", "코너킥"),
+                    ("Offsides", "오프사이드"),
+                    ("Fouls", "파울"),
+                    ("Yellow Cards", "경고"),
+                    ("Red Cards", "퇴장")
+                ]
+                
+                ForEach(targetTypes, id: \.0) { typeKey, typeName in
+                    MatchStatComparisonRow(
+                        title: typeName,
+                        homeVal: getMatchStatValue(from: homeStats, type: typeKey),
+                        awayVal: getMatchStatValue(from: awayStats, type: typeKey)
+                    )
+                }
+            } else {
+                Text("상세 기록이 없습니다.")
+                    .font(.system(size: 13))
+                    .foregroundColor(.gray)
+                    .padding(.vertical, 20)
+            }
+        }
+    }
+    
+    private func getMatchStatValue(from stats: [StatDetail], type: String) -> String {
+        guard let stat = stats.first(where: { $0.type == type }), let value = stat.value else { return "0" }
+        switch value {
+        case .int(let v): return "\(v)"
+        case .string(let s): return s
+        case .none: return "0"
+        }
+    }
+    
+    private var eventsSection: some View {
         VStack(spacing: 12) {
+            Text("주요 이벤트")
+                .font(.system(size: 16, weight: .bold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
             if let events = viewModel.fixtureDetails?.events, !events.isEmpty {
                 ForEach(Array(events.enumerated()), id: \.offset) { index, event in
                     HStack {
@@ -456,19 +533,17 @@ struct MatchDetailView: View {
     }
     
     private var statsView: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                // 1. Team Comparison Section
-                teamComparisonSection
-                
-                Divider().background(Color.gray.opacity(0.2))
-                
-                // 2. Top Players Section
-                topPlayersSection
-            }
-            .padding(.vertical, 24)
-            .padding(.horizontal, 16)
+        VStack(spacing: 32) {
+            // 1. Team Comparison Section
+            teamComparisonSection
+            
+            Divider().background(Color.gray.opacity(0.2))
+            
+            // 2. Top Players Section
+            topPlayersSection
         }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 16)
     }
     
     // MARK: - 1. Team Comparison Section
