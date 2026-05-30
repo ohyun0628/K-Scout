@@ -458,46 +458,268 @@ struct MatchDetailView: View {
     }
     
     private var statsView: some View {
-        VStack(spacing: 12) {
-            if let stats = viewModel.fixtureDetails?.statistics, stats.count == 2 {
-                let homeStats = stats[0].statistics
-                let awayStats = stats[1].statistics
+        ScrollView {
+            VStack(spacing: 32) {
+                // 1. Team Comparison Section
+                teamComparisonSection
                 
-                ForEach(0..<min(homeStats.count, awayStats.count), id: \.self) { i in
-                    let hStat = homeStats[i]
-                    let aStat = awayStats[i]
-                    
-                    VStack(spacing: 6) {
-                        Text(hStat.type)
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.secondary)
-                        
-                        HStack {
-                            Text(extractValue(hStat.value))
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(Color.brandNavy)
-                                .frame(width: 50, alignment: .leading)
-                            
-                            Spacer()
-                            
-                            // Bar visualization could go here
-                            
-                            Text(extractValue(aStat.value))
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(Color(red: 21/255, green: 112/255, blue: 183/255))
-                                .frame(width: 50, alignment: .trailing)
-                        }
-                    }
-                    .padding(16)
-                    .background(Color.white)
-                    .cornerRadius(12)
-                    .shadow(color: Color.black.opacity(0.02), radius: 2, x: 0, y: 1)
-                    .padding(.horizontal, 16)
+                Divider().background(Color.gray.opacity(0.2))
+                
+                // 2. Recent Head-to-Head Section
+                recentH2HSection
+                
+                // 3. Top Players Section
+                topPlayersSection
+            }
+            .padding(.vertical, 24)
+            .padding(.horizontal, 16)
+        }
+    }
+    
+    // MARK: - 1. Team Comparison Section
+    private var teamComparisonSection: some View {
+        VStack(spacing: 20) {
+            // Team Names and Ranks
+            HStack(alignment: .top) {
+                // Home
+                VStack(spacing: 4) {
+                    Text(viewModel.match.homeTeam)
+                        .font(.system(size: 18, weight: .bold))
+                    Text("8위 · 4승 4무 4패")
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(red: 200/255, green: 60/255, blue: 60/255))
                 }
-            } else {
-                emptyStateView(message: "상세 스탯 정보가 없습니다.")
+                .frame(maxWidth: .infinity)
+                
+                Text("VS")
+                    .font(.system(size: 20, weight: .black))
+                    .foregroundColor(Color(white: 0.85))
+                    .padding(.horizontal, 8)
+                
+                // Away
+                VStack(spacing: 4) {
+                    Text(viewModel.match.awayTeam)
+                        .font(.system(size: 18, weight: .bold))
+                    Text("2위 · 8승 2무 2패")
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(red: 200/255, green: 60/255, blue: 60/255))
+                }
+                .frame(maxWidth: .infinity)
+            }
+            
+            // Recent Form
+            HStack(alignment: .center) {
+                formBoxes(forms: ["D", "L", "W", "L", "D"])
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                
+                Text("최근경기")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.gray)
+                    .frame(width: 60, alignment: .center)
+                
+                formBoxes(forms: ["W", "D", "L", "W", "W"])
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            
+            // Average Stats
+            VStack(spacing: 12) {
+                statBarRow(title: "평균득점", homeValue: 1.41, awayValue: 1.41, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
+                statBarRow(title: "평균실점", homeValue: 1.25, awayValue: 0.75, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
+            }
+            .padding(.top, 8)
+        }
+    }
+    
+    private func formBoxes(forms: [String]) -> some View {
+        HStack(spacing: 4) {
+            ForEach(0..<forms.count, id: \.self) { i in
+                let form = forms[i]
+                let text = form == "W" ? "승" : (form == "D" ? "무" : "패")
+                let color = form == "W" ? Color.green : (form == "D" ? Color.gray : Color.blue)
+                
+                Text(text)
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(color)
+                    .frame(width: 22, height: 22)
+                    .background(Color.white)
+                    .overlay(RoundedRectangle(cornerRadius: 3).stroke(color.opacity(0.5), lineWidth: 1))
             }
         }
+    }
+    
+    private func statBarRow(title: String, homeValue: Double, awayValue: Double, maxVal: Double, homeColor: Color, awayColor: Color) -> some View {
+        HStack(spacing: 12) {
+            // Home Bar
+            GeometryReader { geo in
+                let width = geo.size.width * CGFloat(homeValue / maxVal)
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(homeColor)
+                    .frame(width: width)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .frame(height: 6)
+            
+            Text(String(format: "%.2f", homeValue))
+                .font(.system(size: 12, weight: .bold))
+                .frame(width: 30, alignment: .trailing)
+            
+            Text(title)
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+                .frame(width: 60, alignment: .center)
+            
+            Text(String(format: "%.2f", awayValue))
+                .font(.system(size: 12, weight: .bold))
+                .frame(width: 30, alignment: .leading)
+            
+            // Away Bar
+            GeometryReader { geo in
+                let width = geo.size.width * CGFloat(awayValue / maxVal)
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(awayColor)
+                    .frame(width: width)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(height: 6)
+        }
+    }
+    
+    // MARK: - 2. Recent Head-to-Head Section
+    private var recentH2HSection: some View {
+        VStack(spacing: 16) {
+            Text("최근 양팀 맞대결")
+                .font(.system(size: 16, weight: .medium))
+            
+            VStack(spacing: 0) {
+                h2hRow(date: "2025/09/27", league: "K리그1", homeTeam: viewModel.match.homeTeam, homeScore: 1, awayScore: 3, awayTeam: viewModel.match.awayTeam, isLast: false)
+                h2hRow(date: "2025/07/05", league: "K리그1", homeTeam: viewModel.match.homeTeam, homeScore: 2, awayScore: 3, awayTeam: viewModel.match.awayTeam, isLast: false)
+                h2hRow(date: "2025/03/15", league: "K리그1", homeTeam: viewModel.match.awayTeam, homeScore: 0, awayScore: 0, awayTeam: viewModel.match.homeTeam, isLast: true)
+            }
+        }
+    }
+    
+    private func h2hRow(date: String, league: String, homeTeam: String, homeScore: Int, awayScore: Int, awayTeam: String, isLast: Bool) -> some View {
+        VStack(spacing: 0) {
+            HStack {
+                // Home
+                HStack(spacing: 8) {
+                    Text(KoreanTranslationService.translateTeam(homeTeam))
+                        .font(.system(size: 13, weight: .medium))
+                    TeamLogoView(teamName: homeTeam, size: 24)
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                
+                // Score & Date
+                HStack(spacing: 12) {
+                    Text("\(homeScore)")
+                        .font(.system(size: 16, weight: .bold))
+                    
+                    VStack(spacing: 2) {
+                        Text(date)
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
+                        Text(league)
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(width: 70)
+                    
+                    Text("\(awayScore)")
+                        .font(.system(size: 16, weight: .bold))
+                }
+                
+                // Away
+                HStack(spacing: 8) {
+                    TeamLogoView(teamName: awayTeam, size: 24)
+                    Text(KoreanTranslationService.translateTeam(awayTeam))
+                        .font(.system(size: 13, weight: .medium))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.vertical, 12)
+            
+            if !isLast {
+                Divider().background(Color.gray.opacity(0.15))
+            }
+        }
+    }
+    
+    // MARK: - 3. Top Players Section
+    private var topPlayersSection: some View {
+        VStack(spacing: 16) {
+            Text("탑플레이어")
+                .font(.system(size: 16, weight: .medium))
+            
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    HStack {
+                        Text(KoreanTranslationService.translateTeam(viewModel.match.homeTeam))
+                            .font(.system(size: 12, weight: .bold))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .lineLimit(1)
+                        Text("득점").font(.system(size: 11)).foregroundColor(.gray).frame(width: 25)
+                        Text("도움").font(.system(size: 11)).foregroundColor(.gray).frame(width: 25)
+                    }
+                    .frame(maxWidth: .infinity)
+                    
+                    HStack {
+                        Text(KoreanTranslationService.translateTeam(viewModel.match.awayTeam))
+                            .font(.system(size: 12, weight: .bold))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .lineLimit(1)
+                        Text("득점").font(.system(size: 11)).foregroundColor(.gray).frame(width: 25)
+                        Text("도움").font(.system(size: 11)).foregroundColor(.gray).frame(width: 25)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .padding(.vertical, 8)
+                .overlay(
+                    HStack(spacing: 0) {
+                        Rectangle().fill(Color(red: 0.85, green: 0.75, blue: 0.3)).frame(height: 2)
+                        Rectangle().fill(Color(red: 0.2, green: 0.3, blue: 0.6)).frame(height: 2)
+                    },
+                    alignment: .top
+                )
+                .overlay(Divider().background(Color.gray.opacity(0.2)), alignment: .bottom)
+                
+                // Rows (Mock Data)
+                topPlayerRow(hName: "주민규", hG: 5, hA: 0, aName: "티아고", aG: 3, aA: 1)
+                topPlayerRow(hName: "엄지성", hG: 4, hA: 1, aName: "제르소", aG: 2, aA: 2)
+                topPlayerRow(hName: "고영준", hG: 2, hA: 1, aName: "정재희", aG: 2, aA: 1)
+                topPlayerRow(hName: "설영우", hG: 1, hA: 2, aName: "완델손", aG: 1, aA: 2)
+                topPlayerRow(hName: "이동경", hG: 1, hA: 1, aName: "조르지", aG: 2, aA: 0)
+            }
+            
+            Text("탑플레이어는 팀 내 공격 포인트가 가장 많은 선수 기준입니다.")
+                .font(.system(size: 11))
+                .foregroundColor(.gray)
+                .padding(.top, 8)
+        }
+    }
+    
+    private func topPlayerRow(hName: String, hG: Int, hA: Int, aName: String, aG: Int, aA: Int) -> some View {
+        HStack {
+            // Home
+            HStack {
+                Text(hName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
+                Text("\(hG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
+                Text("\(hA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+            }
+            .frame(maxWidth: .infinity)
+            
+            Divider()
+            
+            // Away
+            HStack {
+                Text(aName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
+                Text("\(aG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
+                Text("\(aA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .padding(.vertical, 10)
+        .overlay(Divider().background(Color.gray.opacity(0.1)), alignment: .bottom)
     }
     
     private func extractValue(_ val: StatValue?) -> String {
