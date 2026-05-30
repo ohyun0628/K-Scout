@@ -452,33 +452,28 @@ struct MatchDetailView: View {
             }
             .padding(.bottom, 8)
             
-            if let stats = viewModel.fixtureDetails?.statistics, stats.count == 2 {
-                let homeStats = stats[0].team.name == viewModel.match.homeTeam ? stats[0].statistics : stats[1].statistics
-                let awayStats = stats[1].team.name == viewModel.match.awayTeam ? stats[1].statistics : stats[0].statistics
-                
-                let targetTypes = [
-                    ("Ball Possession", "볼 점유율"),
-                    ("Total Shots", "슈팅"),
-                    ("Shots on Goal", "유효슈팅"),
-                    ("Corner Kicks", "코너킥"),
-                    ("Offsides", "오프사이드"),
-                    ("Fouls", "파울"),
-                    ("Yellow Cards", "경고"),
-                    ("Red Cards", "퇴장")
-                ]
-                
-                ForEach(targetTypes, id: \.0) { typeKey, typeName in
-                    MatchStatComparisonRow(
-                        title: typeName,
-                        homeVal: getMatchStatValue(from: homeStats, type: typeKey),
-                        awayVal: getMatchStatValue(from: awayStats, type: typeKey)
-                    )
-                }
-            } else {
-                Text("상세 기록이 없습니다.")
-                    .font(.system(size: 13))
-                    .foregroundColor(.gray)
-                    .padding(.vertical, 20)
+            let stats = viewModel.fixtureDetails?.statistics ?? []
+            
+            let homeStats = stats.first(where: { $0.team.name == viewModel.match.homeTeam })?.statistics ?? []
+            let awayStats = stats.first(where: { $0.team.name == viewModel.match.awayTeam })?.statistics ?? []
+            
+            let targetTypes = [
+                ("Ball Possession", "볼 점유율"),
+                ("Total Shots", "슈팅"),
+                ("Shots on Goal", "유효슈팅"),
+                ("Corner Kicks", "코너킥"),
+                ("Offsides", "오프사이드"),
+                ("Fouls", "파울"),
+                ("Yellow Cards", "경고"),
+                ("Red Cards", "퇴장")
+            ]
+            
+            ForEach(targetTypes, id: \.0) { typeKey, typeName in
+                MatchStatComparisonRow(
+                    title: typeName,
+                    homeVal: getMatchStatValue(from: homeStats, type: typeKey),
+                    awayVal: getMatchStatValue(from: awayStats, type: typeKey)
+                )
             }
         }
     }
