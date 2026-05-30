@@ -283,6 +283,13 @@ struct PlayerProfileInfo: Decodable {
     let id: Int
     let name: String
     let photo: String?
+    let age: Int?
+    let height: String?
+    let weight: String?
+    let birth: PlayerBirthInfo?
+}
+struct PlayerBirthInfo: Decodable {
+    let date: String?
 }
 struct PlayerDetailedStats: Decodable {
     let team: TeamInfo
@@ -293,7 +300,13 @@ struct PlayerDetailedStats: Decodable {
     let tackles: TackleDetailedStats?
 }
 struct GameDetailedStats: Decodable {
+    let appearences: Int?
+    let lineups: Int?
+    let minutes: Int?
+    let number: Int?
     let position: String?
+    let rating: String?
+    let captain: Bool?
 }
 struct ShotDetailedStats: Codable {
     let total: Int?

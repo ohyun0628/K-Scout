@@ -1,0 +1,174 @@
+import SwiftUI
+
+struct PlayerSummarySheet: View {
+    let playerId: Int
+    @StateObject private var viewModel = PlayerSummaryViewModel()
+    @Environment(\.presentationMode) var presentationMode
+    
+    // For navigation to full detail
+    @State private var navigateToDetail = false
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 0) {
+                if viewModel.isLoading {
+                    ProgressView("선수 정보 불러오는 중...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = viewModel.errorMessage {
+                    Text(error).foregroundColor(.red)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let detail = viewModel.playerDetail {
+                    contentView(detail)
+                }
+                
+                // Navigation Link hidden
+                NavigationLink(
+                    destination: PlayerDetailView(playerDetail: viewModel.playerDetail),
+                    isActive: $navigateToDetail,
+                    label: { EmptyView() }
+                )
+            }
+            .navigationBarItems(trailing: Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Image(systemName: "xmark")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 18, weight: .semibold))
+            })
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                viewModel.fetchPlayer(id: playerId)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func contentView(_ detail: PlayerDetailItem) -> some View {
+        ScrollView {
+            VStack(spacing: 32) {
+                // Profile Header
+                profileHeader(detail)
+                
+                // Info Cards
+                infoCards(detail)
+                
+                // Season Records
+                seasonRecords(detail)
+            }
+            .padding(.top, 24)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+        }
+        
+        // Bottom Button
+        Button(action: {
+            navigateToDetail = true
+        }) {
+            Text("기록 더보기")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color(red: 220/255, green: 180/255, blue: 60/255)) // Yellow gold color
+        }
+    }
+    
+    private func profileHeader(_ detail: PlayerDetailItem) -> some View {
+        VStack(spacing: 12) {
+            ZStack(alignment: .bottomTrailing) {
+                AsyncImage(url: URL(string: detail.player.photo ?? "")) { image in
+                    image.resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Circle().fill(Color.gray.opacity(0.1))
+                        .overlay(Image(systemName: "person.fill").font(.system(size: 40)).foregroundColor(.gray.opacity(0.5)))
+                }
+                .frame(width: 90, height: 90)
+                .clipShape(Circle())
+                
+                if let teamLogo = detail.statistics.first?.team.logo {
+                    AsyncImage(url: URL(string: teamLogo)) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Circle().fill(Color.white)
+                    }
+                    .frame(width: 28, height: 28)
+                    .background(Color.white)
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
+                    .offset(x: 4, y: 4)
+                }
+            }
+            
+            Text(KoreanTranslationService.translatePlayer(detail.player.name))
+                .font(.system(size: 22, weight: .bold))
+        }
+    }
+    
+    private func infoCards(_ detail: PlayerDetailItem) -> some View {
+        HStack(spacing: 10) {
+            infoCard(title: "등번호", value: detail.statistics.first?.games?.number.map { "No.\($0)" } ?? "-")
+            infoCard(title: "포지션", value: detail.statistics.first?.games?.position ?? "-")
+            infoCard(title: "출생", value: detail.player.birth?.date ?? "-")
+            infoCard(title: "신장", value: detail.player.height ?? "-")
+        }
+    }
+    
+    private func infoCard(title: String, value: String) -> some View {
+        VStack(spacing: 6) {
+            Text(title)
+                .font(.system(size: 11))
+                .foregroundColor(.gray)
+            Text(value)
+                .font(.system(size: 13, weight: .bold))
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 14)
+        .background(Color(UIColor.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+    
+    private func seasonRecords(_ detail: PlayerDetailItem) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 6) {
+                Text("K리그1 2024 시즌 기록")
+                    .font(.system(size: 16, weight: .bold))
+                Image(systemName: "info.circle")
+                    .font(.system(size: 13))
+                    .foregroundColor(.gray)
+            }
+            
+            Divider()
+            
+            let stats = detail.statistics.first
+            let apps = stats?.games?.appearences ?? 0
+            let goals = stats?.goals?.total ?? 0
+            let assists = stats?.goals?.assists ?? 0
+            let shots = stats?.shots?.total ?? 0
+            let passes = stats?.passes?.total ?? 0
+            let tackles = stats?.tackles?.total ?? 0
+            
+            VStack(spacing: 16) {
+                recordRow(title: "경기", value: "\(apps)")
+                recordRow(title: "득점", value: "\(goals)")
+                recordRow(title: "도움", value: "\(assists)")
+                recordRow(title: "슈팅", value: "\(shots)")
+                recordRow(title: "패스", value: "\(passes)")
+                recordRow(title: "태클", value: "\(tackles)")
+            }
+            .padding(.top, 4)
+        }
+    }
+    
+    private func recordRow(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 15))
+                .foregroundColor(.gray)
+            Spacer()
+            Text(value)
+                .font(.system(size: 15, weight: .medium))
+        }
+    }
+}
