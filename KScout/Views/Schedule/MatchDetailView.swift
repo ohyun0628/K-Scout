@@ -475,7 +475,15 @@ struct MatchDetailView: View {
     
     // MARK: - 1. Team Comparison Section
     private var teamComparisonSection: some View {
-        VStack(spacing: 20) {
+        let hForm = viewModel.homeStanding?.form?.map { String($0) } ?? ["-","-","-","-","-"]
+        let aForm = viewModel.awayStanding?.form?.map { String($0) } ?? ["-","-","-","-","-"]
+        
+        let hGFor = safeAverage(played: viewModel.homeStanding?.all.played, goals: viewModel.homeStanding?.all.goals?.for)
+        let aGFor = safeAverage(played: viewModel.awayStanding?.all.played, goals: viewModel.awayStanding?.all.goals?.for)
+        let hGAgainst = safeAverage(played: viewModel.homeStanding?.all.played, goals: viewModel.homeStanding?.all.goals?.against)
+        let aGAgainst = safeAverage(played: viewModel.awayStanding?.all.played, goals: viewModel.awayStanding?.all.goals?.against)
+        
+        return VStack(spacing: 20) {
             // Team Names and Ranks
             HStack(alignment: .top) {
                 // Home
@@ -518,7 +526,6 @@ struct MatchDetailView: View {
             
             // Recent Form
             HStack(alignment: .center) {
-                let hForm = viewModel.homeStanding?.form?.map { String($0) } ?? ["-","-","-","-","-"]
                 formBoxes(forms: hForm)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 
@@ -527,18 +534,12 @@ struct MatchDetailView: View {
                     .foregroundColor(.gray)
                     .frame(width: 60, alignment: .center)
                 
-                let aForm = viewModel.awayStanding?.form?.map { String($0) } ?? ["-","-","-","-","-"]
                 formBoxes(forms: aForm)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             
             // Average Stats
             VStack(spacing: 12) {
-                let hGFor = safeAverage(played: viewModel.homeStanding?.all.played, goals: viewModel.homeStanding?.all.goals?.for)
-                let aGFor = safeAverage(played: viewModel.awayStanding?.all.played, goals: viewModel.awayStanding?.all.goals?.for)
-                let hGAgainst = safeAverage(played: viewModel.homeStanding?.all.played, goals: viewModel.homeStanding?.all.goals?.against)
-                let aGAgainst = safeAverage(played: viewModel.awayStanding?.all.played, goals: viewModel.awayStanding?.all.goals?.against)
-                
                 statBarRow(title: "평균득점", homeValue: hGFor, awayValue: aGFor, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
                 statBarRow(title: "평균실점", homeValue: hGAgainst, awayValue: aGAgainst, maxVal: 3.0, homeColor: Color(red: 0.85, green: 0.75, blue: 0.3), awayColor: Color(red: 0.2, green: 0.3, blue: 0.6))
             }
@@ -623,7 +624,12 @@ struct MatchDetailView: View {
     
     // MARK: - 2. Top Players Section
     private var topPlayersSection: some View {
-        VStack(spacing: 16) {
+        let hCount = viewModel.homeTopPlayers.count
+        let aCount = viewModel.awayTopPlayers.count
+        let maxCount = max(hCount, aCount)
+        let limit = min(maxCount, 5)
+        
+        return VStack(spacing: 16) {
             Text("탑플레이어")
                 .font(.system(size: 16, weight: .medium))
             
@@ -661,25 +667,12 @@ struct MatchDetailView: View {
                 .overlay(Divider().background(Color.gray.opacity(0.2)), alignment: .bottom)
                 
                 // Rows (API Data)
-                let hCount = viewModel.homeTopPlayers.count
-                let aCount = viewModel.awayTopPlayers.count
-                let maxCount = max(hCount, aCount)
-                let limit = min(maxCount, 5)
-                
                 if limit > 0 {
                     ForEach(0..<limit, id: \.self) { i in
-                        let hPlayer = i < hCount ? viewModel.homeTopPlayers[i] : nil
-                        let aPlayer = i < aCount ? viewModel.awayTopPlayers[i] : nil
-                        
-                        let hName = KoreanTranslationService.translatePlayer(hPlayer?.player.name ?? "-")
-                        let hG = hPlayer?.statistics.first?.goals.total ?? 0
-                        let hA = hPlayer?.statistics.first?.assists?.total ?? 0
-                        
-                        let aName = KoreanTranslationService.translatePlayer(aPlayer?.player.name ?? "-")
-                        let aG = aPlayer?.statistics.first?.goals.total ?? 0
-                        let aA = aPlayer?.statistics.first?.assists?.total ?? 0
-                        
-                        topPlayerRow(hName: hName, hG: hG, hA: hA, aName: aName, aG: aG, aA: aA)
+                        PlayerRowView(
+                            homePlayer: i < hCount ? viewModel.homeTopPlayers[i] : nil,
+                            awayPlayer: i < aCount ? viewModel.awayTopPlayers[i] : nil
+                        )
                     }
                 } else {
                     topPlayerRow(hName: "-", hG: 0, hA: 0, aName: "-", aG: 0, aA: 0)
@@ -690,6 +683,44 @@ struct MatchDetailView: View {
                 .font(.system(size: 11))
                 .foregroundColor(.gray)
                 .padding(.top, 8)
+        }
+    }
+    
+    // PlayerRowView to handle let declarations inside ForEach
+    struct PlayerRowView: View {
+        let homePlayer: PlayerRankingItem?
+        let awayPlayer: PlayerRankingItem?
+        
+        var body: some View {
+            let hName = KoreanTranslationService.translatePlayer(homePlayer?.player.name ?? "-")
+            let hG = homePlayer?.statistics.first?.goals.total ?? 0
+            let hA = homePlayer?.statistics.first?.assists?.total ?? 0
+            
+            let aName = KoreanTranslationService.translatePlayer(awayPlayer?.player.name ?? "-")
+            let aG = awayPlayer?.statistics.first?.goals.total ?? 0
+            let aA = awayPlayer?.statistics.first?.assists?.total ?? 0
+            
+            return HStack {
+                // Home
+                HStack {
+                    Text(hName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
+                    Text("\(hG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
+                    Text("\(hA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+                }
+                .frame(maxWidth: .infinity)
+                
+                Divider()
+                
+                // Away
+                HStack {
+                    Text(aName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
+                    Text("\(aG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
+                    Text("\(aA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .padding(.vertical, 10)
+            .overlay(Divider().background(Color.gray.opacity(0.1)), alignment: .bottom)
         }
     }
     
