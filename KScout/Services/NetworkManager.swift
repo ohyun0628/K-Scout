@@ -148,6 +148,11 @@ struct StandingStatDetail: Decodable {
     let win: Int
     let draw: Int
     let lose: Int
+    let goals: GoalsData?
+}
+struct GoalsData: Decodable {
+    let `for`: Int?
+    let against: Int?
 }
 
 // 2. 선수 랭킹 (Top Scorers & Top Assists) DTO
@@ -182,6 +187,64 @@ struct FixtureItem: Decodable {
     let league: LeagueInfo
     let teams: TeamMatchInfo
     let goals: GoalScoreInfo
+    let events: [FixtureEvent]?
+    let lineups: [FixtureLineup]?
+    let statistics: [FixtureStatistics]?
+}
+struct FixtureEvent: Decodable {
+    let time: EventTime
+    let team: TeamInfo
+    let player: EventPlayer
+    let assist: EventPlayer?
+    let type: String
+    let detail: String
+}
+struct EventTime: Decodable {
+    let elapsed: Int
+    let extra: Int?
+}
+struct EventPlayer: Decodable {
+    let id: Int?
+    let name: String?
+}
+struct FixtureLineup: Decodable {
+    let team: TeamInfo
+    let formation: String?
+    let startXI: [LineupPlayerInfo]?
+    let substitutes: [LineupPlayerInfo]?
+}
+struct LineupPlayerInfo: Decodable {
+    let player: LineupPlayer
+}
+struct LineupPlayer: Decodable {
+    let id: Int?
+    let name: String
+    let number: Int?
+    let pos: String?
+}
+struct FixtureStatistics: Decodable {
+    let team: TeamInfo
+    let statistics: [StatDetail]
+}
+struct StatDetail: Decodable {
+    let type: String
+    let value: StatValue?
+}
+enum StatValue: Decodable {
+    case int(Int)
+    case string(String)
+    case none
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let intVal = try? container.decode(Int.self) {
+            self = .int(intVal)
+        } else if let strVal = try? container.decode(String.self) {
+            self = .string(strVal)
+        } else {
+            self = .none
+        }
+    }
 }
 struct FixtureInfo: Decodable {
     let id: Int

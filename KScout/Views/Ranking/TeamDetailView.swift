@@ -243,7 +243,8 @@ struct TeamDetailView: View {
                 .padding(.horizontal, 16)
             } else {
                 ForEach(viewModel.fixtures) { match in
-                    HStack(spacing: 12) {
+                    NavigationLink(destination: MatchDetailView(match: match)) {
+                        HStack(spacing: 12) {
                         // 결과에 따른 전적 서클 뱃지 (네이버 톤 매칭)
                         if match.status == "FT" {
                             winLossBadge(for: match)
@@ -307,12 +308,14 @@ struct TeamDetailView: View {
                                     .lineLimit(1)
                             }
                         }
+                        }
+                        .padding(14)
+                        .background(Color.white)
+                        .cornerRadius(14)
+                        .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
+                        .padding(.horizontal, 16)
                     }
-                    .padding(14)
-                    .background(Color.white)
-                    .cornerRadius(14)
-                    .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
-                    .padding(.horizontal, 16)
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }

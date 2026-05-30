@@ -2,6 +2,7 @@ import Foundation
 
 struct MockMatch: Identifiable {
     let id = UUID()
+    var apiId: Int? = nil // To store the actual fixture ID from API
     let homeTeam: String
     let awayTeam: String
     let homeScore: Int?
