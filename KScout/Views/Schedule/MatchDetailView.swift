@@ -290,21 +290,20 @@ struct MatchDetailView: View {
                         }
                         
                         let playerEvents = events.filter { $0.player.id == item.player.id || $0.assist?.id == item.player.id }
-                        let scoredGoal = playerEvents.contains { $0.type == "Goal" && $0.player.id == item.player.id }
-                        let madeAssist = playerEvents.contains { $0.type == "Goal" && $0.assist?.id == item.player.id }
-                        let subbedOut = playerEvents.contains { $0.type == "subst" && $0.player.id == item.player.id }
+                        let scoredGoal = playerEvents.contains { $0.type.lowercased() == "goal" && $0.player.id == item.player.id }
+                        let madeAssist = playerEvents.contains { $0.type.lowercased() == "goal" && $0.assist?.id == item.player.id }
+                        let subbedOut = playerEvents.contains { $0.type.lowercased() == "subst" && $0.player.id == item.player.id }
                         
                         if scoredGoal {
-                            Image(systemName: "soccerball")
-                                .font(.system(size: 13))
-                                .foregroundColor(.black)
+                            Text("⚽️")
+                                .font(.system(size: 12))
+                                .padding(2)
                                 .background(Circle().fill(Color.white))
                                 .offset(x: -12, y: 12)
                         } else if madeAssist {
-                            Image(systemName: "shoe.fill")
+                            Text("👟")
                                 .font(.system(size: 10))
-                                .foregroundColor(.black)
-                                .padding(3)
+                                .padding(2)
                                 .background(Circle().fill(Color.white))
                                 .offset(x: 12, y: -12)
                         }
@@ -353,11 +352,11 @@ struct MatchDetailView: View {
             
             if let subs = lineup.substitutes {
                 ForEach(subs, id: \.player.name) { item in
-                    let subInEvent = events.first { $0.type == "subst" && $0.assist?.id == item.player.id }
+                    let subInEvent = events.first { $0.type.lowercased() == "subst" && $0.assist?.id == item.player.id }
                     let isSubbedIn = subInEvent != nil
                     let replacedPlayerName = subInEvent?.player.name
                     let subTime = subInEvent?.time.elapsed
-                    let scoredGoal = events.contains { $0.type == "Goal" && $0.player.id == item.player.id }
+                    let scoredGoal = events.contains { $0.type.lowercased() == "goal" && $0.player.id == item.player.id }
                     
                     HStack(spacing: 12) {
                         // Profile Image with Badge
@@ -398,7 +397,7 @@ struct MatchDetailView: View {
                                     .foregroundColor(.primary)
                                 
                                 if scoredGoal {
-                                    Image(systemName: "soccerball")
+                                    Text("⚽️")
                                         .font(.system(size: 11))
                                 }
                             }
