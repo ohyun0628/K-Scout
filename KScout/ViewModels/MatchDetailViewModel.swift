@@ -53,15 +53,23 @@ class MatchDetailViewModel: ObservableObject {
                         let hTeamName = self.match.homeTeam.replacingOccurrences(of: " ", with: "")
                         let aTeamName = self.match.awayTeam.replacingOccurrences(of: " ", with: "")
                         
-                        self.homeStanding = standings.first { 
-                            let apiName = KoreanTranslationService.translateTeam($0.team.name).replacingOccurrences(of: " ", with: "")
-                            return apiName.contains(hTeamName) || hTeamName.contains(apiName) || $0.team.name == self.match.homeTeam
+                        let isMatch = { (apiTeamName: String, targetTeamName: String) -> Bool in
+                            let translated = KoreanTranslationService.translateTeam(apiTeamName).replacingOccurrences(of: " ", with: "")
+                            let lowerApi = apiTeamName.lowercased()
+                            
+                            if translated.contains(targetTeamName) || targetTeamName.contains(translated) || apiTeamName == targetTeamName { return true }
+                            
+                            // Fallbacks for common K-League teams just in case
+                            if targetTeamName.contains("전북") && lowerApi.contains("jeonbuk") { return true }
+                            if targetTeamName.contains("울산") && lowerApi.contains("ulsan") { return true }
+                            if targetTeamName.contains("포항") && lowerApi.contains("pohang") { return true }
+                            if targetTeamName.contains("서울") && lowerApi.contains("seoul") { return true }
+                            
+                            return false
                         }
                         
-                        self.awayStanding = standings.first { 
-                            let apiName = KoreanTranslationService.translateTeam($0.team.name).replacingOccurrences(of: " ", with: "")
-                            return apiName.contains(aTeamName) || aTeamName.contains(apiName) || $0.team.name == self.match.awayTeam
-                        }
+                        self.homeStanding = standings.first { isMatch($0.team.name, hTeamName) || isMatch($0.team.name, self.match.homeTeam) }
+                        self.awayStanding = standings.first { isMatch($0.team.name, aTeamName) || isMatch($0.team.name, self.match.awayTeam) }
                     }
                 case .failure: break
                 }
@@ -78,15 +86,24 @@ class MatchDetailViewModel: ObservableObject {
                     let hTeamName = self.match.homeTeam.replacingOccurrences(of: " ", with: "")
                     let aTeamName = self.match.awayTeam.replacingOccurrences(of: " ", with: "")
                     
+                    let isMatch = { (apiTeamName: String, targetTeamName: String) -> Bool in
+                        let translated = KoreanTranslationService.translateTeam(apiTeamName).replacingOccurrences(of: " ", with: "")
+                        let lowerApi = apiTeamName.lowercased()
+                        if translated.contains(targetTeamName) || targetTeamName.contains(translated) || apiTeamName == targetTeamName { return true }
+                        if targetTeamName.contains("전북") && lowerApi.contains("jeonbuk") { return true }
+                        if targetTeamName.contains("울산") && lowerApi.contains("ulsan") { return true }
+                        if targetTeamName.contains("포항") && lowerApi.contains("pohang") { return true }
+                        if targetTeamName.contains("서울") && lowerApi.contains("seoul") { return true }
+                        return false
+                    }
+                    
                     self.homeTopPlayers = items.filter { item in
                         guard let tName = item.statistics.first?.team.name else { return false }
-                        let apiName = KoreanTranslationService.translateTeam(tName).replacingOccurrences(of: " ", with: "")
-                        return apiName.contains(hTeamName) || hTeamName.contains(apiName) || tName == self.match.homeTeam
+                        return isMatch(tName, hTeamName) || isMatch(tName, self.match.homeTeam)
                     }
                     self.awayTopPlayers = items.filter { item in
                         guard let tName = item.statistics.first?.team.name else { return false }
-                        let apiName = KoreanTranslationService.translateTeam(tName).replacingOccurrences(of: " ", with: "")
-                        return apiName.contains(aTeamName) || aTeamName.contains(apiName) || tName == self.match.awayTeam
+                        return isMatch(tName, aTeamName) || isMatch(tName, self.match.awayTeam)
                     }
                 case .failure: break
                 }

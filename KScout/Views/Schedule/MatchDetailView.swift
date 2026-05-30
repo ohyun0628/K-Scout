@@ -465,10 +465,7 @@ struct MatchDetailView: View {
                 
                 Divider().background(Color.gray.opacity(0.2))
                 
-                // 2. Recent Head-to-Head Section
-                recentH2HSection
-                
-                // 3. Top Players Section
+                // 2. Top Players Section
                 topPlayersSection
             }
             .padding(.vertical, 24)
@@ -560,8 +557,22 @@ struct MatchDetailView: View {
         HStack(spacing: 4) {
             ForEach(0..<forms.count, id: \.self) { i in
                 let form = forms[i]
-                let text = form == "W" ? "승" : (form == "D" ? "무" : "패")
-                let color = form == "W" ? Color.green : (form == "D" ? Color.gray : Color.blue)
+                let text: String
+                let color: Color
+                
+                if form == "W" {
+                    text = "승"
+                    color = Color.green
+                } else if form == "D" {
+                    text = "무"
+                    color = Color.gray
+                } else if form == "L" {
+                    text = "패"
+                    color = Color.blue
+                } else {
+                    text = "-"
+                    color = Color.gray.opacity(0.5)
+                }
                 
                 Text(text)
                     .font(.system(size: 11, weight: .bold))
@@ -610,67 +621,7 @@ struct MatchDetailView: View {
         }
     }
     
-    // MARK: - 2. Recent Head-to-Head Section
-    private var recentH2HSection: some View {
-        VStack(spacing: 16) {
-            Text("최근 양팀 맞대결")
-                .font(.system(size: 16, weight: .medium))
-            
-            VStack(spacing: 0) {
-                h2hRow(date: "2025/09/27", league: "K리그1", homeTeam: viewModel.match.homeTeam, homeScore: 1, awayScore: 3, awayTeam: viewModel.match.awayTeam, isLast: false)
-                h2hRow(date: "2025/07/05", league: "K리그1", homeTeam: viewModel.match.homeTeam, homeScore: 2, awayScore: 3, awayTeam: viewModel.match.awayTeam, isLast: false)
-                h2hRow(date: "2025/03/15", league: "K리그1", homeTeam: viewModel.match.awayTeam, homeScore: 0, awayScore: 0, awayTeam: viewModel.match.homeTeam, isLast: true)
-            }
-        }
-    }
-    
-    private func h2hRow(date: String, league: String, homeTeam: String, homeScore: Int, awayScore: Int, awayTeam: String, isLast: Bool) -> some View {
-        VStack(spacing: 0) {
-            HStack {
-                // Home
-                HStack(spacing: 8) {
-                    Text(KoreanTranslationService.translateTeam(homeTeam))
-                        .font(.system(size: 13, weight: .medium))
-                    TeamLogoView(teamName: homeTeam, size: 24)
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                
-                // Score & Date
-                HStack(spacing: 12) {
-                    Text("\(homeScore)")
-                        .font(.system(size: 16, weight: .bold))
-                    
-                    VStack(spacing: 2) {
-                        Text(date)
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                        Text(league)
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                    }
-                    .frame(width: 70)
-                    
-                    Text("\(awayScore)")
-                        .font(.system(size: 16, weight: .bold))
-                }
-                
-                // Away
-                HStack(spacing: 8) {
-                    TeamLogoView(teamName: awayTeam, size: 24)
-                    Text(KoreanTranslationService.translateTeam(awayTeam))
-                        .font(.system(size: 13, weight: .medium))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.vertical, 12)
-            
-            if !isLast {
-                Divider().background(Color.gray.opacity(0.15))
-            }
-        }
-    }
-    
-    // MARK: - 3. Top Players Section
+    // MARK: - 2. Top Players Section
     private var topPlayersSection: some View {
         VStack(spacing: 16) {
             Text("탑플레이어")
