@@ -23,7 +23,7 @@ struct PlayerSummarySheet: View {
                 
                 // Navigation Link hidden
                 NavigationLink(
-                    destination: PlayerDetailView(playerDetail: viewModel.playerDetail),
+                    destination: PlayerDetailView(player: convertToPlayer(viewModel.playerDetail)),
                     isActive: $navigateToDetail,
                     label: { EmptyView() }
                 )
@@ -170,5 +170,23 @@ struct PlayerSummarySheet: View {
             Text(value)
                 .font(.system(size: 15, weight: .medium))
         }
+    }
+    
+    private func convertToPlayer(_ detail: PlayerDetailItem?) -> Player {
+        guard let detail = detail else {
+            return Player(id: 0, name: "-", photo: nil, teamName: "-", goals: 0, assists: 0, shots: 0, passes: 0, defense: 0)
+        }
+        let stats = detail.statistics.first
+        return Player(
+            id: detail.player.id,
+            name: detail.player.name,
+            photo: detail.player.photo,
+            teamName: KoreanTranslationService.translateTeam(stats?.team.name ?? "-"),
+            goals: stats?.goals?.total ?? 0,
+            assists: stats?.goals?.assists ?? 0,
+            shots: stats?.shots?.total ?? 0,
+            passes: stats?.passes?.total ?? 0,
+            defense: stats?.tackles?.total ?? 0
+        )
     }
 }
