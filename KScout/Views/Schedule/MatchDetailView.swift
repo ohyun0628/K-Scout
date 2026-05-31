@@ -4,6 +4,8 @@ struct MatchDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel: MatchDetailViewModel
     @State private var selectedTab = 0 // 0: 라인업, 1: 경기 기록, 2: 스탯
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary: Bool = false
     
     init(match: MockMatch) {
         _viewModel = StateObject(wrappedValue: MatchDetailViewModel(match: match))
@@ -46,6 +48,11 @@ struct MatchDetailView: View {
         .navigationBarHidden(true)
         .onAppear {
             viewModel.fetchMatchDetails()
+        }
+        .sheet(isPresented: $showPlayerSummary) {
+            if let id = selectedPlayerId {
+                PlayerSummarySheet(playerId: id)
+            }
         }
     }
     
@@ -269,7 +276,13 @@ struct MatchDetailView: View {
     private func pitchRow(players: [LineupPlayerInfo], events: [FixtureEvent]) -> some View {
         HStack(spacing: 0) {
             ForEach(players, id: \.player.name) { item in
-                VStack(spacing: 4) {
+                Button(action: {
+                    if let id = item.player.id {
+                        self.selectedPlayerId = id
+                        self.showPlayerSummary = true
+                    }
+                }) {
+                    VStack(spacing: 4) {
                     ZStack {
                         Circle()
                             .fill(Color.white)
@@ -330,6 +343,7 @@ struct MatchDetailView: View {
                     .frame(width: 50)
                 }
                 .frame(maxWidth: .infinity)
+                .buttonStyle(PlainButtonStyle())
             }
         }
     }
@@ -358,7 +372,13 @@ struct MatchDetailView: View {
                     let subTime = subInEvent?.time.elapsed
                     let scoredGoal = events.contains { $0.type.lowercased() == "goal" && $0.player.id == item.player.id }
                     
-                    HStack(spacing: 12) {
+                    Button(action: {
+                        if let id = item.player.id {
+                            self.selectedPlayerId = id
+                            self.showPlayerSummary = true
+                        }
+                    }) {
+                        HStack(spacing: 12) {
                         // Profile Image with Badge
                         ZStack(alignment: .topLeading) {
                             if let playerId = item.player.id {
@@ -409,6 +429,7 @@ struct MatchDetailView: View {
                             }
                         }
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
@@ -744,7 +765,11 @@ struct MatchDetailView: View {
                     ForEach(0..<limit, id: \.self) { i in
                         PlayerRowView(
                             homePlayer: i < hCount ? viewModel.homeTopPlayers[i] : nil,
-                            awayPlayer: i < aCount ? viewModel.awayTopPlayers[i] : nil
+                            awayPlayer: i < aCount ? viewModel.awayTopPlayers[i] : nil,
+                            onPlayerTap: { id in
+                                self.selectedPlayerId = id
+                                self.showPlayerSummary = true
+                            }
                         )
                     }
                 } else {
@@ -763,6 +788,7 @@ struct MatchDetailView: View {
     struct PlayerRowView: View {
         let homePlayer: PlayerRankingItem?
         let awayPlayer: PlayerRankingItem?
+        let onPlayerTap: (Int) -> Void
         
         var body: some View {
             let hName = KoreanTranslationService.translatePlayer(homePlayer?.player.name ?? "-")
@@ -775,22 +801,32 @@ struct MatchDetailView: View {
             
             return HStack {
                 // Home
-                HStack {
-                    Text(hName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
-                    Text("\(hG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
-                    Text("\(hA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+                Button(action: {
+                    if let id = homePlayer?.player.id { onPlayerTap(id) }
+                }) {
+                    HStack {
+                        Text(hName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
+                        Text("\(hG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
+                        Text("\(hA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
+                .buttonStyle(PlainButtonStyle())
                 
                 Divider()
                 
                 // Away
-                HStack {
-                    Text(aName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
-                    Text("\(aG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
-                    Text("\(aA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+                Button(action: {
+                    if let id = awayPlayer?.player.id { onPlayerTap(id) }
+                }) {
+                    HStack {
+                        Text(aName).font(.system(size: 13)).frame(maxWidth: .infinity, alignment: .center).lineLimit(1)
+                        Text("\(aG)").font(.system(size: 13, weight: .bold)).frame(width: 25, alignment: .center)
+                        Text("\(aA)").font(.system(size: 13)).foregroundColor(.gray).frame(width: 25, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
+                .buttonStyle(PlainButtonStyle())
             }
             .padding(.vertical, 10)
             .overlay(Divider().background(Color.gray.opacity(0.1)), alignment: .bottom)
