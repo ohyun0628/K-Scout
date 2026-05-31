@@ -6,6 +6,9 @@ struct PlayerStatsDetailSheet: View {
     @State private var localStatType: String
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary = false
+    
     init(viewModel: RankingViewModel, selectedLeague: Int, initialStatType: String) {
         self.viewModel = viewModel
         self.selectedLeague = selectedLeague
@@ -154,6 +157,11 @@ struct PlayerStatsDetailSheet: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                self.selectedPlayerId = player.id
+                                self.showPlayerSummary = true
+                            }
                             
                             Divider()
                                 .padding(.leading, 60)
@@ -164,6 +172,13 @@ struct PlayerStatsDetailSheet: View {
             }
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
+        .sheet(isPresented: $showPlayerSummary) {
+            if let id = selectedPlayerId {
+                PlayerSummarySheet(playerId: id)
+            } else {
+                EmptyView()
+            }
+        }
     }
     
     // MARK: - 스탯에 맞는 값 반환 함수
