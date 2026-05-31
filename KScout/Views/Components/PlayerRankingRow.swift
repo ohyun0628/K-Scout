@@ -153,9 +153,9 @@ struct PlayerRankingRow: View {
 struct PlayerRankingRow_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            PlayerRankingRow(player: PlayerRanking(id: UUID(), rank: 1, playerName: "주민규", teamName: "울산 HD", statCount: 14, played: 16, league: 1, type: "goals"))
+            PlayerRankingRow(player: PlayerRanking(id: 1, rank: 1, playerName: "주민규", teamName: "울산 HD", statCount: 14, played: 16, league: 1, type: "goals"))
                 .previewLayout(.sizeThatFits)
-            PlayerRankingRow(player: PlayerRanking(id: UUID(), rank: 4, playerName: "송민규", teamName: "전북 현대", statCount: 8, played: 14, league: 1, type: "goals"))
+            PlayerRankingRow(player: PlayerRanking(id: 2, rank: 4, playerName: "송민규", teamName: "전북 현대", statCount: 8, played: 14, league: 1, type: "goals"))
                 .previewLayout(.sizeThatFits)
         }
     }
