@@ -1,7 +1,7 @@
 import Foundation
 
 struct PlayerRanking: Identifiable, Codable {
-    let id: UUID
+    let id: Int
     let rank: Int
     let playerName: String
     let teamName: String
@@ -32,7 +32,7 @@ struct PlayerRanking: Identifiable, Codable {
     var yellowCards: Int
     
     init(
-        id: UUID = UUID(),
+        id: Int = Int.random(in: 100000...999999),
         rank: Int,
         playerName: String,
         teamName: String,

@@ -283,7 +283,7 @@ class RankingViewModel: ObservableObject {
                     let mappedRankings = items.enumerated().map { (index, item) -> PlayerRanking in
                         let statCount = (type == "goals") ? (item.statistics.first?.goals.total ?? 0) : (item.statistics.first?.assists?.total ?? 0)
                         return PlayerRanking(
-                            id: UUID(),
+                            id: item.player.id,
                             rank: index + 1,
                             playerName: KoreanTranslationService.translatePlayer(item.player.name),
                             teamName: KoreanTranslationService.translateTeam(item.statistics.first?.team.name ?? "알 수 없음"),
@@ -404,33 +404,33 @@ class RankingViewModel: ObservableObject {
             if league == 1 {
                 if type == "goals" {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "사바그", teamName: "전북 현대", statCount: 17, played: 34, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "이동경", teamName: "김천 상무", statCount: 14, played: 33, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "일류첸코", teamName: "서울 FC", statCount: 13, played: 35, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "주민규", teamName: "울산 HD", statCount: 12, played: 32, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "무고사", teamName: "인천 유나이티드", statCount: 11, played: 36, league: 1, type: "goals")
+                        PlayerRanking(rank: 1, playerName: "사바그", teamName: "전북 현대", statCount: 17, played: 34, league: 1, type: "goals"),
+                        PlayerRanking(rank: 2, playerName: "이동경", teamName: "김천 상무", statCount: 14, played: 33, league: 1, type: "goals"),
+                        PlayerRanking(rank: 3, playerName: "일류첸코", teamName: "서울 FC", statCount: 13, played: 35, league: 1, type: "goals"),
+                        PlayerRanking(rank: 4, playerName: "주민규", teamName: "울산 HD", statCount: 12, played: 32, league: 1, type: "goals"),
+                        PlayerRanking(rank: 5, playerName: "무고사", teamName: "인천 유나이티드", statCount: 11, played: 36, league: 1, type: "goals")
                     ]
                 } else {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "세징야", teamName: "대구 FC", statCount: 9, played: 35, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "이동경", teamName: "김천 상무", statCount: 8, played: 33, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "송민규", teamName: "전북 현대", statCount: 7, played: 34, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "안데르손", teamName: "수원 FC", statCount: 7, played: 35, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "기성용", teamName: "서울 FC", statCount: 6, played: 32, league: 1, type: "assists")
+                        PlayerRanking(rank: 1, playerName: "세징야", teamName: "대구 FC", statCount: 9, played: 35, league: 1, type: "assists"),
+                        PlayerRanking(rank: 2, playerName: "이동경", teamName: "김천 상무", statCount: 8, played: 33, league: 1, type: "assists"),
+                        PlayerRanking(rank: 3, playerName: "송민규", teamName: "전북 현대", statCount: 7, played: 34, league: 1, type: "assists"),
+                        PlayerRanking(rank: 4, playerName: "안데르손", teamName: "수원 FC", statCount: 7, played: 35, league: 1, type: "assists"),
+                        PlayerRanking(rank: 5, playerName: "기성용", teamName: "서울 FC", statCount: 6, played: 32, league: 1, type: "assists")
                     ]
                 }
             } else {
                 if type == "goals" {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "제르소", teamName: "인천 유나이티드", statCount: 15, played: 32, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "루페타", teamName: "부천 FC 1995", statCount: 13, played: 33, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "뮬리치", teamName: "수원 삼성", statCount: 11, played: 30, league: 2, type: "goals")
+                        PlayerRanking(rank: 1, playerName: "제르소", teamName: "인천 유나이티드", statCount: 15, played: 32, league: 2, type: "goals"),
+                        PlayerRanking(rank: 2, playerName: "루페타", teamName: "부천 FC 1995", statCount: 13, played: 33, league: 2, type: "goals"),
+                        PlayerRanking(rank: 3, playerName: "뮬리치", teamName: "수원 삼성", statCount: 11, played: 30, league: 2, type: "goals")
                     ]
                 } else {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 10, played: 34, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "홍창범", teamName: "부천 FC 1995", statCount: 7, played: 33, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "아코스티", teamName: "수원 삼성", statCount: 6, played: 28, league: 2, type: "assists")
+                        PlayerRanking(rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 10, played: 34, league: 2, type: "assists"),
+                        PlayerRanking(rank: 2, playerName: "홍창범", teamName: "부천 FC 1995", statCount: 7, played: 33, league: 2, type: "assists"),
+                        PlayerRanking(rank: 3, playerName: "아코스티", teamName: "수원 삼성", statCount: 6, played: 28, league: 2, type: "assists")
                     ]
                 }
             }
@@ -438,33 +438,33 @@ class RankingViewModel: ObservableObject {
             if league == 1 {
                 if type == "goals" {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "주민규", teamName: "울산 HD FC", statCount: 9, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "송민규", teamName: "전북 현대", statCount: 8, played: 14, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "조영욱", teamName: "FC 서울", statCount: 7, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "이승우", teamName: "전북 현대", statCount: 6, played: 13, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "엄원상", teamName: "울산 HD FC", statCount: 5, played: 14, league: 1, type: "goals")
+                        PlayerRanking(rank: 1, playerName: "주민규", teamName: "울산 HD FC", statCount: 9, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 2, playerName: "송민규", teamName: "전북 현대", statCount: 8, played: 14, league: 1, type: "goals"),
+                        PlayerRanking(rank: 3, playerName: "조영욱", teamName: "FC 서울", statCount: 7, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 4, playerName: "이승우", teamName: "전북 현대", statCount: 6, played: 13, league: 1, type: "goals"),
+                        PlayerRanking(rank: 5, playerName: "엄원상", teamName: "울산 HD FC", statCount: 5, played: 14, league: 1, type: "goals")
                     ]
                 } else {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "이동경", teamName: "김천 상무", statCount: 6, played: 15, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "린가드", teamName: "FC 서울", statCount: 5, played: 12, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "바코", teamName: "울산 HD FC", statCount: 4, played: 14, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "송민규", teamName: "전북 현대", statCount: 4, played: 14, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "기성용", teamName: "FC 서울", statCount: 3, played: 15, league: 1, type: "assists")
+                        PlayerRanking(rank: 1, playerName: "이동경", teamName: "김천 상무", statCount: 6, played: 15, league: 1, type: "assists"),
+                        PlayerRanking(rank: 2, playerName: "린가드", teamName: "FC 서울", statCount: 5, played: 12, league: 1, type: "assists"),
+                        PlayerRanking(rank: 3, playerName: "바코", teamName: "울산 HD FC", statCount: 4, played: 14, league: 1, type: "assists"),
+                        PlayerRanking(rank: 4, playerName: "송민규", teamName: "전북 현대", statCount: 4, played: 14, league: 1, type: "assists"),
+                        PlayerRanking(rank: 5, playerName: "기성용", teamName: "FC 서울", statCount: 3, played: 15, league: 1, type: "assists")
                     ]
                 }
             } else {
                 if type == "goals" {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "뮬리치", teamName: "수원 삼성", statCount: 8, played: 14, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "호난", teamName: "서울 이랜드", statCount: 7, played: 13, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 6, played: 15, league: 2, type: "goals")
+                        PlayerRanking(rank: 1, playerName: "뮬리치", teamName: "수원 삼성", statCount: 8, played: 14, league: 2, type: "goals"),
+                        PlayerRanking(rank: 2, playerName: "호난", teamName: "서울 이랜드", statCount: 7, played: 13, league: 2, type: "goals"),
+                        PlayerRanking(rank: 3, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 6, played: 15, league: 2, type: "goals")
                     ]
                 } else {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 7, played: 15, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "카즈키", teamName: "수원 삼성", statCount: 5, played: 13, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "브루노", teamName: "서울 이랜드", statCount: 4, played: 14, league: 2, type: "assists")
+                        PlayerRanking(rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 7, played: 15, league: 2, type: "assists"),
+                        PlayerRanking(rank: 2, playerName: "카즈키", teamName: "수원 삼성", statCount: 5, played: 13, league: 2, type: "assists"),
+                        PlayerRanking(rank: 3, playerName: "브루노", teamName: "서울 이랜드", statCount: 4, played: 14, league: 2, type: "assists")
                     ]
                 }
             }
@@ -472,46 +472,46 @@ class RankingViewModel: ObservableObject {
             if league == 1 {
                 if type == "goals" {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "주민규", teamName: "울산 HD", statCount: 14, played: 16, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "일류첸코", teamName: "서울 FC", statCount: 11, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "무고사", teamName: "인천 유나이티드", statCount: 10, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "송민규", teamName: "전북 현대", statCount: 8, played: 14, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "이승우", teamName: "수원 FC", statCount: 8, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 6, playerName: "아사니", teamName: "광주 FC", statCount: 7, played: 13, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 7, playerName: "야고", teamName: "강원 FC", statCount: 7, played: 14, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 8, playerName: "이상헌", teamName: "강원 FC", statCount: 6, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 9, playerName: "김현", teamName: "수원 FC", statCount: 6, played: 15, league: 1, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 10, playerName: "구스타보", teamName: "대구 FC", statCount: 5, played: 14, league: 1, type: "goals")
+                        PlayerRanking(rank: 1, playerName: "주민규", teamName: "울산 HD", statCount: 14, played: 16, league: 1, type: "goals"),
+                        PlayerRanking(rank: 2, playerName: "일류첸코", teamName: "서울 FC", statCount: 11, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 3, playerName: "무고사", teamName: "인천 유나이티드", statCount: 10, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 4, playerName: "송민규", teamName: "전북 현대", statCount: 8, played: 14, league: 1, type: "goals"),
+                        PlayerRanking(rank: 5, playerName: "이승우", teamName: "수원 FC", statCount: 8, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 6, playerName: "아사니", teamName: "광주 FC", statCount: 7, played: 13, league: 1, type: "goals"),
+                        PlayerRanking(rank: 7, playerName: "야고", teamName: "강원 FC", statCount: 7, played: 14, league: 1, type: "goals"),
+                        PlayerRanking(rank: 8, playerName: "이상헌", teamName: "강원 FC", statCount: 6, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 9, playerName: "김현", teamName: "수원 FC", statCount: 6, played: 15, league: 1, type: "goals"),
+                        PlayerRanking(rank: 10, playerName: "구스타보", teamName: "대구 FC", statCount: 5, played: 14, league: 1, type: "goals")
                     ]
                 } else {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "세징야", teamName: "대구 FC", statCount: 7, played: 15, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "설영우", teamName: "울산 HD", statCount: 6, played: 14, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "기성용", teamName: "서울 FC", statCount: 5, played: 15, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "백승호", teamName: "전북 현대", statCount: 5, played: 13, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "안데르손", teamName: "수원 FC", statCount: 4, played: 15, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 6, playerName: "이동경", teamName: "울산 HD", statCount: 4, played: 12, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 7, playerName: "송민규", teamName: "전북 현대", statCount: 4, played: 14, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 8, playerName: "이명주", teamName: "인천 유나이티드", statCount: 3, played: 15, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 9, playerName: "엄원상", teamName: "울산 HD", statCount: 3, played: 14, league: 1, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 10, playerName: "조영욱", teamName: "서울 FC", statCount: 3, played: 15, league: 1, type: "assists")
+                        PlayerRanking(rank: 1, playerName: "세징야", teamName: "대구 FC", statCount: 7, played: 15, league: 1, type: "assists"),
+                        PlayerRanking(rank: 2, playerName: "설영우", teamName: "울산 HD", statCount: 6, played: 14, league: 1, type: "assists"),
+                        PlayerRanking(rank: 3, playerName: "기성용", teamName: "서울 FC", statCount: 5, played: 15, league: 1, type: "assists"),
+                        PlayerRanking(rank: 4, playerName: "백승호", teamName: "전북 현대", statCount: 5, played: 13, league: 1, type: "assists"),
+                        PlayerRanking(rank: 5, playerName: "안데르손", teamName: "수원 FC", statCount: 4, played: 15, league: 1, type: "assists"),
+                        PlayerRanking(rank: 6, playerName: "이동경", teamName: "울산 HD", statCount: 4, played: 12, league: 1, type: "assists"),
+                        PlayerRanking(rank: 7, playerName: "송민규", teamName: "전북 현대", statCount: 4, played: 14, league: 1, type: "assists"),
+                        PlayerRanking(rank: 8, playerName: "이명주", teamName: "인천 유나이티드", statCount: 3, played: 15, league: 1, type: "assists"),
+                        PlayerRanking(rank: 9, playerName: "엄원상", teamName: "울산 HD", statCount: 3, played: 14, league: 1, type: "assists"),
+                        PlayerRanking(rank: 10, playerName: "조영욱", teamName: "서울 FC", statCount: 3, played: 15, league: 1, type: "assists")
                     ]
                 }
             } else {
                 if type == "goals" {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "조나탄", teamName: "FC 안양", statCount: 12, played: 15, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "루페타", teamName: "부천 FC 1995", statCount: 9, played: 14, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 8, played: 15, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 7, played: 14, league: 2, type: "goals"),
-                        PlayerRanking(id: UUID(), rank: 5, playerName: "주닝요", teamName: "충남아산 FC", statCount: 6, played: 15, league: 2, type: "goals")
+                        PlayerRanking(rank: 1, playerName: "조나탄", teamName: "FC 안양", statCount: 12, played: 15, league: 2, type: "goals"),
+                        PlayerRanking(rank: 2, playerName: "루페타", teamName: "부천 FC 1995", statCount: 9, played: 14, league: 2, type: "goals"),
+                        PlayerRanking(rank: 3, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 8, played: 15, league: 2, type: "goals"),
+                        PlayerRanking(rank: 4, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 7, played: 14, league: 2, type: "goals"),
+                        PlayerRanking(rank: 5, playerName: "주닝요", teamName: "충남아산 FC", statCount: 6, played: 15, league: 2, type: "goals")
                     ]
                 } else {
                     return [
-                        PlayerRanking(id: UUID(), rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 8, played: 15, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 2, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 6, played: 14, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 3, playerName: "주닝요", teamName: "충남아산 FC", statCount: 5, played: 15, league: 2, type: "assists"),
-                        PlayerRanking(id: UUID(), rank: 4, playerName: "카이온", teamName: "부산 아이파크", statCount: 4, played: 13, league: 2, type: "assists")
+                        PlayerRanking(rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 8, played: 15, league: 2, type: "assists"),
+                        PlayerRanking(rank: 2, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 6, played: 14, league: 2, type: "assists"),
+                        PlayerRanking(rank: 3, playerName: "주닝요", teamName: "충남아산 FC", statCount: 5, played: 15, league: 2, type: "assists"),
+                        PlayerRanking(rank: 4, playerName: "카이온", teamName: "부산 아이파크", statCount: 4, played: 13, league: 2, type: "assists")
                     ]
                 }
             }
