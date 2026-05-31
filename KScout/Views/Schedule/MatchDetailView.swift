@@ -341,12 +341,13 @@ struct MatchDetailView: View {
                             .lineLimit(1)
                     }
                     .frame(width: 50)
-                }
+                } // End VStack
                 .frame(maxWidth: .infinity)
+                } // End Button
                 .buttonStyle(PlainButtonStyle())
-            }
-        }
-    }
+            } // End ForEach
+        } // End HStack
+    } // End pitchRow
     
     private func substitutesColumn(lineup: FixtureLineup, isHome: Bool, events: [FixtureEvent]) -> some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -427,12 +428,13 @@ struct MatchDetailView: View {
                                     .font(.system(size: 11))
                                     .foregroundColor(.gray)
                             }
-                        }
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-            }
-        }
+                        } // End VStack
+                    } // End HStack
+                } // End Button
+                .buttonStyle(PlainButtonStyle())
+                } // End ForEach
+            } // End if let
+        } // End VStack
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(Color.white)
