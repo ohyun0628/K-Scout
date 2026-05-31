@@ -5,6 +5,9 @@ struct TeamDetailView: View {
     @StateObject private var viewModel: TeamDetailViewModel
     @State private var selectedTab = 0 // 0: 경기 일정/결과, 1: 선수단 스탯
     
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary = false
+    
     init(standing: Standing, season: Int) {
         _viewModel = StateObject(wrappedValue: TeamDetailViewModel(standing: standing, season: season))
     }
@@ -53,6 +56,13 @@ struct TeamDetailView: View {
         .navigationBarHidden(true)
         .onAppear {
             viewModel.fetchData()
+        }
+        .sheet(isPresented: $showPlayerSummary) {
+            if let id = selectedPlayerId {
+                PlayerSummarySheet(playerId: id)
+            } else {
+                EmptyView()
+            }
         }
     }
     
@@ -427,6 +437,11 @@ struct TeamDetailView: View {
                     .cornerRadius(14)
                     .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                     .padding(.horizontal, 16)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        self.selectedPlayerId = player.id
+                        self.showPlayerSummary = true
+                    }
                 }
             }
         }
