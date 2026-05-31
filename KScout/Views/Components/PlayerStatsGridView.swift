@@ -82,7 +82,9 @@ struct PlayerStatsGridView: View {
                     .background(Color.white)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        onRowTapped?(player.id)
+                        if let action = onRowTapped {
+                            action(player.id)
+                        }
                     }
                     
                     if player.id != rankings.last?.id {
@@ -141,7 +143,9 @@ struct PlayerStatsGridView: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            onRowTapped?(player.id)
+                            if let action = onRowTapped {
+                                action(player.id)
+                            }
                         }
                         
                         if player.id != rankings.last?.id {
