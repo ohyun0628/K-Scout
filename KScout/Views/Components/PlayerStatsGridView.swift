@@ -3,7 +3,7 @@ import SwiftUI
 struct PlayerStatsGridView: View {
     let rankings: [PlayerRanking]
     @Binding var selectedStatType: String
-    var onRowTapped: (() -> Void)? = nil
+    var onRowTapped: ((Int) -> Void)? = nil
     
     // 열 구조 정의
     private let columns: [(title: String, type: String, width: CGFloat)] = [
@@ -82,7 +82,7 @@ struct PlayerStatsGridView: View {
                     .background(Color.white)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        onRowTapped?()
+                        onRowTapped?(player.id)
                     }
                     
                     if player.id != rankings.last?.id {
@@ -141,7 +141,7 @@ struct PlayerStatsGridView: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            onRowTapped?()
+                            onRowTapped?(player.id)
                         }
                         
                         if player.id != rankings.last?.id {
