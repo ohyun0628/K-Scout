@@ -5,21 +5,28 @@ struct PlayerStatsGridView: View {
     @Binding var selectedStatType: String
     var onRowTapped: ((Int) -> Void)? = nil
     
+    struct StatColumn: Identifiable {
+        var id: String { type }
+        let title: String
+        let type: String
+        let width: CGFloat
+    }
+    
     // 열 구조 정의
-    private let columns: [(title: String, type: String, width: CGFloat)] = [
-        ("득점", "goals", 55),
-        ("도움", "assists", 55),
-        ("공격포인트", "points", 85),
-        ("PK골", "pkGoals", 55),
-        ("경기", "played", 55),
-        ("MOM", "mom", 55),
-        ("평균평점", "rating", 70),
-        ("BEST11", "best11", 70),
-        ("슈팅", "shots", 55),
-        ("유효슈팅", "shotsOnTarget", 70),
-        ("출전시간(분)", "minutes", 95),
-        ("파울", "fouls", 55),
-        ("경고", "yellowCards", 55)
+    private let columns: [StatColumn] = [
+        StatColumn(title: "득점", type: "goals", width: 55),
+        StatColumn(title: "도움", type: "assists", width: 55),
+        StatColumn(title: "공격포인트", type: "points", width: 85),
+        StatColumn(title: "PK골", type: "pkGoals", width: 55),
+        StatColumn(title: "경기", type: "played", width: 55),
+        StatColumn(title: "MOM", type: "mom", width: 55),
+        StatColumn(title: "평균평점", type: "rating", width: 70),
+        StatColumn(title: "BEST11", type: "best11", width: 70),
+        StatColumn(title: "슈팅", type: "shots", width: 55),
+        StatColumn(title: "유효슈팅", type: "shotsOnTarget", width: 70),
+        StatColumn(title: "출전시간(분)", type: "minutes", width: 95),
+        StatColumn(title: "파울", type: "fouls", width: 55),
+        StatColumn(title: "경고", type: "yellowCards", width: 55)
     ]
     
     var body: some View {
@@ -120,7 +127,7 @@ struct PlayerStatsGridView: View {
             VStack(alignment: .leading, spacing: 0) {
                 // 스탯 헤더 행
                 HStack(spacing: 0) {
-                    ForEach(columns, id: \.type) { col in
+                    ForEach(columns) { col in
                         Button(action: {
                             withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
                                 selectedStatType = col.type
@@ -149,7 +156,7 @@ struct PlayerStatsGridView: View {
                 // 스탯 데이터 행 반복
                 ForEach(rankings) { player in
                     HStack(spacing: 0) {
-                        ForEach(columns, id: \.type) { col in
+                        ForEach(columns) { col in
                             Text(getStatValueString(for: player, type: col.type))
                                 .font(.system(size: 13, weight: selectedStatType == col.type ? .bold : .regular))
                                 .foregroundColor(selectedStatType == col.type ? Color.brandNavy : .primary)
