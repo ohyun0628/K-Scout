@@ -76,23 +76,20 @@ struct PlayerSummarySheet: View {
     private func profileHeader(_ detail: PlayerDetailItem) -> some View {
         VStack(spacing: 12) {
             ZStack(alignment: .bottomTrailing) {
-                AsyncImage(url: URL(string: detail.player.photo ?? "")) { image in
-                    image.resizable()
-                        .aspectRatio(contentMode: .fill)
-                } placeholder: {
-                    Circle().fill(Color.gray.opacity(0.1))
-                        .overlay(Image(systemName: "person.fill").font(.system(size: 40)).foregroundColor(.gray.opacity(0.5)))
-                }
-                .frame(width: 90, height: 90)
-                .clipShape(Circle())
+                RemoteImageView(
+                    urlString: detail.player.photo ?? "",
+                    size: 90,
+                    fallback: AnyView(Circle().fill(Color.gray.opacity(0.1)).overlay(Image(systemName: "person.fill").font(.system(size: 40)).foregroundColor(.gray.opacity(0.5)))),
+                    isCircle: true
+                )
                 
                 if let teamLogo = detail.statistics.first?.team.logo {
-                    AsyncImage(url: URL(string: teamLogo)) { image in
-                        image.resizable()
-                    } placeholder: {
-                        Circle().fill(Color.white)
-                    }
-                    .frame(width: 28, height: 28)
+                    RemoteImageView(
+                        urlString: teamLogo,
+                        size: 28,
+                        fallback: AnyView(Circle().fill(Color.white)),
+                        isCircle: true
+                    )
                     .background(Color.white)
                     .clipShape(Circle())
                     .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)

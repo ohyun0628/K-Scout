@@ -52,6 +52,8 @@ struct MatchDetailView: View {
         .sheet(isPresented: $showPlayerSummary) {
             if let id = selectedPlayerId {
                 PlayerSummarySheet(playerId: id)
+            } else {
+                EmptyView()
             }
         }
     }
