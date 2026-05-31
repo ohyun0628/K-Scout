@@ -3,6 +3,9 @@ import SwiftUI
 struct SearchView: View {
     @StateObject private var viewModel = SearchViewModel()
     
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary = false
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -64,7 +67,12 @@ struct SearchView: View {
                         ScrollView(showsIndicators: false) {
                             LazyVStack(spacing: 12) {
                                 ForEach(viewModel.filteredPlayers) { player in
-                                    NavigationLink(destination: PlayerDetailView(player: player)) {
+                                    Button(action: {
+                                        if let id = player.id {
+                                            self.selectedPlayerId = id
+                                            self.showPlayerSummary = true
+                                        }
+                                    }) {
                                         playerRow(player)
                                     }
                                     .buttonStyle(PlainButtonStyle())
@@ -77,6 +85,13 @@ struct SearchView: View {
                 }
             }
             .navigationBarHidden(true)
+            .sheet(isPresented: $showPlayerSummary) {
+                if let id = selectedPlayerId {
+                    PlayerSummarySheet(playerId: id)
+                } else {
+                    EmptyView()
+                }
+            }
         }
     }
     

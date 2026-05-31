@@ -10,6 +10,9 @@ struct FavoriteView: View {
         self.showBackButton = showBackButton
     }
     
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary = false
+    
     var body: some View {
         ZStack {
             // 그레이 베이스 백그라운드
@@ -44,7 +47,12 @@ struct FavoriteView: View {
                     ScrollView(showsIndicators: false) {
                         LazyVStack(spacing: 12) {
                             ForEach(favoriteManager.favoritePlayers) { player in
-                                NavigationLink(destination: PlayerDetailView(player: player)) {
+                                Button(action: {
+                                    if let id = player.id {
+                                        self.selectedPlayerId = id
+                                        self.showPlayerSummary = true
+                                    }
+                                }) {
                                     playerRow(player)
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -57,6 +65,13 @@ struct FavoriteView: View {
             }
         }
         .navigationBarHidden(true)
+        .sheet(isPresented: $showPlayerSummary) {
+            if let id = selectedPlayerId {
+                PlayerSummarySheet(playerId: id)
+            } else {
+                EmptyView()
+            }
+        }
     }
     
     @ViewBuilder
