@@ -48,10 +48,8 @@ struct FavoriteView: View {
                         LazyVStack(spacing: 12) {
                             ForEach(favoriteManager.favoritePlayers) { player in
                                 Button(action: {
-                                    if let id = player.id {
-                                        self.selectedPlayerId = id
-                                        self.showPlayerSummary = true
-                                    }
+                                    self.selectedPlayerId = player.id
+                                    self.showPlayerSummary = true
                                 }) {
                                     playerRow(player)
                                 }

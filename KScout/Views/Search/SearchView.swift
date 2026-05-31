@@ -68,10 +68,8 @@ struct SearchView: View {
                             LazyVStack(spacing: 12) {
                                 ForEach(viewModel.filteredPlayers) { player in
                                     Button(action: {
-                                        if let id = player.id {
-                                            self.selectedPlayerId = id
-                                            self.showPlayerSummary = true
-                                        }
+                                        self.selectedPlayerId = player.id
+                                        self.showPlayerSummary = true
                                     }) {
                                         playerRow(player)
                                     }
