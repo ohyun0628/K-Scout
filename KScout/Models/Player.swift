@@ -1,5 +1,9 @@
 import Foundation
 
+extension Int: Identifiable {
+    public var id: Int { self }
+}
+
 struct Player: Identifiable, Codable {
     let id: Int
     let name: String

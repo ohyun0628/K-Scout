@@ -206,8 +206,8 @@ struct RankingView: View {
                 }
             }
             .navigationBarHidden(true)
-            .sheet(isPresented: $showPlayerSummary) {
-                PlayerSummarySheet(playerId: selectedPlayerId ?? 0, season: viewModel.currentSeason)
+            .sheet(item: $selectedPlayerId) { id in
+                PlayerSummarySheet(playerId: id, season: viewModel.currentSeason)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())

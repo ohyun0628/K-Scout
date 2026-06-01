@@ -57,8 +57,8 @@ struct TeamDetailView: View {
         .onAppear {
             viewModel.fetchData()
         }
-        .sheet(isPresented: $showPlayerSummary) {
-            PlayerSummarySheet(playerId: selectedPlayerId ?? 0, season: viewModel.season)
+        .sheet(item: $selectedPlayerId) { id in
+            PlayerSummarySheet(playerId: id, season: viewModel.season)
         }
     }
     

@@ -178,8 +178,8 @@ struct PlayerStatsDetailSheet: View {
             }
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
-        .sheet(isPresented: $showPlayerSummary) {
-            PlayerSummarySheet(playerId: selectedPlayerId ?? 0)
+        .sheet(item: $selectedPlayerId) { id in
+            PlayerSummarySheet(playerId: id)
         }
     }
     

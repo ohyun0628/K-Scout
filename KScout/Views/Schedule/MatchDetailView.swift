@@ -49,8 +49,8 @@ struct MatchDetailView: View {
         .onAppear {
             viewModel.fetchMatchDetails()
         }
-        .sheet(isPresented: $showPlayerSummary) {
-            PlayerSummarySheet(playerId: selectedPlayerId ?? 0)
+        .sheet(item: $selectedPlayerId) { id in
+            PlayerSummarySheet(playerId: id)
         }
     }
     

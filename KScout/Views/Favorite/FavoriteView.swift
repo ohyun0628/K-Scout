@@ -63,8 +63,8 @@ struct FavoriteView: View {
             }
         }
         .navigationBarHidden(true)
-        .sheet(isPresented: $showPlayerSummary) {
-            PlayerSummarySheet(playerId: selectedPlayerId ?? 0)
+        .sheet(item: $selectedPlayerId) { id in
+            PlayerSummarySheet(playerId: id)
         }
     }
     
