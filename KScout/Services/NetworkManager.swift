@@ -1,11 +1,21 @@
 import Foundation
 
-enum NetworkError: Error {
+enum NetworkError: LocalizedError {
     case invalidURL
     case invalidResponse
     case noData
     case decodingError
     case apiError(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL: return "올바르지 않은 네트워크 주소입니다."
+        case .invalidResponse: return "서버와의 통신이 원활하지 않습니다."
+        case .noData: return "데이터를 찾을 수 없습니다."
+        case .decodingError: return "데이터 형식이 잘못되었습니다."
+        case .apiError(let message): return message
+        }
+    }
 }
 
 class NetworkManager {
