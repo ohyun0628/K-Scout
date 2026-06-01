@@ -1,62 +1,19 @@
 import SwiftUI
 
-struct ClubInfo: Identifiable {
-    let id: UUID
-    let name: String
-    let primaryColor: Color
-    let secondaryColor: Color
-    let region: String
-    
-    init(name: String, primaryColor: Color, secondaryColor: Color, region: String) {
-        self.id = UUID()
-        self.name = name
-        self.primaryColor = primaryColor
-        self.secondaryColor = secondaryColor
-        self.region = region
-    }
-}
-
 struct ClubSelectionView: View {
     @Environment(\.presentationMode) var presentationMode
     @AppStorage("favoriteClub") private var favoriteClub = "선택 안 함"
     @State private var searchText = ""
     
-    // K리그 구단 상세 정보 및 커스텀 테마 색상 설정
-    let clubs: [ClubInfo] = [
-        ClubInfo(name: "선택 안 함", primaryColor: .gray, secondaryColor: .white, region: "설정 해제"),
-        ClubInfo(name: "울산 HD FC", primaryColor: Color(red: 0.0, green: 0.2, blue: 0.6), secondaryColor: Color(red: 1.0, green: 0.8, blue: 0.0), region: "울산"),
-        ClubInfo(name: "전북 현대 모터스", primaryColor: Color(red: 0.0, green: 0.5, blue: 0.2), secondaryColor: Color(red: 0.9, green: 1.0, blue: 0.9), region: "전북"),
-        ClubInfo(name: "광주 FC", primaryColor: Color(red: 0.9, green: 0.7, blue: 0.0), secondaryColor: Color(red: 0.8, green: 0.1, blue: 0.1), region: "광주"),
-        ClubInfo(name: "포항 스틸러스", primaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), secondaryColor: Color(red: 0.9, green: 0.1, blue: 0.1), region: "포항"),
-        ClubInfo(name: "FC 서울", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.1), secondaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), region: "서울"),
-        ClubInfo(name: "인천 유나이티드", primaryColor: Color(red: 0.0, green: 0.2, blue: 0.6), secondaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), region: "인천"),
-        ClubInfo(name: "대구 FC", primaryColor: Color(red: 0.4, green: 0.7, blue: 0.9), secondaryColor: Color.white, region: "대구"),
-        ClubInfo(name: "대전 하나 시티즌", primaryColor: Color(red: 0.0, green: 0.4, blue: 0.2), secondaryColor: Color(red: 0.6, green: 0.1, blue: 0.2), region: "대전"),
-        ClubInfo(name: "제주 유나이티드", primaryColor: Color(red: 0.9, green: 0.4, blue: 0.0), secondaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), region: "제주"),
-        ClubInfo(name: "강원 FC", primaryColor: Color(red: 0.9, green: 0.3, blue: 0.0), secondaryColor: Color(red: 0.0, green: 0.4, blue: 0.2), region: "강원"),
-        ClubInfo(name: "수원 FC", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.2), secondaryColor: Color(red: 0.0, green: 0.1, blue: 0.4), region: "수원"),
-        ClubInfo(name: "김천 상무", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.2), secondaryColor: Color(red: 0.0, green: 0.2, blue: 0.4), region: "김천"),
-        ClubInfo(name: "수원 삼성 블루윙즈", primaryColor: Color(red: 0.0, green: 0.2, blue: 0.7), secondaryColor: Color(red: 1.0, green: 0.9, blue: 0.0), region: "수원"),
-        ClubInfo(name: "부산 아이파크", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.1), secondaryColor: Color.white, region: "부산"),
-        ClubInfo(name: "서울 이랜드 FC", primaryColor: Color(red: 0.05, green: 0.1, blue: 0.2), secondaryColor: Color(red: 0.8, green: 0.6, blue: 0.2), region: "서울"),
-        ClubInfo(name: "전남 드래곤즈", primaryColor: Color(red: 0.9, green: 0.7, blue: 0.0), secondaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), region: "전남")
-    ]
-    
-    // 이니셜 생성 도우미
-    private func getClubInitial(_ name: String) -> String {
-        if name == "선택 안 함" { return "X" }
-        // 첫 단어의 첫 글자 반환
-        return String(name.prefix(1))
-    }
-    
     // 검색어 필터링 리스트
     var filteredClubs: [ClubInfo] {
         if searchText.isEmpty {
-            return clubs
+            return ClubInfo.allClubs
         } else {
-            return clubs.filter { $0.name.localizedCaseInsensitiveContains(searchText) || $0.region.localizedCaseInsensitiveContains(searchText) }
+            return ClubInfo.allClubs.filter { $0.name.localizedCaseInsensitiveContains(searchText) || $0.region.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
     
     var body: some View {
         ZStack {
@@ -108,7 +65,7 @@ struct ClubSelectionView: View {
                                             .stroke(club.secondaryColor, lineWidth: 2)
                                             .frame(width: 40, height: 40)
                                         
-                                        Text(getClubInitial(club.name))
+                                        Text(ClubInfo.getClubInitial(club.name))
                                             .font(.system(size: 16, weight: .black))
                                             .foregroundColor(club.name == "선택 안 함" ? .white : club.secondaryColor)
                                     }

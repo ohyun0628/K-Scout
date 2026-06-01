@@ -102,13 +102,10 @@ struct MyPageView: View {
                         .foregroundColor(.white.opacity(0.7))
                     
                     // 선호 구단 배지
-                    HStack(spacing: 4) {
-                        Image(systemName: "laurel.leading")
-                            .font(.caption)
+                    HStack(spacing: 6) {
+                        clubEmblem(for: favoriteClub, size: 16)
                         Text(favoriteClub)
                             .font(.system(size: 11, weight: .bold))
-                        Image(systemName: "laurel.trailing")
-                            .font(.caption)
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
@@ -181,9 +178,14 @@ struct MyPageView: View {
         VStack(spacing: 0) {
             NavigationLink(destination: ClubSelectionView()) {
                 HStack {
-                    Image(systemName: "shield.fill")
-                        .foregroundColor(.brandNavy)
-                        .frame(width: 24)
+                    if favoriteClub != "선택 안 함" {
+                        clubEmblem(for: favoriteClub, size: 24)
+                            .frame(width: 24)
+                    } else {
+                        Image(systemName: "shield.fill")
+                            .foregroundColor(.brandNavy)
+                            .frame(width: 24)
+                    }
                     Text("선호 구단 설정")
                         .foregroundColor(.primary)
                     Spacer()
@@ -317,6 +319,32 @@ struct MyPageView: View {
         .padding(.bottom, 30)
     }
 
+    
+    // MARK: - Helper Methods
+    
+    @ViewBuilder
+    private func clubEmblem(for clubName: String, size: CGFloat) -> some View {
+        if let club = ClubInfo.getClub(by: clubName), clubName != "선택 안 함" {
+            ZStack {
+                Circle()
+                    .fill(club.primaryColor)
+                    .frame(width: size, height: size)
+                
+                Circle()
+                    .stroke(club.secondaryColor, lineWidth: size * 0.05)
+                    .frame(width: size * 0.85, height: size * 0.85)
+                
+                Text(ClubInfo.getClubInitial(club.name))
+                    .font(.system(size: size * 0.4, weight: .black))
+                    .foregroundColor(club.secondaryColor)
+            }
+            .shadow(color: club.primaryColor.opacity(0.2), radius: size * 0.1, x: 0, y: size * 0.05)
+        } else {
+            Image(systemName: "shield.fill")
+                .foregroundColor(.gray)
+                .frame(width: size, height: size)
+        }
+    }
     
     // MARK: - Helper Methods for Alerts (컴파일러 부하 경감)
     
