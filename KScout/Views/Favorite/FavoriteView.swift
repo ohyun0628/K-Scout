@@ -64,11 +64,7 @@ struct FavoriteView: View {
         }
         .navigationBarHidden(true)
         .sheet(isPresented: $showPlayerSummary) {
-            if let id = selectedPlayerId {
-                PlayerSummarySheet(playerId: id)
-            } else {
-                EmptyView()
-            }
+            PlayerSummarySheet(playerId: selectedPlayerId ?? 0)
         }
     }
     

@@ -58,11 +58,7 @@ struct TeamDetailView: View {
             viewModel.fetchData()
         }
         .sheet(isPresented: $showPlayerSummary) {
-            if let id = selectedPlayerId {
-                PlayerSummarySheet(playerId: id)
-            } else {
-                EmptyView()
-            }
+            PlayerSummarySheet(playerId: selectedPlayerId ?? 0, season: viewModel.season)
         }
     }
     

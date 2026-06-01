@@ -179,11 +179,7 @@ struct PlayerStatsDetailSheet: View {
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
         .sheet(isPresented: $showPlayerSummary) {
-            if let id = selectedPlayerId {
-                PlayerSummarySheet(playerId: id)
-            } else {
-                EmptyView()
-            }
+            PlayerSummarySheet(playerId: selectedPlayerId ?? 0)
         }
     }
     

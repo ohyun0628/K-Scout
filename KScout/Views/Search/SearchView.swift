@@ -84,11 +84,7 @@ struct SearchView: View {
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showPlayerSummary) {
-                if let id = selectedPlayerId {
-                    PlayerSummarySheet(playerId: id, season: viewModel.selectedSeason)
-                } else {
-                    EmptyView()
-                }
+                PlayerSummarySheet(playerId: selectedPlayerId ?? 0, season: viewModel.selectedSeason)
             }
         }
     }
