@@ -41,55 +41,55 @@ struct DummyData2025 {
     // MARK: - 2025 시즌 선수 순위 (Player Rankings - TOP 10 풍부화)
     static var playerRankings: [PlayerRanking] {
         let goalsL1 = [
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 1, playerName: "주민규", teamName: "울산 HD", statCount: 16, played: 36, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 2, playerName: "일류첸코", teamName: "FC 서울", statCount: 14, played: 35, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 3, playerName: "야고", teamName: "울산 HD", statCount: 13, played: 34, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 4, playerName: "이상헌", teamName: "강원 FC", statCount: 13, played: 37, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 5, playerName: "이동경", teamName: "김천 상무", statCount: 12, played: 32, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 6, playerName: "김지현", teamName: "김천 상무", statCount: 10, played: 30, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 7, playerName: "이승우", teamName: "전북 현대", statCount: 10, played: 33, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 8, playerName: "정재희", teamName: "포항 스틸러스", statCount: 9, played: 35, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 9, playerName: "안데르손", teamName: "수원 FC", statCount: 8, played: 38, league: 1, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 10, playerName: "유리 조나탄", teamName: "제주 유나이티드", statCount: 8, played: 31, league: 1, type: "goals")
+            PlayerRanking(id: 34427, rank: 1, playerName: "주민규", teamName: "울산 HD", statCount: 16, played: 36, league: 1, type: "goals"),
+            PlayerRanking(id: 25276, rank: 2, playerName: "일류첸코", teamName: "FC 서울", statCount: 14, played: 35, league: 1, type: "goals"),
+            PlayerRanking(id: 35821, rank: 3, playerName: "야고", teamName: "울산 HD", statCount: 13, played: 34, league: 1, type: "goals"),
+            PlayerRanking(id: 292850, rank: 4, playerName: "이상헌", teamName: "강원 FC", statCount: 13, played: 37, league: 1, type: "goals"),
+            PlayerRanking(id: 34431, rank: 5, playerName: "이동경", teamName: "김천 상무", statCount: 12, played: 32, league: 1, type: "goals"),
+            PlayerRanking(id: 114674, rank: 6, playerName: "김지현", teamName: "김천 상무", statCount: 10, played: 30, league: 1, type: "goals"),
+            PlayerRanking(id: 2914, rank: 7, playerName: "이승우", teamName: "전북 현대", statCount: 10, played: 33, league: 1, type: "goals"),
+            PlayerRanking(id: -723057, rank: 8, playerName: "정재희", teamName: "포항 스틸러스", statCount: 9, played: 35, league: 1, type: "goals"),
+            PlayerRanking(id: 9292, rank: 9, playerName: "안데르손", teamName: "수원 FC", statCount: 8, played: 38, league: 1, type: "goals"),
+            PlayerRanking(id: 109209, rank: 10, playerName: "유리 조나탄", teamName: "제주 유나이티드", statCount: 8, played: 31, league: 1, type: "goals")
         ]
         
         let assistsL1 = [
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 1, playerName: "안데르손", teamName: "수원 FC", statCount: 13, played: 38, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 2, playerName: "김대원", teamName: "김천 상무", statCount: 8, played: 35, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 3, playerName: "세징야", teamName: "대구 FC", statCount: 8, played: 32, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 4, playerName: "황문기", teamName: "강원 FC", statCount: 7, played: 37, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 5, playerName: "송민규", teamName: "전북 현대", statCount: 7, played: 34, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 6, playerName: "기성용", teamName: "FC 서울", statCount: 6, played: 30, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 7, playerName: "루빅손", teamName: "울산 HD", statCount: 6, played: 33, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 8, playerName: "엄원상", teamName: "울산 HD", statCount: 5, played: 31, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 9, playerName: "서진수", teamName: "제주 유나이티드", statCount: 5, played: 34, league: 1, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 10, playerName: "완델손", teamName: "포항 스틸러스", statCount: 5, played: 36, league: 1, type: "assists")
+            PlayerRanking(id: 9292, rank: 1, playerName: "안데르손", teamName: "수원 FC", statCount: 13, played: 38, league: 1, type: "assists"),
+            PlayerRanking(id: -518415, rank: 2, playerName: "김대원", teamName: "김천 상무", statCount: 8, played: 35, league: 1, type: "assists"),
+            PlayerRanking(id: 34484, rank: 3, playerName: "세징야", teamName: "대구 FC", statCount: 8, played: 32, league: 1, type: "assists"),
+            PlayerRanking(id: 142145, rank: 4, playerName: "황문기", teamName: "강원 FC", statCount: 7, played: 37, league: 1, type: "assists"),
+            PlayerRanking(id: 34598, rank: 5, playerName: "송민규", teamName: "전북 현대", statCount: 7, played: 34, league: 1, type: "assists"),
+            PlayerRanking(id: -1064184, rank: 6, playerName: "기성용", teamName: "FC 서울", statCount: 6, played: 30, league: 1, type: "assists"),
+            PlayerRanking(id: -1003419, rank: 7, playerName: "루빅손", teamName: "울산 HD", statCount: 6, played: 33, league: 1, type: "assists"),
+            PlayerRanking(id: -630072, rank: 8, playerName: "엄원상", teamName: "울산 HD", statCount: 5, played: 31, league: 1, type: "assists"),
+            PlayerRanking(id: -899182, rank: 9, playerName: "서진수", teamName: "제주 유나이티드", statCount: 5, played: 34, league: 1, type: "assists"),
+            PlayerRanking(id: 34569, rank: 10, playerName: "완델손", teamName: "포항 스틸러스", statCount: 5, played: 36, league: 1, type: "assists")
         ]
         
         let goalsL2 = [
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 1, playerName: "무고사", teamName: "인천 유나이티드", statCount: 15, played: 36, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 2, playerName: "뮬리치", teamName: "수원 삼성", statCount: 13, played: 32, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 3, playerName: "루페타", teamName: "부천 FC 1995", statCount: 11, played: 31, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 4, playerName: "호날두", teamName: "서울 이랜드", statCount: 10, played: 34, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 5, playerName: "바사니", teamName: "부천 FC 1995", statCount: 9, played: 30, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 6, playerName: "브루노", teamName: "서울 이랜드", statCount: 8, played: 28, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 7, playerName: "페신", teamName: "부산 아이파크", statCount: 8, played: 32, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 8, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 7, played: 35, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 9, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 7, played: 30, league: 2, type: "goals"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 10, playerName: "라마스", teamName: "부산 아이파크", statCount: 6, played: 33, league: 2, type: "goals")
+            PlayerRanking(id: 34822, rank: 1, playerName: "무고사", teamName: "인천 유나이티드", statCount: 15, played: 36, league: 2, type: "goals"),
+            PlayerRanking(id: 79138, rank: 2, playerName: "뮬리치", teamName: "수원 삼성", statCount: 13, played: 32, league: 2, type: "goals"),
+            PlayerRanking(id: -975524, rank: 3, playerName: "루페타", teamName: "부천 FC 1995", statCount: 11, played: 31, league: 2, type: "goals"),
+            PlayerRanking(id: -396033, rank: 4, playerName: "호날두", teamName: "서울 이랜드", statCount: 10, played: 34, league: 2, type: "goals"),
+            PlayerRanking(id: 143639, rank: 5, playerName: "바사니", teamName: "부천 FC 1995", statCount: 9, played: 30, league: 2, type: "goals"),
+            PlayerRanking(id: -246387, rank: 6, playerName: "브루노", teamName: "서울 이랜드", statCount: 8, played: 28, league: 2, type: "goals"),
+            PlayerRanking(id: -951676, rank: 7, playerName: "페신", teamName: "부산 아이파크", statCount: 8, played: 32, league: 2, type: "goals"),
+            PlayerRanking(id: -725758, rank: 8, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 7, played: 35, league: 2, type: "goals"),
+            PlayerRanking(id: 47757, rank: 9, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 7, played: 30, league: 2, type: "goals"),
+            PlayerRanking(id: -754565, rank: 10, playerName: "라마스", teamName: "부산 아이파크", statCount: 6, played: 33, league: 2, type: "goals")
         ]
         
         let assistsL2 = [
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 10, played: 35, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 2, playerName: "제르소", teamName: "인천 유나이티드", statCount: 8, played: 33, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 3, playerName: "아코스티", teamName: "수원 삼성", statCount: 7, played: 29, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 4, playerName: "페신", teamName: "부산 아이파크", statCount: 6, played: 32, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 5, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 6, played: 30, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 6, playerName: "홍창범", teamName: "부천 FC 1995", statCount: 5, played: 33, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 7, playerName: "카즈키", teamName: "수원 삼성", statCount: 5, played: 28, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 8, playerName: "이한도", teamName: "부산 아이파크", statCount: 5, played: 34, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 9, playerName: "야고", teamName: "안산 그리너스", statCount: 4, played: 30, league: 2, type: "assists"),
-            PlayerRanking(id: Int.random(in: 1000...9999), rank: 10, playerName: "김찬", teamName: "부산 아이파크", statCount: 4, played: 31, league: 2, type: "assists")
+            PlayerRanking(id: -381732, rank: 1, playerName: "발디비아", teamName: "전남 드래곤즈", statCount: 10, played: 35, league: 2, type: "assists"),
+            PlayerRanking(id: 51267, rank: 2, playerName: "제르소", teamName: "인천 유나이티드", statCount: 8, played: 33, league: 2, type: "assists"),
+            PlayerRanking(id: -855144, rank: 3, playerName: "아코스티", teamName: "수원 삼성", statCount: 7, played: 29, league: 2, type: "assists"),
+            PlayerRanking(id: -1084427, rank: 4, playerName: "페신", teamName: "부산 아이파크", statCount: 6, played: 32, league: 2, type: "assists"),
+            PlayerRanking(id: 47757, rank: 5, playerName: "플라나", teamName: "전남 드래곤즈", statCount: 6, played: 30, league: 2, type: "assists"),
+            PlayerRanking(id: -646214, rank: 6, playerName: "홍창범", teamName: "부천 FC 1995", statCount: 5, played: 33, league: 2, type: "assists"),
+            PlayerRanking(id: -900934, rank: 7, playerName: "카즈키", teamName: "수원 삼성", statCount: 5, played: 28, league: 2, type: "assists"),
+            PlayerRanking(id: -593820, rank: 8, playerName: "이한도", teamName: "부산 아이파크", statCount: 5, played: 34, league: 2, type: "assists"),
+            PlayerRanking(id: 35821, rank: 9, playerName: "야고", teamName: "안산 그리너스", statCount: 4, played: 30, league: 2, type: "assists"),
+            PlayerRanking(id: -1082268, rank: 10, playerName: "김찬", teamName: "부산 아이파크", statCount: 4, played: 31, league: 2, type: "assists")
         ]
         
         let allRankings = goalsL1 + assistsL1 + goalsL2 + assistsL2
