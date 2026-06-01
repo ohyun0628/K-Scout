@@ -3,153 +3,42 @@ import SwiftUI
 struct PlayerStatsGridView: View {
     let rankings: [PlayerRanking]
     @Binding var selectedStatType: String
-    var onRowTapped: (() -> Void)? = nil
+    var onRowTapped: ((Int) -> Void)? = nil
+    
+    struct StatColumn: Identifiable {
+        var id: String { type }
+        let title: String
+        let type: String
+        let width: CGFloat
+    }
     
     // 열 구조 정의
-    private let columns: [(title: String, type: String, width: CGFloat)] = [
-        ("득점", "goals", 55),
-        ("도움", "assists", 55),
-        ("공격포인트", "points", 85),
-        ("PK골", "pkGoals", 55),
-        ("경기", "played", 55),
-        ("MOM", "mom", 55),
-        ("평균평점", "rating", 70),
-        ("BEST11", "best11", 70),
-        ("슈팅", "shots", 55),
-        ("유효슈팅", "shotsOnTarget", 70),
-        ("출전시간(분)", "minutes", 95),
-        ("파울", "fouls", 55),
-        ("경고", "yellowCards", 55)
+    private let columns: [StatColumn] = [
+        StatColumn(title: "득점", type: "goals", width: 55),
+        StatColumn(title: "도움", type: "assists", width: 55),
+        StatColumn(title: "공격포인트", type: "points", width: 85),
+        StatColumn(title: "PK골", type: "pkGoals", width: 55),
+        StatColumn(title: "경기", type: "played", width: 55),
+        StatColumn(title: "MOM", type: "mom", width: 55),
+        StatColumn(title: "평균평점", type: "rating", width: 70),
+        StatColumn(title: "BEST11", type: "best11", width: 70),
+        StatColumn(title: "슈팅", type: "shots", width: 55),
+        StatColumn(title: "유효슈팅", type: "shotsOnTarget", width: 70),
+        StatColumn(title: "출전시간(분)", type: "minutes", width: 95),
+        StatColumn(title: "파울", type: "fouls", width: 55),
+        StatColumn(title: "경고", type: "yellowCards", width: 55)
     ]
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            // 1. 왼쪽 고정 컬럼 (순위 & 선수 정보)
-            VStack(alignment: .leading, spacing: 0) {
-                // 헤더 셀
-                Text("순위 / 선수")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.gray)
-                    .frame(width: 165, height: 44, alignment: .leading)
-                    .padding(.leading, 12)
-                    .background(Color(UIColor.secondarySystemBackground).opacity(0.4))
-                
-                Divider()
-                
-                // 데이터 셀 반복
-                ForEach(rankings) { player in
-                    HStack(spacing: 8) {
-                        // 순위
-                        ZStack {
-                            if player.rank <= 3 {
-                                Circle()
-                                    .fill(rankBadgeColor(for: player.rank))
-                                    .frame(width: 22, height: 22)
-                                
-                                Text("\(player.rank)")
-                                    .font(.system(size: 11, weight: .bold))
-                                    .foregroundColor(.white)
-                            } else {
-                                Text("\(player.rank)")
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        .frame(width: 24)
-                        
-                        // 실사 프로필 사진 추가
-                        PlayerAvatarView(playerName: player.playerName, teamName: player.teamName, photoURL: player.photoURL, size: 28)
-                        
-                        // 이름 & 팀
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(player.playerName)
-                                .font(.system(size: 13, weight: .bold))
-                                .foregroundColor(.primary)
-                                .lineLimit(1)
-                            
-                            HStack(spacing: 4) {
-                                TeamLogoView(teamName: player.teamName, size: 10)
-                                
-                                Text(player.teamName)
-                                    .font(.system(size: 10, weight: .medium))
-                                    .foregroundColor(.gray)
-                                    .lineLimit(1)
-                            }
-                        }
-                    }
-                    .frame(width: 165, height: 52, alignment: .leading)
-                    .padding(.leading, 12)
-                    .background(Color.white)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        onRowTapped?()
-                    }
-                    
-                    if player.id != rankings.last?.id {
-                        Divider()
-                    }
-                }
-            }
-            .frame(width: 165)
+            leftColumn
             
             // 고정 컬럼과 스크롤 영역 구분선
             Rectangle()
                 .fill(Color(UIColor.separator).opacity(0.8))
                 .frame(width: 1)
             
-            // 2. 오른쪽 가로 스크롤 컬럼 (스탯 그리드)
-            ScrollView(.horizontal, showsIndicators: true) {
-                VStack(alignment: .leading, spacing: 0) {
-                    // 스탯 헤더 행
-                    HStack(spacing: 0) {
-                        ForEach(columns, id: \.type) { col in
-                            Button(action: {
-                                withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
-                                    selectedStatType = col.type
-                                }
-                            }) {
-                                HStack(spacing: 3) {
-                                    Text(col.title)
-                                        .font(.system(size: 12, weight: selectedStatType == col.type ? .bold : .semibold))
-                                        .foregroundColor(selectedStatType == col.type ? Color.brandNavy : .gray)
-                                    
-                                    if selectedStatType == col.type {
-                                        Image(systemName: "chevron.down")
-                                            .font(.system(size: 8, weight: .bold))
-                                            .foregroundColor(Color.brandNavy)
-                                    }
-                                }
-                                .frame(width: col.width, height: 44, alignment: .center)
-                                .background(selectedStatType == col.type ? Color.brandNavy.opacity(0.06) : Color.clear)
-                            }
-                        }
-                    }
-                    .background(Color(UIColor.secondarySystemBackground).opacity(0.4))
-                    
-                    Divider()
-                    
-                    // 스탯 데이터 행 반복
-                    ForEach(rankings) { player in
-                        HStack(spacing: 0) {
-                            ForEach(columns, id: \.type) { col in
-                                Text(getStatValueString(for: player, type: col.type))
-                                    .font(.system(size: 13, weight: selectedStatType == col.type ? .bold : .regular))
-                                    .foregroundColor(selectedStatType == col.type ? Color.brandNavy : .primary)
-                                    .frame(width: col.width, height: 52, alignment: .center)
-                                    .background(selectedStatType == col.type ? Color.brandNavy.opacity(0.03) : Color.clear)
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            onRowTapped?()
-                        }
-                        
-                        if player.id != rankings.last?.id {
-                            Divider()
-                        }
-                    }
-                }
-            }
+            rightScrollableGrid
         }
         .background(Color.white)
         .cornerRadius(16)
@@ -158,6 +47,136 @@ struct PlayerStatsGridView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color(UIColor.separator).opacity(0.5), lineWidth: 1)
         )
+    }
+    
+    @ViewBuilder
+    private var leftColumn: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // 헤더 셀
+            Text("순위 / 선수")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(.gray)
+                .frame(width: 165, height: 44, alignment: .leading)
+                .padding(.leading, 12)
+                .background(Color(UIColor.secondarySystemBackground).opacity(0.4))
+            
+            Divider()
+            
+            // 데이터 셀 반복
+            ForEach(rankings) { player in
+                HStack(spacing: 8) {
+                    // 순위
+                    ZStack {
+                        if player.rank <= 3 {
+                            Circle()
+                                .fill(rankBadgeColor(for: player.rank))
+                                .frame(width: 22, height: 22)
+                            
+                            Text("\(player.rank)")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                        } else {
+                            Text("\(player.rank)")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .frame(width: 24)
+                    
+                    // 실사 프로필 사진 추가
+                    PlayerAvatarView(playerName: player.playerName, teamName: player.teamName, photoURL: player.photoURL, size: 28)
+                    
+                    // 이름 & 팀
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(player.playerName)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                        
+                        HStack(spacing: 4) {
+                            TeamLogoView(teamName: player.teamName, size: 10)
+                            
+                            Text(player.teamName)
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(.gray)
+                                .lineLimit(1)
+                        }
+                    }
+                }
+                .frame(width: 165, height: 52, alignment: .leading)
+                .padding(.leading, 12)
+                .background(Color.white)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if let action = onRowTapped {
+                        action(player.id)
+                    }
+                }
+                
+                if player.id != rankings.last?.id {
+                    Divider()
+                }
+            }
+        }
+        .frame(width: 165)
+    }
+    
+    @ViewBuilder
+    private var rightScrollableGrid: some View {
+        ScrollView(.horizontal, showsIndicators: true) {
+            VStack(alignment: .leading, spacing: 0) {
+                // 스탯 헤더 행
+                HStack(spacing: 0) {
+                    ForEach(columns) { col in
+                        Button(action: {
+                            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                                selectedStatType = col.type
+                            }
+                        }) {
+                            HStack(spacing: 3) {
+                                Text(col.title)
+                                    .font(.system(size: 12, weight: selectedStatType == col.type ? .bold : .semibold))
+                                    .foregroundColor(selectedStatType == col.type ? Color.brandNavy : .gray)
+                                
+                                if selectedStatType == col.type {
+                                    Image(systemName: "chevron.down")
+                                        .font(.system(size: 8, weight: .bold))
+                                        .foregroundColor(Color.brandNavy)
+                                }
+                            }
+                            .frame(width: col.width, height: 44, alignment: .center)
+                            .background(selectedStatType == col.type ? Color.brandNavy.opacity(0.06) : Color.clear)
+                        }
+                    }
+                }
+                .background(Color(UIColor.secondarySystemBackground).opacity(0.4))
+                
+                Divider()
+                
+                // 스탯 데이터 행 반복
+                ForEach(rankings) { player in
+                    HStack(spacing: 0) {
+                        ForEach(columns) { col in
+                            Text(getStatValueString(for: player, type: col.type))
+                                .font(.system(size: 13, weight: selectedStatType == col.type ? .bold : .regular))
+                                .foregroundColor(selectedStatType == col.type ? Color.brandNavy : .primary)
+                                .frame(width: col.width, height: 52, alignment: .center)
+                                .background(selectedStatType == col.type ? Color.brandNavy.opacity(0.03) : Color.clear)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if let action = onRowTapped {
+                            action(player.id)
+                        }
+                    }
+                    
+                    if player.id != rankings.last?.id {
+                        Divider()
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - 스탯 타입별 표시 문자열 포맷

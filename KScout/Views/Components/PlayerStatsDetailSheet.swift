@@ -6,24 +6,33 @@ struct PlayerStatsDetailSheet: View {
     @State private var localStatType: String
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary = false
+    
     init(viewModel: RankingViewModel, selectedLeague: Int, initialStatType: String) {
         self.viewModel = viewModel
         self.selectedLeague = selectedLeague
         self._localStatType = State(initialValue: initialStatType)
     }
     
-    private let tabs: [(title: String, type: String)] = [
-        ("득점", "goals"),
-        ("도움", "assists"),
-        ("공격포인트", "points"),
-        ("MOM", "mom"),
-        ("평균평점", "rating"),
-        ("BEST11", "best11"),
-        ("90분당 득점", "goalsPer90"),
-        ("90분당 공포", "pointsPer90"),
-        ("슈팅", "shots"),
-        ("유효 슈팅", "shotsOnTarget"),
-        ("출전 시간", "minutes")
+    struct StatTab: Identifiable {
+        var id: String { type }
+        let title: String
+        let type: String
+    }
+    
+    private let tabs: [StatTab] = [
+        StatTab(title: "득점", type: "goals"),
+        StatTab(title: "도움", type: "assists"),
+        StatTab(title: "공격포인트", type: "points"),
+        StatTab(title: "MOM", type: "mom"),
+        StatTab(title: "평균평점", type: "rating"),
+        StatTab(title: "BEST11", type: "best11"),
+        StatTab(title: "90분당 득점", type: "goalsPer90"),
+        StatTab(title: "90분당 공포", type: "pointsPer90"),
+        StatTab(title: "슈팅", type: "shots"),
+        StatTab(title: "유효 슈팅", type: "shotsOnTarget"),
+        StatTab(title: "출전 시간", type: "minutes")
     ]
     
     var body: some View {
@@ -54,7 +63,7 @@ struct PlayerStatsDetailSheet: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 ScrollViewReader { proxy in
                     HStack(spacing: 20) {
-                        ForEach(tabs, id: \.type) { tab in
+                        ForEach(tabs) { tab in
                             Button(action: {
                                 withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
                                     localStatType = tab.type
@@ -154,6 +163,11 @@ struct PlayerStatsDetailSheet: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                self.selectedPlayerId = player.id
+                                self.showPlayerSummary = true
+                            }
                             
                             Divider()
                                 .padding(.leading, 60)
@@ -164,6 +178,9 @@ struct PlayerStatsDetailSheet: View {
             }
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
+        .sheet(item: $selectedPlayerId) { id in
+            PlayerSummarySheet(playerId: id)
+        }
     }
     
     // MARK: - 스탯에 맞는 값 반환 함수

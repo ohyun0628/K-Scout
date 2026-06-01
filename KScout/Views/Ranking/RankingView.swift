@@ -9,6 +9,9 @@ struct RankingView: View {
     @State private var selectedStatType = "goals" // "goals": 득점, "assists": 도움
     @State private var showingPlayerStatsSheet = false
     
+    @State private var showPlayerSummary = false
+    @State private var selectedPlayerId: Int? = nil
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -188,8 +191,9 @@ struct RankingView: View {
                                         PlayerStatsGridView(
                                             rankings: rankings,
                                             selectedStatType: $selectedStatType,
-                                            onRowTapped: {
-                                                showingPlayerStatsSheet = true
+                                            onRowTapped: { playerId in
+                                                self.selectedPlayerId = playerId
+                                                self.showPlayerSummary = true
                                             }
                                         )
                                     }
@@ -202,6 +206,9 @@ struct RankingView: View {
                 }
             }
             .navigationBarHidden(true)
+            .sheet(item: $selectedPlayerId) { id in
+                PlayerSummarySheet(playerId: id, season: viewModel.currentSeason)
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {

@@ -157,7 +157,7 @@ struct MyPageView: View {
                 HStack(spacing: 4) {
                     Text("🌟")
                         .font(.body)
-                    Text("\(favoriteManager.favoriteIDs.count)명")
+                    Text("\(favoriteManager.favoriteSeasons.count)명")
                         .font(.title3)
                         .fontWeight(.black)
                         .foregroundColor(.brandNavy)

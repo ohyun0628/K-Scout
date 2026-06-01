@@ -8,6 +8,7 @@ enum APIEndpoint {
     case playerSearch(query: String, league: Int, season: Int)
     case topScorers(league: Int, season: Int)
     case topAssists(league: Int, season: Int)
+    case playerDetail(id: Int, season: Int)
     
     var baseURL: String {
         return "https://v3.football.api-sports.io"
@@ -17,7 +18,7 @@ enum APIEndpoint {
         switch self {
         case .standings: return "/standings"
         case .fixtures, .fixtureDetail: return "/fixtures"
-        case .players, .playerSearch: return "/players"
+        case .players, .playerSearch, .playerDetail: return "/players"
         case .topScorers: return "/players/topscorers"
         case .topAssists: return "/players/topassists"
         }
@@ -57,6 +58,11 @@ enum APIEndpoint {
             return [
                 URLQueryItem(name: "search", value: query),
                 URLQueryItem(name: "league", value: String(apiLeague)),
+                URLQueryItem(name: "season", value: String(season))
+            ]
+        case .playerDetail(let id, let season):
+            return [
+                URLQueryItem(name: "id", value: String(id)),
                 URLQueryItem(name: "season", value: String(season))
             ]
         }

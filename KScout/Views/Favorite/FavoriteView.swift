@@ -10,6 +10,9 @@ struct FavoriteView: View {
         self.showBackButton = showBackButton
     }
     
+    @State private var selectedPlayerId: Int? = nil
+    @State private var showPlayerSummary = false
+    
     var body: some View {
         ZStack {
             // 그레이 베이스 백그라운드
@@ -44,7 +47,10 @@ struct FavoriteView: View {
                     ScrollView(showsIndicators: false) {
                         LazyVStack(spacing: 12) {
                             ForEach(favoriteManager.favoritePlayers) { player in
-                                NavigationLink(destination: PlayerDetailView(player: player)) {
+                                Button(action: {
+                                    self.selectedPlayerId = player.id
+                                    self.showPlayerSummary = true
+                                }) {
                                     playerRow(player)
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -57,6 +63,9 @@ struct FavoriteView: View {
             }
         }
         .navigationBarHidden(true)
+        .sheet(item: $selectedPlayerId) { id in
+            PlayerSummarySheet(playerId: id)
+        }
     }
     
     @ViewBuilder
@@ -95,9 +104,15 @@ struct FavoriteView: View {
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(Color.brandNavy)
                     
-                    Text("\(player.passes)패스")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.gray.opacity(0.8))
+                    if let season = favoriteManager.getFavoriteSeason(for: player.id) {
+                        Text("\(player.passes)패스 • \(String(season))시즌")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(.gray.opacity(0.8))
+                    } else {
+                        Text("\(player.passes)패스")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(.gray.opacity(0.8))
+                    }
                 }
                 
                 Button(action: {
