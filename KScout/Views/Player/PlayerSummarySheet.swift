@@ -103,11 +103,33 @@ struct PlayerSummarySheet: View {
     }
     
     private func infoCards(_ detail: PlayerDetailItem) -> some View {
+        let pos = detail.statistics.first?.games?.position ?? "-"
+        let positionKR = translatePosition(pos)
+        
+        // Sometimes number is provided, sometimes nil. Handle it properly.
+        let numberStr: String
+        if let num = detail.statistics.first?.games?.number {
+            // API sometimes returns 0 or weird formats, but typically Int
+            numberStr = "No.\(num)"
+        } else {
+            numberStr = "-"
+        }
+        
         HStack(spacing: 10) {
-            infoCard(title: "등번호", value: detail.statistics.first?.games?.number.map { "No.\($0)" } ?? "-")
-            infoCard(title: "포지션", value: detail.statistics.first?.games?.position ?? "-")
+            infoCard(title: "등번호", value: numberStr)
+            infoCard(title: "포지션", value: positionKR)
             infoCard(title: "출생", value: detail.player.birth?.date ?? "-")
             infoCard(title: "신장", value: detail.player.height ?? "-")
+        }
+    }
+    
+    private func translatePosition(_ pos: String) -> String {
+        switch pos {
+        case "Attacker": return "FW"
+        case "Midfielder": return "MF"
+        case "Defender": return "DF"
+        case "Goalkeeper": return "GK"
+        default: return pos
         }
     }
     
@@ -128,8 +150,11 @@ struct PlayerSummarySheet: View {
     
     private func seasonRecords(_ detail: PlayerDetailItem) -> some View {
         VStack(alignment: .leading, spacing: 16) {
+            let selectedSeason = AppEnvironment.shared.selectedSeason
+            let leagueName = AppEnvironment.shared.selectedLeague == 1 ? "K리그1" : "K리그2"
+            
             HStack(spacing: 6) {
-                Text("K리그1 2024 시즌 기록")
+                Text("\(leagueName) \(selectedSeason) 시즌 기록")
                     .font(.system(size: 16, weight: .bold))
                 Image(systemName: "info.circle")
                     .font(.system(size: 13))
