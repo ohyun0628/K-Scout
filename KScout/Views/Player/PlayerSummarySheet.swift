@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PlayerSummarySheet: View {
     let playerId: Int
+    var season: Int = 2024
     @StateObject private var viewModel = PlayerSummaryViewModel()
     @Environment(\.presentationMode) var presentationMode
     
@@ -37,7 +38,7 @@ struct PlayerSummarySheet: View {
             })
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                viewModel.fetchPlayer(id: playerId)
+                viewModel.fetchPlayer(id: playerId, season: season)
             }
         }
     }
@@ -115,7 +116,7 @@ struct PlayerSummarySheet: View {
             numberStr = "-"
         }
         
-        HStack(spacing: 10) {
+        return HStack(spacing: 10) {
             infoCard(title: "등번호", value: numberStr)
             infoCard(title: "포지션", value: positionKR)
             infoCard(title: "출생", value: detail.player.birth?.date ?? "-")
@@ -150,11 +151,11 @@ struct PlayerSummarySheet: View {
     
     private func seasonRecords(_ detail: PlayerDetailItem) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            let selectedSeason = AppEnvironment.shared.selectedSeason
-            let leagueName = AppEnvironment.shared.selectedLeague == 1 ? "K리그1" : "K리그2"
+            let displaySeason = season
+            let leagueName = detail.statistics.first?.league?.name ?? "K리그1"
             
             HStack(spacing: 6) {
-                Text("\(leagueName) \(selectedSeason) 시즌 기록")
+                Text("\(leagueName) \(displaySeason) 시즌 기록")
                     .font(.system(size: 16, weight: .bold))
                 Image(systemName: "info.circle")
                     .font(.system(size: 13))

@@ -293,6 +293,7 @@ struct PlayerBirthInfo: Decodable {
 }
 struct PlayerDetailedStats: Decodable {
     let team: TeamInfo
+    let league: LeagueInfo?
     let games: GameDetailedStats?
     let shots: ShotDetailedStats?
     let goals: GoalDetailedStats?

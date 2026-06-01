@@ -6,11 +6,9 @@ class PlayerSummaryViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
-    func fetchPlayer(id: Int) {
+    func fetchPlayer(id: Int, season: Int) {
         isLoading = true
         errorMessage = nil
-        
-        let season = 2024
         
         NetworkManager.shared.request(endpoint: .playerDetail(id: id, season: season)) { (result: Result<[PlayerDetailItem], NetworkError>) in
             DispatchQueue.main.async {

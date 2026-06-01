@@ -208,7 +208,7 @@ struct RankingView: View {
             .navigationBarHidden(true)
             .sheet(isPresented: $showPlayerSummary) {
                 if let id = selectedPlayerId {
-                    PlayerSummarySheet(playerId: id)
+                    PlayerSummarySheet(playerId: id, season: viewModel.currentSeason)
                 } else {
                     EmptyView()
                 }
