@@ -108,9 +108,15 @@ struct FavoriteView: View {
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(Color.brandNavy)
                     
-                    Text("\(player.passes)패스")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.gray.opacity(0.8))
+                    if let season = favoriteManager.getFavoriteSeason(for: player.id) {
+                        Text("\(player.passes)패스 • \(String(season))시즌")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(.gray.opacity(0.8))
+                    } else {
+                        Text("\(player.passes)패스")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundColor(.gray.opacity(0.8))
+                    }
                 }
                 
                 Button(action: {

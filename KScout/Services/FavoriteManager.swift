@@ -3,9 +3,10 @@ import Foundation
 class FavoriteManager: ObservableObject {
     static let shared = FavoriteManager()
     
-    private let userDefaultsKey = "favoritePlayerIDs"
+    // Changed key to ensure old Set<Int> data doesn't crash the dictionary parsing
+    private let userDefaultsKey = "favoritePlayerSeasonsV2"
     
-    @Published var favoriteIDs: Set<Int> = [] {
+    @Published var favoriteSeasons: [Int: Int] = [:] {
         didSet {
             saveToUserDefaults()
         }
@@ -17,43 +18,52 @@ class FavoriteManager: ObservableObject {
     
     // 즐겨찾기된 전체 선수 객체 리스트
     var favoritePlayers: [Player] {
-        return Player.mockPlayers.filter { favoriteIDs.contains($0.id) }
+        return Player.mockPlayers.filter { favoriteSeasons.keys.contains($0.id) }
     }
     
     // 특정 선수가 즐겨찾기 되어있는지 여부
     func isFavorite(playerID: Int) -> Bool {
-        return favoriteIDs.contains(playerID)
+        return favoriteSeasons.keys.contains(playerID)
     }
     
     // 즐겨찾기 토글
-    func toggleFavorite(playerID: Int) {
-        if favoriteIDs.contains(playerID) {
-            favoriteIDs.remove(playerID)
+    func toggleFavorite(playerID: Int, season: Int = 2024) {
+        if favoriteSeasons.keys.contains(playerID) {
+            favoriteSeasons.removeValue(forKey: playerID)
         } else {
-            favoriteIDs.insert(playerID)
+            favoriteSeasons[playerID] = season
         }
     }
     
     // 즐겨찾기 추가
-    func addFavorite(playerID: Int) {
-        favoriteIDs.insert(playerID)
+    func addFavorite(playerID: Int, season: Int = 2024) {
+        favoriteSeasons[playerID] = season
     }
     
     // 즐겨찾기 삭제
     func removeFavorite(playerID: Int) {
-        favoriteIDs.remove(playerID)
+        favoriteSeasons.removeValue(forKey: playerID)
+    }
+    
+    // 선수가 즐겨찾기된 시즌 연도 가져오기
+    func getFavoriteSeason(for playerID: Int) -> Int? {
+        return favoriteSeasons[playerID]
     }
     
     // UserDefaults 저장 로직
     private func saveToUserDefaults() {
-        let array = Array(favoriteIDs)
-        UserDefaults.standard.set(array, forKey: userDefaultsKey)
+        // UserDefaults only supports String keys for dictionaries
+        let dictStrKey = Dictionary(uniqueKeysWithValues: favoriteSeasons.map { (String($0.key), $0.value) })
+        UserDefaults.standard.set(dictStrKey, forKey: userDefaultsKey)
     }
     
     // UserDefaults 로드 로직
     private func loadFromUserDefaults() {
-        if let array = UserDefaults.standard.array(forKey: userDefaultsKey) as? [Int] {
-            favoriteIDs = Set(array)
+        if let dictStrKey = UserDefaults.standard.dictionary(forKey: userDefaultsKey) as? [String: Int] {
+            let dictIntKey = Dictionary(uniqueKeysWithValues: dictStrKey.compactMap { key, value in
+                if let intKey = Int(key) { return (intKey, value) } else { return nil }
+            })
+            favoriteSeasons = dictIntKey
         }
     }
 }
