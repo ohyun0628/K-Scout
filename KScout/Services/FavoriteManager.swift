@@ -52,18 +52,23 @@ class FavoriteManager: ObservableObject {
     
     // UserDefaults 저장 로직
     private func saveToUserDefaults() {
-        // UserDefaults only supports String keys for dictionaries
-        let dictStrKey = Dictionary(uniqueKeysWithValues: favoriteSeasons.map { (String($0.key), $0.value) })
+        var dictStrKey: [String: Int] = [:]
+        for (key, value) in favoriteSeasons {
+            dictStrKey[String(key)] = value
+        }
         UserDefaults.standard.set(dictStrKey, forKey: userDefaultsKey)
     }
     
     // UserDefaults 로드 로직
     private func loadFromUserDefaults() {
         if let dictStrKey = UserDefaults.standard.dictionary(forKey: userDefaultsKey) as? [String: Int] {
-            let dictIntKey = Dictionary(uniqueKeysWithValues: dictStrKey.compactMap { key, value in
-                if let intKey = Int(key) { return (intKey, value) } else { return nil }
-            })
-            favoriteSeasons = dictIntKey
+            var newDict: [Int: Int] = [:]
+            for (key, value) in dictStrKey {
+                if let intKey = Int(key) {
+                    newDict[intKey] = value
+                }
+            }
+            favoriteSeasons = newDict
         }
     }
 }
