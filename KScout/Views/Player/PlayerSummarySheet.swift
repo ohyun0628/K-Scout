@@ -11,23 +11,42 @@ struct PlayerSummarySheet: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
+            ZStack {
+                Color(.systemBackground).edgesIgnoringSafeArea(.all)
+                
                 if viewModel.isLoading {
-                    ProgressView("선수 정보 불러오는 중...")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Text("선수 정보 불러오는 중...")
+                            .font(.system(size: 15))
+                            .foregroundColor(.gray)
+                    }
                 } else if let error = viewModel.errorMessage {
-                    Text(error).foregroundColor(.red)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(.red)
+                        Text("데이터를 불러오지 못했습니다.")
+                            .font(.system(size: 16, weight: .bold))
+                        Text(error)
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
+                    }
                 } else if let detail = viewModel.playerDetail {
                     contentView(detail)
                 }
                 
                 // Navigation Link hidden
-                NavigationLink(
-                    destination: PlayerDetailView(player: convertToPlayer(viewModel.playerDetail)),
-                    isActive: $navigateToDetail,
-                    label: { EmptyView() }
-                )
+                VStack {
+                    NavigationLink(
+                        destination: PlayerDetailView(player: convertToPlayer(viewModel.playerDetail)),
+                        isActive: $navigateToDetail,
+                        label: { EmptyView() }
+                    )
+                }.frame(width: 0, height: 0).hidden()
             }
             .navigationBarItems(trailing: Button(action: {
                 presentationMode.wrappedValue.dismiss()
