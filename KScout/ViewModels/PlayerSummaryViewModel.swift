@@ -3,7 +3,7 @@ import Combine
 
 class PlayerSummaryViewModel: ObservableObject {
     @Published var playerDetail: PlayerDetailItem?
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
     @Published var errorMessage: String?
     
     func fetchPlayer(id: Int, season: Int) {
