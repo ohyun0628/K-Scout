@@ -155,7 +155,7 @@ struct PlayerSummarySheet: View {
             let leagueName = detail.statistics.first?.league?.name ?? "K리그1"
             
             HStack(spacing: 6) {
-                Text("\(leagueName) \(displaySeason) 시즌 기록")
+                Text("\(leagueName) \(String(displaySeason)) 시즌 기록")
                     .font(.system(size: 16, weight: .bold))
                 Image(systemName: "info.circle")
                     .font(.system(size: 13))
