@@ -64,32 +64,34 @@ struct PlayerSummarySheet: View {
     
     @ViewBuilder
     private func contentView(_ detail: PlayerDetailItem) -> some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                // Profile Header
-                profileHeader(detail)
-                
-                // Info Cards
-                infoCards(detail)
-                
-                // Season Records
-                seasonRecords(detail)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 32) {
+                    // Profile Header
+                    profileHeader(detail)
+                    
+                    // Info Cards
+                    infoCards(detail)
+                    
+                    // Season Records
+                    seasonRecords(detail)
+                }
+                .padding(.top, 24)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
             }
-            .padding(.top, 24)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
-        }
-        
-        // Bottom Button
-        Button(action: {
-            navigateToDetail = true
-        }) {
-            Text("기록 더보기")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(Color(red: 220/255, green: 180/255, blue: 60/255)) // Yellow gold color
+            
+            // Bottom Button
+            Button(action: {
+                navigateToDetail = true
+            }) {
+                Text("기록 더보기")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.brandNavy)
+            }
         }
     }
     
