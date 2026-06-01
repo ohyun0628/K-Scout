@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PlayerDetailView: View {
     let player: Player
+    let season: Int
     @ObservedObject private var favoriteManager = FavoriteManager.shared
     
     var body: some View {
@@ -99,7 +100,7 @@ struct PlayerDetailView: View {
         .navigationBarItems(
             trailing: Button(action: {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                favoriteManager.toggleFavorite(playerID: player.id)
+                favoriteManager.toggleFavorite(playerID: player.id, season: season)
             }) {
                 Image(systemName: favoriteManager.isFavorite(playerID: player.id) ? "star.fill" : "star")
                     .font(.title3)
@@ -192,7 +193,7 @@ struct PlayerDetailView: View {
 struct PlayerDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PlayerDetailView(player: Player(id: 1, name: "주민규", photo: nil, teamName: "울산 HD", goals: 14, assists: 3, shots: 48, passes: 320, defense: 12))
+            PlayerDetailView(player: Player(id: 1, name: "주민규", photo: nil, teamName: "울산 HD", goals: 14, assists: 3, shots: 48, passes: 320, defense: 12), season: 2024)
         }
     }
 }

@@ -42,7 +42,7 @@ struct PlayerSummarySheet: View {
                 // Navigation Link hidden
                 VStack {
                     NavigationLink(
-                        destination: PlayerDetailView(player: convertToPlayer(viewModel.playerDetail)),
+                        destination: PlayerDetailView(player: convertToPlayer(viewModel.playerDetail), season: season),
                         isActive: $navigateToDetail,
                         label: { EmptyView() }
                     )
