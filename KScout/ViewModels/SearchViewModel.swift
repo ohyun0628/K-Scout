@@ -117,11 +117,19 @@ class SearchViewModel: ObservableObject {
                     let id = item.player.id
                     if var existing = aggregatedDict[id] {
                         if let newStat = item.statistics.first, var existingStat = existing.statistics.first {
-                            existingStat.goals?.total = (existingStat.goals?.total ?? 0) + (newStat.goals?.total ?? 0)
-                            existingStat.goals?.assists = (existingStat.goals?.assists ?? 0) + (newStat.goals?.assists ?? 0)
-                            existingStat.shots?.total = (existingStat.shots?.total ?? 0) + (newStat.shots?.total ?? 0)
-                            existingStat.passes?.total = (existingStat.passes?.total ?? 0) + (newStat.passes?.total ?? 0)
-                            existingStat.tackles?.total = (existingStat.tackles?.total ?? 0) + (newStat.tackles?.total ?? 0)
+                            
+                            let totalGoals = (existingStat.goals?.total ?? 0) + (newStat.goals?.total ?? 0)
+                            let totalAssists = (existingStat.goals?.assists ?? 0) + (newStat.goals?.assists ?? 0)
+                            existingStat.goals = GoalDetailedStats(total: totalGoals, assists: totalAssists)
+                            
+                            let totalShots = (existingStat.shots?.total ?? 0) + (newStat.shots?.total ?? 0)
+                            existingStat.shots = ShotDetailedStats(total: totalShots)
+                            
+                            let totalPasses = (existingStat.passes?.total ?? 0) + (newStat.passes?.total ?? 0)
+                            existingStat.passes = PassDetailedStats(total: totalPasses)
+                            
+                            let totalTackles = (existingStat.tackles?.total ?? 0) + (newStat.tackles?.total ?? 0)
+                            existingStat.tackles = TackleDetailedStats(total: totalTackles)
                             
                             // 팀 정보는 가장 최근 시즌(2024)이나 존재하는 최신 데이터 기준으로 덮어쓸 수 있지만, 
                             // 일단 기존 데이터 유지(또는 임의)로 합산
