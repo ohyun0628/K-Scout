@@ -58,7 +58,7 @@ struct SearchView: View {
                                 .font(.system(size: 48))
                                 .foregroundColor(.gray.opacity(0.5))
                             
-                            Text("검색 결과와 일치하는 선수가 없습니다.")
+                            Text(viewModel.searchText.isEmpty ? "최근 검색 기록이 없습니다." : "검색 결과와 일치하는 선수가 없습니다.")
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(.gray)
                         }
@@ -66,10 +66,35 @@ struct SearchView: View {
                     } else {
                         ScrollView(showsIndicators: false) {
                             LazyVStack(spacing: 12) {
+                                // 최근 검색어일 경우 타이틀 표시
+                                if viewModel.searchText.isEmpty && !viewModel.filteredPlayers.isEmpty {
+                                    HStack {
+                                        Text("최근 검색 선수")
+                                            .font(.system(size: 14, weight: .bold))
+                                            .foregroundColor(.gray)
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            withAnimation {
+                                                viewModel.clearRecentSearches()
+                                            }
+                                        }) {
+                                            Text("전체 삭제")
+                                                .font(.system(size: 13))
+                                                .foregroundColor(.gray)
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.top, 4)
+                                    .padding(.bottom, 2)
+                                }
+                                
                                 ForEach(viewModel.filteredPlayers) { player in
                                     Button(action: {
                                         self.selectedPlayerId = player.id
                                         self.showPlayerSummary = true
+                                        viewModel.addRecentSearch(player) // 검색 결과 클릭 시 최근 검색에 추가
                                     }) {
                                         playerRow(player)
                                     }

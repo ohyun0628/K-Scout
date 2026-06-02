@@ -4,6 +4,7 @@ import Combine
 class SearchViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var filteredPlayers: [Player] = []
+    @Published var recentSearches: [Player] = []
     @Published var selectedPlayer: Player? = nil
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -15,11 +16,10 @@ class SearchViewModel: ObservableObject {
         }
     }
     
-    private var allPlayers: [Player] = []
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        loadMockPlayers()
+        loadRecentSearches()
         
         // 검색어 입력 시 0.2초 딜레이(Debounce)를 주어 로컬 필터링 우선 수행
         $searchText
@@ -30,15 +30,48 @@ class SearchViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    // 로컬 캐시/Mock 검색어 필터링
+    // 로컬 검색어 필터링 (최근 검색어 기반)
     func filterMockPlayers(with query: String) {
         if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            filteredPlayers = allPlayers
+            filteredPlayers = recentSearches
         } else {
-            filteredPlayers = allPlayers.filter { player in
+            filteredPlayers = recentSearches.filter { player in
                 player.name.localizedCaseInsensitiveContains(query) ||
                 player.teamName.localizedCaseInsensitiveContains(query)
             }
+        }
+    }
+    
+    // 최근 검색어 추가
+    func addRecentSearch(_ player: Player) {
+        // 이미 존재하면 제거 (맨 앞으로 옮기기 위해)
+        recentSearches.removeAll { $0.id == player.id }
+        recentSearches.insert(player, at: 0)
+        
+        // 최대 10개 유지
+        if recentSearches.count > 10 {
+            recentSearches.removeLast()
+        }
+        
+        saveRecentSearches()
+        
+        // 검색어가 비어있을 때는 즉시 업데이트
+        if searchText.isEmpty {
+            filteredPlayers = recentSearches
+        }
+    }
+    
+    private func saveRecentSearches() {
+        if let encoded = try? JSONEncoder().encode(recentSearches) {
+            UserDefaults.standard.set(encoded, forKey: "recentSearches")
+        }
+    }
+    
+    func clearRecentSearches() {
+        recentSearches.removeAll()
+        saveRecentSearches()
+        if searchText.isEmpty {
+            filteredPlayers = recentSearches
         }
     }
     
@@ -46,7 +79,7 @@ class SearchViewModel: ObservableObject {
     func searchPlayers(query: String) {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
-            self.filteredPlayers = allPlayers
+            self.filteredPlayers = recentSearches
             return
         }
         
@@ -113,9 +146,14 @@ class SearchViewModel: ObservableObject {
         return dictionary[query.trimmingCharacters(in: .whitespacesAndNewlines)] ?? query
     }
     
-    private func loadMockPlayers() {
-        allPlayers = Player.mockPlayers
-        filteredPlayers = allPlayers
+    private func loadRecentSearches() {
+        if let data = UserDefaults.standard.data(forKey: "recentSearches"),
+           let decoded = try? JSONDecoder().decode([Player].self, from: data) {
+            recentSearches = decoded
+        } else {
+            recentSearches = []
+        }
+        filteredPlayers = recentSearches
     }
 }
 
