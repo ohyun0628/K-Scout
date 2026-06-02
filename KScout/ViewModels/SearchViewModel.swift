@@ -8,13 +8,6 @@ class SearchViewModel: ObservableObject {
     @Published var selectedPlayer: Player? = nil
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var selectedSeason: Int = 2026 {
-        didSet {
-            if !searchText.isEmpty {
-                searchPlayers(query: searchText)
-            }
-        }
-    }
     
     private var cancellables = Set<AnyCancellable>()
     private var allPlayersDict: [String: String] = [:]
@@ -77,7 +70,7 @@ class SearchViewModel: ObservableObject {
         }
     }
     
-    // API 실시간 다중 선수 검색 (발표용: 최대 5명 동시 검색)
+    // API 실시간 다중 선수 검색 및 22~24 시즌 통합 스탯 집계
     func searchPlayers(query: String) {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
@@ -90,45 +83,58 @@ class SearchViewModel: ObservableObject {
         
         let englishQueries = translateKoreanToEnglish(trimmed)
         let group = DispatchGroup()
-        var fetchedPlayers: [Player] = []
+        var allFetchedItems: [PlayerDetailItem] = []
         let queue = DispatchQueue(label: "com.kscout.searchQueue")
         
+        let targetSeasons = [2022, 2023, 2024]
+        let targetLeagues = [1, 2]
+        
         for englishQuery in englishQueries {
-            // K리그 1 검색
-            group.enter()
-            NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: 1, season: selectedSeason)) { (result: Result<[PlayerDetailItem], NetworkError>) in
-                if case .success(let items) = result {
-                    let players = items.compactMap { Player(detailItem: $0) }
-                    queue.async { fetchedPlayers.append(contentsOf: players) }
+            for season in targetSeasons {
+                for league in targetLeagues {
+                    group.enter()
+                    NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: league, season: season)) { (result: Result<[PlayerDetailItem], NetworkError>) in
+                        if case .success(let items) = result {
+                            queue.async { allFetchedItems.append(contentsOf: items) }
+                        }
+                        group.leave()
+                    }
                 }
-                group.leave()
-            }
-            
-            // K리그 2 검색
-            group.enter()
-            NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: 2, season: selectedSeason)) { (result: Result<[PlayerDetailItem], NetworkError>) in
-                if case .success(let items) = result {
-                    let players = items.compactMap { Player(detailItem: $0) }
-                    queue.async { fetchedPlayers.append(contentsOf: players) }
-                }
-                group.leave()
             }
         }
         
         group.notify(queue: .main) {
             self.isLoading = false
-            if fetchedPlayers.isEmpty {
+            
+            if allFetchedItems.isEmpty {
                 self.errorMessage = "검색 결과와 일치하는 선수가 없습니다."
                 self.filteredPlayers = []
             } else {
-                // 중복 제거 및 UI 업데이트
-                var uniquePlayers: [Player] = []
-                for p in fetchedPlayers {
-                    if !uniquePlayers.contains(where: { $0.id == p.id }) {
-                        uniquePlayers.append(p)
+                // 선수 ID를 기준으로 스탯 통합 (합산)
+                var aggregatedDict: [Int: PlayerDetailItem] = [:]
+                
+                for item in allFetchedItems {
+                    let id = item.player.id
+                    if var existing = aggregatedDict[id] {
+                        if let newStat = item.statistics.first, var existingStat = existing.statistics.first {
+                            existingStat.goals?.total = (existingStat.goals?.total ?? 0) + (newStat.goals?.total ?? 0)
+                            existingStat.goals?.assists = (existingStat.goals?.assists ?? 0) + (newStat.goals?.assists ?? 0)
+                            existingStat.shots?.total = (existingStat.shots?.total ?? 0) + (newStat.shots?.total ?? 0)
+                            existingStat.passes?.total = (existingStat.passes?.total ?? 0) + (newStat.passes?.total ?? 0)
+                            existingStat.tackles?.total = (existingStat.tackles?.total ?? 0) + (newStat.tackles?.total ?? 0)
+                            
+                            // 팀 정보는 가장 최근 시즌(2024)이나 존재하는 최신 데이터 기준으로 덮어쓸 수 있지만, 
+                            // 일단 기존 데이터 유지(또는 임의)로 합산
+                            existing.statistics[0] = existingStat
+                            aggregatedDict[id] = existing
+                        }
+                    } else {
+                        aggregatedDict[id] = item
                     }
                 }
-                self.filteredPlayers = uniquePlayers
+                
+                let players = aggregatedDict.values.compactMap { Player(detailItem: $0) }
+                self.filteredPlayers = players.sorted { $0.name < $1.name }
             }
         }
     }

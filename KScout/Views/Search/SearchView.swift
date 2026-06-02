@@ -14,8 +14,19 @@ struct SearchView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 0) {
-                    // 1. 공통 상단 헤더 타이틀 (시즌 선택 바인딩 연동)
-                    HeaderTitleView(title: "선수 검색", selectedSeason: $viewModel.selectedSeason)
+                    // 1. 공통 상단 헤더 타이틀 (시즌 선택 바인딩 제거 및 통산 스탯 표시)
+                    HeaderTitleView(title: "선수 검색")
+                        .overlay(
+                            Text("22~24 통합 스탯")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Color.brandNavy.opacity(0.8))
+                                .cornerRadius(12)
+                                .padding(.trailing, 20),
+                            alignment: .trailing
+                        )
                     
                     // 2. 커스텀 서치 바
                     HStack {
