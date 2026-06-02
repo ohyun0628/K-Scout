@@ -139,7 +139,24 @@ class SearchViewModel: ObservableObject {
             return exactMatch
         }
         
-        // 2. 부분 일치 검색 (예: "주" -> "주민규" -> "Min-Kyu Joo")
+        // 유명 선수 우선 검색 배열 (우선순위 부여)
+        let popularPlayers = ["주민규", "이승우", "기성용", "세징야", "설영우", "조현우", "무고사", "일류첸코", "송민규", "김영권", "이동경"]
+        
+        // 2. 유명 선수 중에서 먼저 부분 일치 검색
+        for popular in popularPlayers {
+            if popular.contains(trimmed), let eng = allPlayersDict[popular] {
+                return eng
+            }
+        }
+        
+        // 3. 전체 선수 중에서 이름이 해당 글자로 '시작'하는 선수 우선 검색 (예: "김" -> 김주공)
+        for (koreanName, englishName) in allPlayersDict {
+            if koreanName.hasPrefix(trimmed) {
+                return englishName
+            }
+        }
+        
+        // 4. 나머지 부분 일치 검색
         for (koreanName, englishName) in allPlayersDict {
             if koreanName.contains(trimmed) {
                 return englishName
