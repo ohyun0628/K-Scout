@@ -17,9 +17,11 @@ class SearchViewModel: ObservableObject {
     }
     
     private var cancellables = Set<AnyCancellable>()
+    private var allPlayersDict: [String: String] = [:]
     
     init() {
         loadRecentSearches()
+        loadAllPlayersDict()
         
         // 검색어 입력 시 0.2초 딜레이(Debounce)를 주어 로컬 필터링 우선 수행
         $searchText
@@ -131,7 +133,40 @@ class SearchViewModel: ObservableObject {
     // 한국어 -> API-Football 영문 한글 매핑 딕셔너리
     private func translateKoreanToEnglish(_ query: String) -> String {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        let dictionary = [
+        
+        // 1. 정확히 일치하는 이름 검색
+        if let exactMatch = allPlayersDict[trimmed] {
+            return exactMatch
+        }
+        
+        // 2. 부분 일치 검색 (예: "주" -> "주민규" -> "Min-Kyu Joo")
+        for (koreanName, englishName) in allPlayersDict {
+            if koreanName.contains(trimmed) {
+                return englishName
+            }
+        }
+        
+        return trimmed
+    }
+    
+    private func loadAllPlayersDict() {
+        // 로컬에 저장된 전체 선수 명단 JSON 파싱
+        if let url = Bundle.main.url(forResource: "KLeaguePlayers", withExtension: "json"),
+           let data = try? Data(contentsOf: url),
+           let englishNames = try? JSONDecoder().decode([String].self, from: data) {
+            
+            for englishName in englishNames {
+                let koreanName = KoreanTranslationService.translatePlayer(englishName)
+                if koreanName != englishName {
+                    allPlayersDict[koreanName] = englishName
+                } else {
+                    allPlayersDict[englishName] = englishName
+                }
+            }
+        }
+        
+        // 강제 매핑 덮어쓰기 (기존 유명 선수들 보장)
+        let overrides = [
             "주민규": "Min-Kyu Joo",
             "이승우": "Seung-Woo Lee",
             "기성용": "Sung-Yueng Ki",
@@ -145,19 +180,9 @@ class SearchViewModel: ObservableObject {
             "이동경": "Dong-Gyeong Lee"
         ]
         
-        // 1. 정확히 일치하는 이름 검색
-        if let exactMatch = dictionary[trimmed] {
-            return exactMatch
+        for (k, v) in overrides {
+            allPlayersDict[k] = v
         }
-        
-        // 2. 부분 일치 검색 (예: "주" -> "주민규" -> "Min-Kyu Joo")
-        for (koreanName, englishName) in dictionary {
-            if koreanName.contains(trimmed) {
-                return englishName
-            }
-        }
-        
-        return trimmed
     }
     
     private func loadRecentSearches() {
