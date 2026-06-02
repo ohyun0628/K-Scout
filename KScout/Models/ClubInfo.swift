@@ -34,7 +34,16 @@ struct ClubInfo: Identifiable {
         ClubInfo(name: "수원 삼성 블루윙즈", logoURL: "https://media.api-sports.io/football/teams/2765.png", primaryColor: Color(red: 0.0, green: 0.2, blue: 0.7), secondaryColor: Color(red: 1.0, green: 0.9, blue: 0.0), region: "수원"),
         ClubInfo(name: "부산 아이파크", logoURL: "https://media.api-sports.io/football/teams/2752.png", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.1), secondaryColor: Color.white, region: "부산"),
         ClubInfo(name: "서울 이랜드 FC", logoURL: "https://media.api-sports.io/football/teams/2749.png", primaryColor: Color(red: 0.05, green: 0.1, blue: 0.2), secondaryColor: Color(red: 0.8, green: 0.6, blue: 0.2), region: "서울"),
-        ClubInfo(name: "전남 드래곤즈", logoURL: "https://media.api-sports.io/football/teams/2760.png", primaryColor: Color(red: 0.9, green: 0.7, blue: 0.0), secondaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), region: "전남")
+        ClubInfo(name: "전남 드래곤즈", logoURL: "https://media.api-sports.io/football/teams/2760.png", primaryColor: Color(red: 0.9, green: 0.7, blue: 0.0), secondaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), region: "전남"),
+        ClubInfo(name: "FC 안양", logoURL: "https://media.api-sports.io/football/teams/2748.png", primaryColor: Color(red: 0.4, green: 0.2, blue: 0.6), secondaryColor: Color.white, region: "안양"),
+        ClubInfo(name: "성남 FC", logoURL: "https://media.api-sports.io/football/teams/2757.png", primaryColor: Color(red: 0.1, green: 0.1, blue: 0.1), secondaryColor: Color.white, region: "성남"),
+        ClubInfo(name: "김포 FC", logoURL: "https://media.api-sports.io/football/teams/7078.png", primaryColor: Color(red: 0.1, green: 0.4, blue: 0.1), secondaryColor: Color(red: 0.9, green: 0.8, blue: 0.2), region: "김포"),
+        ClubInfo(name: "부천 FC 1995", logoURL: "https://media.api-sports.io/football/teams/2745.png", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.1), secondaryColor: Color.black, region: "부천"),
+        ClubInfo(name: "경남 FC", logoURL: "https://media.api-sports.io/football/teams/2751.png", primaryColor: Color(red: 0.8, green: 0.1, blue: 0.1), secondaryColor: Color.black, region: "경남"),
+        ClubInfo(name: "안산 그리너스 FC", logoURL: "https://media.api-sports.io/football/teams/2758.png", primaryColor: Color(red: 0.0, green: 0.6, blue: 0.4), secondaryColor: Color(red: 1.0, green: 0.9, blue: 0.0), region: "안산"),
+        ClubInfo(name: "천안 시티 FC", logoURL: "https://media.api-sports.io/football/teams/7060.png", primaryColor: Color(red: 0.4, green: 0.7, blue: 0.9), secondaryColor: Color.white, region: "천안"),
+        ClubInfo(name: "충북 청주 FC", logoURL: "https://media.api-sports.io/football/teams/7061.png", primaryColor: Color(red: 0.0, green: 0.2, blue: 0.6), secondaryColor: Color.red, region: "청주"),
+        ClubInfo(name: "충남 아산 FC", logoURL: "https://media.api-sports.io/football/teams/2753.png", primaryColor: Color(red: 0.9, green: 0.9, blue: 0.2), secondaryColor: Color(red: 0.0, green: 0.2, blue: 0.6), region: "아산")
     ]
     
     static func getClubInitial(_ name: String) -> String {
