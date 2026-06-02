@@ -130,6 +130,7 @@ class SearchViewModel: ObservableObject {
     
     // 한국어 -> API-Football 영문 한글 매핑 딕셔너리
     private func translateKoreanToEnglish(_ query: String) -> String {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         let dictionary = [
             "주민규": "Min-Kyu Joo",
             "이승우": "Seung-Woo Lee",
@@ -143,7 +144,20 @@ class SearchViewModel: ObservableObject {
             "김영권": "Young-Gwon Kim",
             "이동경": "Dong-Gyeong Lee"
         ]
-        return dictionary[query.trimmingCharacters(in: .whitespacesAndNewlines)] ?? query
+        
+        // 1. 정확히 일치하는 이름 검색
+        if let exactMatch = dictionary[trimmed] {
+            return exactMatch
+        }
+        
+        // 2. 부분 일치 검색 (예: "주" -> "주민규" -> "Min-Kyu Joo")
+        for (koreanName, englishName) in dictionary {
+            if koreanName.contains(trimmed) {
+                return englishName
+            }
+        }
+        
+        return trimmed
     }
     
     private func loadRecentSearches() {
