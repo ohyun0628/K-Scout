@@ -325,25 +325,39 @@ struct MyPageView: View {
     @ViewBuilder
     private func clubEmblem(for clubName: String, size: CGFloat) -> some View {
         if let club = ClubInfo.getClub(by: clubName), clubName != "선택 안 함" {
-            ZStack {
-                Circle()
-                    .fill(club.primaryColor)
-                    .frame(width: size, height: size)
-                
-                Circle()
-                    .stroke(club.secondaryColor, lineWidth: size * 0.05)
-                    .frame(width: size * 0.85, height: size * 0.85)
-                
-                Text(ClubInfo.getClubInitial(club.name))
-                    .font(.system(size: size * 0.4, weight: .black))
-                    .foregroundColor(club.secondaryColor)
+            if let logoURL = club.logoURL {
+                RemoteImageView(
+                    urlString: logoURL,
+                    size: size,
+                    fallback: AnyView(fallbackEmblem(club: club, size: size)),
+                    isCircle: false
+                )
+            } else {
+                fallbackEmblem(club: club, size: size)
             }
-            .shadow(color: club.primaryColor.opacity(0.2), radius: size * 0.1, x: 0, y: size * 0.05)
         } else {
             Image(systemName: "shield.fill")
                 .foregroundColor(.gray)
                 .frame(width: size, height: size)
         }
+    }
+    
+    @ViewBuilder
+    private func fallbackEmblem(club: ClubInfo, size: CGFloat) -> some View {
+        ZStack {
+            Circle()
+                .fill(club.primaryColor)
+                .frame(width: size, height: size)
+            
+            Circle()
+                .stroke(club.secondaryColor, lineWidth: size * 0.05)
+                .frame(width: size * 0.85, height: size * 0.85)
+            
+            Text(ClubInfo.getClubInitial(club.name))
+                .font(.system(size: size * 0.4, weight: .black))
+                .foregroundColor(club.secondaryColor)
+        }
+        .shadow(color: club.primaryColor.opacity(0.2), radius: size * 0.1, x: 0, y: size * 0.05)
     }
     
     // MARK: - Helper Methods for Alerts (컴파일러 부하 경감)

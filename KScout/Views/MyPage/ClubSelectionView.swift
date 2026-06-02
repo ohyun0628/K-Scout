@@ -56,20 +56,16 @@ struct ClubSelectionView: View {
                             }) {
                                 HStack(spacing: 16) {
                                     // 구단 엠블럼 심볼
-                                    ZStack {
-                                        Circle()
-                                            .fill(club.primaryColor)
-                                            .frame(width: 46, height: 46)
-                                        
-                                        Circle()
-                                            .stroke(club.secondaryColor, lineWidth: 2)
-                                            .frame(width: 40, height: 40)
-                                        
-                                        Text(ClubInfo.getClubInitial(club.name))
-                                            .font(.system(size: 16, weight: .black))
-                                            .foregroundColor(club.name == "선택 안 함" ? .white : club.secondaryColor)
+                                    if let logoURL = club.logoURL, club.name != "선택 안 함" {
+                                        RemoteImageView(
+                                            urlString: logoURL,
+                                            size: 46,
+                                            fallback: AnyView(fallbackEmblem(for: club)),
+                                            isCircle: false
+                                        )
+                                    } else {
+                                        fallbackEmblem(for: club)
                                     }
-                                    .shadow(color: club.primaryColor.opacity(0.2), radius: 4, x: 0, y: 2)
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(club.name)
@@ -106,6 +102,24 @@ struct ClubSelectionView: View {
         }
         .navigationTitle("선호 구단 설정")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    @ViewBuilder
+    private func fallbackEmblem(for club: ClubInfo) -> some View {
+        ZStack {
+            Circle()
+                .fill(club.primaryColor)
+                .frame(width: 46, height: 46)
+            
+            Circle()
+                .stroke(club.secondaryColor, lineWidth: 2)
+                .frame(width: 40, height: 40)
+            
+            Text(ClubInfo.getClubInitial(club.name))
+                .font(.system(size: 16, weight: .black))
+                .foregroundColor(club.name == "선택 안 함" ? .white : club.secondaryColor)
+        }
+        .shadow(color: club.primaryColor.opacity(0.2), radius: 4, x: 0, y: 2)
     }
 }
 
