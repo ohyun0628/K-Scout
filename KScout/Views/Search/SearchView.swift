@@ -120,7 +120,7 @@ struct SearchView: View {
             }
             .navigationBarHidden(true)
             .sheet(item: $selectedPlayerId) { id in
-                PlayerSummarySheet(playerId: id, season: viewModel.selectedSeason)
+                PlayerSummarySheet(playerId: id, season: 2024)
             }
         }
     }

@@ -286,49 +286,49 @@ struct GoalScoreInfo: Decodable {
 
 // 4. 선수 상세 분석 및 검색 (Players) DTO
 struct PlayerDetailItem: Decodable {
-    let player: PlayerProfileInfo
-    let statistics: [PlayerDetailedStats]
+    var player: PlayerProfileInfo
+    var statistics: [PlayerDetailedStats]
 }
 struct PlayerProfileInfo: Decodable {
-    let id: Int
-    let name: String
-    let photo: String?
-    let age: Int?
-    let height: String?
-    let weight: String?
-    let birth: PlayerBirthInfo?
+    var id: Int
+    var name: String
+    var photo: String?
+    var age: Int?
+    var height: String?
+    var weight: String?
+    var birth: PlayerBirthInfo?
 }
 struct PlayerBirthInfo: Decodable {
-    let date: String?
+    var date: String?
 }
 struct PlayerDetailedStats: Decodable {
-    let team: TeamInfo
-    let league: LeagueInfo?
-    let games: GameDetailedStats?
-    let shots: ShotDetailedStats?
-    let goals: GoalDetailedStats?
-    let passes: PassDetailedStats?
-    let tackles: TackleDetailedStats?
+    var team: TeamInfo
+    var league: LeagueInfo?
+    var games: GameDetailedStats?
+    var shots: ShotDetailedStats?
+    var goals: GoalDetailedStats?
+    var passes: PassDetailedStats?
+    var tackles: TackleDetailedStats?
 }
 struct GameDetailedStats: Decodable {
-    let appearences: Int?
-    let lineups: Int?
-    let minutes: Int?
-    let number: Int?
-    let position: String?
-    let rating: String?
-    let captain: Bool?
+    var appearences: Int?
+    var lineups: Int?
+    var minutes: Int?
+    var number: Int?
+    var position: String?
+    var rating: String?
+    var captain: Bool?
 }
 struct ShotDetailedStats: Codable {
-    let total: Int?
+    var total: Int?
 }
 struct GoalDetailedStats: Codable {
-    let total: Int?
-    let assists: Int?
+    var total: Int?
+    var assists: Int?
 }
 struct PassDetailedStats: Codable {
-    let total: Int?
+    var total: Int?
 }
 struct TackleDetailedStats: Codable {
-    let total: Int?
+    var total: Int?
 }
