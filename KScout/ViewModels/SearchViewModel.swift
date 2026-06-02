@@ -18,6 +18,7 @@ class SearchViewModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     private var allPlayersDict: [String: String] = [:]
+    private var localDatabase: [Player] = []
     
     init() {
         loadRecentSearches()
@@ -77,7 +78,7 @@ class SearchViewModel: ObservableObject {
         }
     }
     
-    // API 실시간 선수 명 검색 호출
+    // 로컬 Mock DB 검색
     func searchPlayers(query: String) {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
@@ -88,44 +89,14 @@ class SearchViewModel: ObservableObject {
         self.isLoading = true
         self.errorMessage = nil
         
-        let englishQuery = translateKoreanToEnglish(trimmed)
-        let group = DispatchGroup()
-        var fetchedPlayers: [Player] = []
-        
-        // K리그 1 검색
-        group.enter()
-        NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: 1, season: selectedSeason)) { (result: Result<[PlayerDetailItem], NetworkError>) in
-            if case .success(let items) = result {
-                let players = items.compactMap { Player(detailItem: $0) }
-                fetchedPlayers.append(contentsOf: players)
-            }
-            group.leave()
-        }
-        
-        // K리그 2 검색
-        group.enter()
-        NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: 2, season: selectedSeason)) { (result: Result<[PlayerDetailItem], NetworkError>) in
-            if case .success(let items) = result {
-                let players = items.compactMap { Player(detailItem: $0) }
-                fetchedPlayers.append(contentsOf: players)
-            }
-            group.leave()
-        }
-        
-        group.notify(queue: .main) {
+        // 0.3초 딜레이로 검색 느낌 살리기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.isLoading = false
-            if fetchedPlayers.isEmpty {
-                // API 결과가 없거나 통신 실패 시 로컬 검색으로 자연스러운 전환
-                self.filterMockPlayers(with: trimmed)
-            } else {
-                // 중복 제거
-                var uniquePlayers: [Player] = []
-                for p in fetchedPlayers {
-                    if !uniquePlayers.contains(where: { $0.id == p.id }) {
-                        uniquePlayers.append(p)
-                    }
-                }
-                self.filteredPlayers = uniquePlayers
+            
+            self.filteredPlayers = self.localDatabase.filter { player in
+                player.name.contains(trimmed) ||
+                player.name.hasPrefix(trimmed) ||
+                player.teamName.contains(trimmed)
             }
         }
     }
@@ -200,6 +171,44 @@ class SearchViewModel: ObservableObject {
         for (k, v) in overrides {
             allPlayersDict[k] = v
         }
+        
+        // 임시 로컬 Mock 데이터베이스 생성
+        generateMockDatabase()
+    }
+    
+    private func generateMockDatabase() {
+        let teams = [
+            "울산 HD FC", "전북 현대 모터스", "포항 스틸러스", "수원 FC", "수원 삼성 블루윙즈", "FC 서울",
+            "대전 하나 시티즌", "강원 FC", "광주 FC", "대구 FC", "인천 유나이티드", "제주 유나이티드", "김천 상무 FC"
+        ]
+        
+        var idCounter = 10000
+        localDatabase = []
+        
+        for (koreanName, _) in allPlayersDict {
+            let randomGoals = Int.random(in: 0...15)
+            let randomAssists = Int.random(in: 0...10)
+            let randomTeam = teams.randomElement()!
+            
+            // 기존 유명 선수들의 경우 하드코딩된 사진/팀/스탯을 사용할 수 있지만, 
+            // 현재는 간단히 랜덤 데이터를 부여합니다.
+            let player = Player(
+                id: idCounter,
+                name: koreanName,
+                photo: nil, // 엠블럼 이니셜 폴백 사용
+                teamName: randomTeam,
+                goals: randomGoals,
+                assists: randomAssists,
+                shots: randomGoals * 4,
+                passes: randomAssists * 25 + Int.random(in: 100...500),
+                defense: Int.random(in: 5...40)
+            )
+            localDatabase.append(player)
+            idCounter += 1
+        }
+        
+        // 이름 기준 가나다순 정렬
+        localDatabase.sort { $0.name < $1.name }
     }
     
     private func loadRecentSearches() {
