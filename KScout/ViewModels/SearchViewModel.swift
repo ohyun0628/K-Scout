@@ -97,6 +97,15 @@ class SearchViewModel: ObservableObject {
         let targetSeasons = [2022, 2023, 2024]
         let targetLeagues = [1, 2]
         
+        if MockPlayerService.shared.useMockData {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let mockItems = MockPlayerService.shared.getMockPlayerDetail()
+                allFetchedItems.append(contentsOf: mockItems)
+                self.processFetchedItems(allFetchedItems)
+            }
+            return
+        }
+        
         for englishQuery in englishQueries {
             for league in targetLeagues {
                 group.enter()
@@ -110,7 +119,12 @@ class SearchViewModel: ObservableObject {
         }
         
         group.notify(queue: .main) {
-            self.isLoading = false
+            self.processFetchedItems(allFetchedItems)
+        }
+    }
+    
+    private func processFetchedItems(_ allFetchedItems: [PlayerDetailItem]) {
+        self.isLoading = false
             
             if allFetchedItems.isEmpty {
                 self.errorMessage = "검색 결과와 일치하는 선수가 없습니다."

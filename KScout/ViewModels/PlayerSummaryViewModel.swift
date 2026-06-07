@@ -16,6 +16,15 @@ class PlayerSummaryViewModel: ObservableObject {
         var allFetchedItems: [PlayerDetailItem] = []
         var finalError: Error?
         
+        if MockPlayerService.shared.useMockData {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let mockItems = MockPlayerService.shared.getMockPlayerDetail()
+                allFetchedItems.append(contentsOf: mockItems)
+                self.processFetchedItems(allFetchedItems)
+            }
+            return
+        }
+        
         for s in seasons {
             group.enter()
             NetworkManager.shared.request(endpoint: .playerDetail(id: id, season: s)) { (result: Result<[PlayerDetailItem], NetworkError>) in
@@ -34,7 +43,12 @@ class PlayerSummaryViewModel: ObservableObject {
         }
         
         group.notify(queue: .main) {
-            self.isLoading = false
+            self.processFetchedItems(allFetchedItems)
+        }
+    }
+    
+    private func processFetchedItems(_ allFetchedItems: [PlayerDetailItem]) {
+        self.isLoading = false
             
             if allFetchedItems.isEmpty {
                 self.errorMessage = finalError?.localizedDescription ?? "선수 정보를 찾을 수 없습니다."
