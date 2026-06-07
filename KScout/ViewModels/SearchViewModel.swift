@@ -124,28 +124,66 @@ class SearchViewModel: ObservableObject {
                 for item in allFetchedItems {
                     let id = item.player.id
                     if var existing = aggregatedDict[id] {
-                        if let newStat = item.statistics.first, var existingStat = existing.statistics.first {
+                        let kLeagueStats = item.statistics.filter { $0.league?.id == 292 || $0.league?.id == 293 }
+                        
+                        if !kLeagueStats.isEmpty, var existingStat = existing.statistics.first {
+                            var totalGoals = existingStat.goals?.total ?? 0
+                            var totalAssists = existingStat.goals?.assists ?? 0
+                            var totalShots = existingStat.shots?.total ?? 0
+                            var totalPasses = existingStat.passes?.total ?? 0
+                            var totalTackles = existingStat.tackles?.total ?? 0
                             
-                            let totalGoals = (existingStat.goals?.total ?? 0) + (newStat.goals?.total ?? 0)
-                            let totalAssists = (existingStat.goals?.assists ?? 0) + (newStat.goals?.assists ?? 0)
+                            for stat in kLeagueStats {
+                                totalGoals += (stat.goals?.total ?? 0)
+                                totalAssists += (stat.goals?.assists ?? 0)
+                                totalShots += (stat.shots?.total ?? 0)
+                                totalPasses += (stat.passes?.total ?? 0)
+                                totalTackles += (stat.tackles?.total ?? 0)
+                            }
+                            
                             existingStat.goals = GoalDetailedStats(total: totalGoals, assists: totalAssists)
-                            
-                            let totalShots = (existingStat.shots?.total ?? 0) + (newStat.shots?.total ?? 0)
                             existingStat.shots = ShotDetailedStats(total: totalShots)
-                            
-                            let totalPasses = (existingStat.passes?.total ?? 0) + (newStat.passes?.total ?? 0)
                             existingStat.passes = PassDetailedStats(total: totalPasses)
-                            
-                            let totalTackles = (existingStat.tackles?.total ?? 0) + (newStat.tackles?.total ?? 0)
                             existingStat.tackles = TackleDetailedStats(total: totalTackles)
                             
-                            // 팀 정보는 가장 최근 시즌(2024)이나 존재하는 최신 데이터 기준으로 덮어쓸 수 있지만, 
-                            // 일단 기존 데이터 유지(또는 임의)로 합산
+                            if existingStat.league?.name?.contains("Cup") == true, let validStat = kLeagueStats.last {
+                                existingStat.team = validStat.team
+                                existingStat.league = validStat.league
+                            }
+                            
                             existing.statistics[0] = existingStat
                             aggregatedDict[id] = existing
                         }
                     } else {
-                        aggregatedDict[id] = item
+                        // 최초 추가 시에도 K리그 스탯을 베이스로 하도록 정리
+                        var newItem = item
+                        let kLeagueStats = item.statistics.filter { $0.league?.id == 292 || $0.league?.id == 293 }
+                        
+                        if let firstValid = kLeagueStats.first {
+                            var combinedStat = firstValid
+                            var totalGoals = 0
+                            var totalAssists = 0
+                            var totalShots = 0
+                            var totalPasses = 0
+                            var totalTackles = 0
+                            
+                            for stat in kLeagueStats {
+                                totalGoals += (stat.goals?.total ?? 0)
+                                totalAssists += (stat.goals?.assists ?? 0)
+                                totalShots += (stat.shots?.total ?? 0)
+                                totalPasses += (stat.passes?.total ?? 0)
+                                totalTackles += (stat.tackles?.total ?? 0)
+                            }
+                            
+                            combinedStat.goals = GoalDetailedStats(total: totalGoals, assists: totalAssists)
+                            combinedStat.shots = ShotDetailedStats(total: totalShots)
+                            combinedStat.passes = PassDetailedStats(total: totalPasses)
+                            combinedStat.tackles = TackleDetailedStats(total: totalTackles)
+                            
+                            newItem.statistics = [combinedStat]
+                        }
+                        
+                        aggregatedDict[id] = newItem
                     }
                 }
                 

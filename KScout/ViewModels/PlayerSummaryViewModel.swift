@@ -39,11 +39,14 @@ class PlayerSummaryViewModel: ObservableObject {
             if allFetchedItems.isEmpty {
                 self.errorMessage = finalError?.localizedDescription ?? "선수 정보를 찾을 수 없습니다."
             } else {
-                // 스탯 통합 로직
-                // 24년 또는 존재하는 가장 최근 데이터를 베이스로 잡음
-                var baseItem = allFetchedItems.last ?? allFetchedItems.first!
+                // K리그 스탯만 필터링 (292: K리그1, 293: K리그2)
+                var kLeagueStats: [PlayerDetailedStats] = []
+                for item in allFetchedItems {
+                    let filtered = item.statistics.filter { $0.league?.id == 292 || $0.league?.id == 293 }
+                    kLeagueStats.append(contentsOf: filtered)
+                }
                 
-                if var baseStat = baseItem.statistics.first {
+                if var baseStat = kLeagueStats.last ?? allFetchedItems.first?.statistics.first {
                     var totalGoals = 0
                     var totalAssists = 0
                     var totalShots = 0
@@ -51,15 +54,13 @@ class PlayerSummaryViewModel: ObservableObject {
                     var totalTackles = 0
                     var totalApps = 0
                     
-                    for item in allFetchedItems {
-                        if let stat = item.statistics.first {
-                            totalGoals += (stat.goals?.total ?? 0)
-                            totalAssists += (stat.goals?.assists ?? 0)
-                            totalShots += (stat.shots?.total ?? 0)
-                            totalPasses += (stat.passes?.total ?? 0)
-                            totalTackles += (stat.tackles?.total ?? 0)
-                            totalApps += (stat.games?.appearences ?? 0)
-                        }
+                    for stat in kLeagueStats {
+                        totalGoals += (stat.goals?.total ?? 0)
+                        totalAssists += (stat.goals?.assists ?? 0)
+                        totalShots += (stat.shots?.total ?? 0)
+                        totalPasses += (stat.passes?.total ?? 0)
+                        totalTackles += (stat.tackles?.total ?? 0)
+                        totalApps += (stat.games?.appearences ?? 0)
                     }
                     
                     baseStat.goals = GoalDetailedStats(total: totalGoals, assists: totalAssists)
@@ -74,10 +75,17 @@ class PlayerSummaryViewModel: ObservableObject {
                         baseStat.games = GameDetailedStats(appearences: totalApps, lineups: nil, minutes: nil, number: nil, position: nil, rating: nil, captain: nil)
                     }
                     
-                    baseItem.statistics[0] = baseStat
+                    // 리그 이름을 통합 레이블에서 처리하기 좋게 K리그로 덮어씌움
+                    if baseStat.league?.name?.contains("Cup") == true {
+                        baseStat.league = LeagueInfo(id: 292, name: "K League 1", season: 2024)
+                    }
+                    
+                    var baseItem = allFetchedItems.last ?? allFetchedItems.first!
+                    baseItem.statistics = [baseStat]
+                    self.playerDetail = baseItem
+                } else {
+                    self.playerDetail = allFetchedItems.first
                 }
-                
-                self.playerDetail = baseItem
             }
         }
     }
