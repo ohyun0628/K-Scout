@@ -65,7 +65,7 @@ struct PlayerDetailView: View {
                     
                     // 상세 스탯 정보 리스트 카드
                     VStack(spacing: 0) {
-                        Text("시즌 상세 기록")
+                        Text("22~24 통합 상세 기록")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(Color.brandNavy)
                             .frame(maxWidth: .infinity, alignment: .leading)
