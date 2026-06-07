@@ -102,14 +102,19 @@ struct SearchView: View {
                                 }
                                 
                                 ForEach(viewModel.filteredPlayers) { player in
-                                    Button(action: {
-                                        self.selectedPlayerId = player.id
-                                        self.showPlayerSummary = true
-                                        viewModel.addRecentSearch(player) // 검색 결과 클릭 시 최근 검색에 추가
-                                    }) {
+                                    SwipeableRow(
+                                        isEnable: viewModel.searchText.isEmpty,
+                                        onDelete: {
+                                            viewModel.removeRecentSearch(player)
+                                        },
+                                        onTap: {
+                                            self.selectedPlayerId = player.id
+                                            self.showPlayerSummary = true
+                                            viewModel.addRecentSearch(player)
+                                        }
+                                    ) {
                                         playerRow(player)
                                     }
-                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                             .padding(.horizontal, 16)
@@ -225,6 +230,81 @@ struct SearchView: View {
             return Color(red: 0.0, green: 0.45, blue: 0.75)
         }
         return Color.brandNavy
+    }
+}
+
+struct SwipeableRow<Content: View>: View {
+    let isEnable: Bool
+    let onDelete: () -> Void
+    let onTap: () -> Void
+    let content: Content
+    
+    @State private var offset: CGFloat = 0
+    @State private var isSwiped: Bool = false
+    
+    init(isEnable: Bool, onDelete: @escaping () -> Void, onTap: @escaping () -> Void, @ViewBuilder content: () -> Content) {
+        self.isEnable = isEnable
+        self.onDelete = onDelete
+        self.onTap = onTap
+        self.content = content()
+    }
+    
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            if isEnable {
+                Button(action: {
+                    withAnimation {
+                        onDelete()
+                        offset = 0
+                        isSwiped = false
+                    }
+                }) {
+                    ZStack {
+                        Color.red
+                            .cornerRadius(16)
+                        Image(systemName: "trash.fill")
+                            .foregroundColor(.white)
+                            .font(.system(size: 20))
+                    }
+                    .frame(width: 70)
+                }
+            }
+            
+            Button(action: {
+                if isSwiped {
+                    withAnimation {
+                        offset = 0
+                        isSwiped = false
+                    }
+                } else {
+                    onTap()
+                }
+            }) {
+                content
+            }
+            .buttonStyle(PlainButtonStyle())
+            .offset(x: offset)
+            .gesture(
+                isEnable ? DragGesture()
+                    .onChanged { value in
+                        if value.translation.width < 0 && value.translation.height > -30 && value.translation.height < 30 {
+                            offset = value.translation.width
+                        }
+                    }
+                    .onEnded { value in
+                        withAnimation(.spring()) {
+                            if value.translation.width < -60 {
+                                offset = -80
+                                isSwiped = true
+                            } else {
+                                offset = 0
+                                isSwiped = false
+                            }
+                        }
+                    }
+                : nil
+            )
+        }
     }
 }
 

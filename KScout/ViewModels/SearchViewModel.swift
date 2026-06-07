@@ -62,6 +62,14 @@ class SearchViewModel: ObservableObject {
         }
     }
     
+    func removeRecentSearch(_ player: Player) {
+        recentSearches.removeAll { $0.id == player.id }
+        saveRecentSearches()
+        if searchText.isEmpty {
+            filteredPlayers = recentSearches
+        }
+    }
+    
     func clearRecentSearches() {
         recentSearches.removeAll()
         saveRecentSearches()
