@@ -49,7 +49,7 @@ struct PlayerDetailView: View {
                     
                     // 레이더 차트 분석 카드
                     VStack(spacing: 16) {
-                        Text("능력치 다이어그램")
+                        Text("상세 차트")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(Color.brandNavy)
                             .frame(maxWidth: .infinity, alignment: .leading)
