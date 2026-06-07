@@ -5,7 +5,7 @@ enum APIEndpoint {
     case fixtures(league: Int, season: Int, team: Int? = nil)
     case fixtureDetail(id: Int)
     case players(team: Int, season: Int)
-    case playerSearch(query: String, league: Int, season: Int)
+    case playerSearch(query: String, league: Int, season: Int?)
     case topScorers(league: Int, season: Int)
     case topAssists(league: Int, season: Int)
     case playerDetail(id: Int, season: Int)
@@ -56,11 +56,14 @@ enum APIEndpoint {
         case .playerSearch(let query, let league, let season):
             let apiLeague = (league == 1) ? 292 : 293
             let sanitizedQuery = query.components(separatedBy: "-").first ?? query
-            return [
+            var queryItems = [
                 URLQueryItem(name: "search", value: sanitizedQuery),
-                URLQueryItem(name: "league", value: String(apiLeague)),
-                URLQueryItem(name: "season", value: String(season))
+                URLQueryItem(name: "league", value: String(apiLeague))
             ]
+            if let season = season {
+                queryItems.append(URLQueryItem(name: "season", value: String(season)))
+            }
+            return queryItems
         case .playerDetail(let id, let season):
             return [
                 URLQueryItem(name: "id", value: String(id)),

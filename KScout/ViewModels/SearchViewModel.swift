@@ -98,15 +98,13 @@ class SearchViewModel: ObservableObject {
         let targetLeagues = [1, 2]
         
         for englishQuery in englishQueries {
-            for season in targetSeasons {
-                for league in targetLeagues {
-                    group.enter()
-                    NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: league, season: season)) { (result: Result<[PlayerDetailItem], NetworkError>) in
-                        if case .success(let items) = result {
-                            queue.async { allFetchedItems.append(contentsOf: items) }
-                        }
-                        group.leave()
+            for league in targetLeagues {
+                group.enter()
+                NetworkManager.shared.request(endpoint: .playerSearch(query: englishQuery, league: league, season: nil)) { (result: Result<[PlayerDetailItem], NetworkError>) in
+                    if case .success(let items) = result {
+                        queue.async { allFetchedItems.append(contentsOf: items) }
                     }
+                    group.leave()
                 }
             }
         }
@@ -124,7 +122,11 @@ class SearchViewModel: ObservableObject {
                 for item in allFetchedItems {
                     let id = item.player.id
                     if var existing = aggregatedDict[id] {
-                        let kLeagueStats = item.statistics.filter { $0.league?.id == 292 || $0.league?.id == 293 }
+                        let kLeagueStats = item.statistics.filter { stat in
+                            let isKLeague = (stat.league?.id == 292 || stat.league?.id == 293)
+                            let isTargetSeason = [2022, 2023, 2024].contains(stat.league?.season ?? 0)
+                            return isKLeague && isTargetSeason
+                        }
                         
                         if !kLeagueStats.isEmpty, var existingStat = existing.statistics.first {
                             var totalGoals = existingStat.goals?.total ?? 0
@@ -157,7 +159,11 @@ class SearchViewModel: ObservableObject {
                     } else {
                         // 최초 추가 시에도 K리그 스탯을 베이스로 하도록 정리
                         var newItem = item
-                        let kLeagueStats = item.statistics.filter { $0.league?.id == 292 || $0.league?.id == 293 }
+                        let kLeagueStats = item.statistics.filter { stat in
+                            let isKLeague = (stat.league?.id == 292 || stat.league?.id == 293)
+                            let isTargetSeason = [2022, 2023, 2024].contains(stat.league?.season ?? 0)
+                            return isKLeague && isTargetSeason
+                        }
                         
                         if let firstValid = kLeagueStats.first {
                             var combinedStat = firstValid
