@@ -133,6 +133,5 @@ class PlayerSummaryViewModel: ObservableObject {
                     self.playerDetail = allFetchedItems.first
                 }
             }
-        }
     }
 }

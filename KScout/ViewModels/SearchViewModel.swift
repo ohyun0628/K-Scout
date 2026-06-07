@@ -210,7 +210,6 @@ class SearchViewModel: ObservableObject {
                 let players = aggregatedDict.values.compactMap { Player(detailItem: $0) }
                 self.filteredPlayers = players.sorted { $0.name < $1.name }
             }
-        }
     }
     
     // 한국어 -> API-Football 영문 한글 매핑 딕셔너리 (최대 5명 반환)
