@@ -186,7 +186,7 @@ struct SearchView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.015), radius: 6, x: 0, y: 3)
     }

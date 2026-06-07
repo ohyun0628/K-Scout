@@ -12,6 +12,7 @@ struct FavoriteView: View {
     
     @State private var selectedPlayerId: Int? = nil
     @State private var showPlayerSummary = false
+    @State private var isPulsing = false
     
     var body: some View {
         ZStack {
@@ -28,13 +29,22 @@ struct FavoriteView: View {
                 if favoriteManager.favoritePlayers.isEmpty {
                     Spacer()
                     VStack(spacing: 16) {
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 64))
-                            .foregroundColor(.gray.opacity(0.3))
+                        ZStack {
+                            Circle()
+                                .fill(Color.yellow.opacity(0.1))
+                                .frame(width: 100, height: 100)
+                                .scaleEffect(isPulsing ? 1.1 : 1.0)
+                                .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isPulsing)
+                                .onAppear { isPulsing = true }
+                            
+                            Image(systemName: "star.fill")
+                                .font(.system(size: 44))
+                                .foregroundColor(Color.yellow.opacity(0.6))
+                        }
                         
                         Text("즐겨찾기한 선수가 없습니다.")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(.gray)
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.primary)
                         
                         Text("선수 검색에서 별 아이콘을 눌러\n관심 선수를 추가해보세요.")
                             .font(.system(size: 13))
@@ -130,7 +140,7 @@ struct FavoriteView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.015), radius: 6, x: 0, y: 3)
     }

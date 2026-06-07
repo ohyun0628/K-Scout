@@ -43,7 +43,7 @@ struct PlayerDetailView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.02), radius: 8, x: 0, y: 4)
                     
@@ -59,7 +59,7 @@ struct PlayerDetailView: View {
                             .padding(.vertical, 8)
                     }
                     .padding(20)
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.02), radius: 8, x: 0, y: 4)
                     
@@ -88,7 +88,7 @@ struct PlayerDetailView: View {
                             statRow(title: "수비 성공 (Defense)", value: "\(player.defense)회", color: .purple)
                         }
                     }
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.02), radius: 8, x: 0, y: 4)
                 }

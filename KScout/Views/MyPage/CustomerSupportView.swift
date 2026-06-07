@@ -97,7 +97,7 @@ struct CustomerSupportView: View {
                                     .background(Color(.systemGray6).opacity(0.4))
                                 }
                             }
-                            .background(Color.white)
+                            .background(Color(.systemBackground))
                             .cornerRadius(16)
                             .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
                             .padding(.horizontal, 16)
@@ -134,7 +134,7 @@ struct CustomerSupportView: View {
                         .padding(.horizontal)
                     }
                     .padding(.vertical, 24)
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
                     .padding(.horizontal, 16)

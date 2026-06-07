@@ -187,7 +187,7 @@ struct SignUpView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.white)
+                            .background(Color(.systemBackground))
                             .cornerRadius(12)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)

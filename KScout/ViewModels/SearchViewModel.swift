@@ -92,7 +92,11 @@ class SearchViewModel: ObservableObject {
         if MockPlayerService.shared.useMockData {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 let mockItems = MockPlayerService.shared.getMockPlayerDetail()
-                allFetchedItems.append(contentsOf: mockItems)
+                let filteredMockItems = mockItems.filter { item in
+                    let name = item.player.name.lowercased()
+                    return englishQueries.contains { name.contains($0.lowercased()) }
+                }
+                allFetchedItems.append(contentsOf: filteredMockItems)
                 self.processFetchedItems(allFetchedItems)
             }
             return

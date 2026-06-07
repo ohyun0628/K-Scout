@@ -122,7 +122,7 @@ struct PlayerSummarySheet: View {
                             fallback: AnyView(Circle().fill(Color.white)),
                             isCircle: true
                         )
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .clipShape(Circle())
                         .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: 2)
                         .offset(x: 4, y: 4)
@@ -239,7 +239,7 @@ struct PlayerSummarySheet: View {
             Spacer()
         }
         .padding(12)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
     }

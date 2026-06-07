@@ -40,7 +40,7 @@ struct PlayerStatsGridView: View {
             
             rightScrollableGrid
         }
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
         .overlay(
@@ -105,7 +105,7 @@ struct PlayerStatsGridView: View {
                 }
                 .frame(width: 165, height: 52, alignment: .leading)
                 .padding(.leading, 12)
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .contentShape(Rectangle())
                 .onTapGesture {
                     if let action = onRowTapped {

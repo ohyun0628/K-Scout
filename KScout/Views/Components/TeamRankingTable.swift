@@ -13,7 +13,7 @@ struct TeamRankingTable: View {
                 Spacer()
             }
             .frame(minHeight: 300)
-            .background(Color.white)
+            .background(Color(.systemBackground))
             .cornerRadius(16)
             .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
         } else {
@@ -87,7 +87,7 @@ struct TeamRankingTable: View {
                     }
                 }
             }
-            .background(Color.white)
+            .background(Color(.systemBackground))
             .cornerRadius(12)
             .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
         }
@@ -160,7 +160,7 @@ struct TeamRankingTable: View {
                     .frame(width: 88, alignment: .center)
             }
             .padding(.vertical, 12)
-            .background(Color.white)
+            .background(Color(.systemBackground))
         }
         .buttonStyle(PlainButtonStyle())
     }

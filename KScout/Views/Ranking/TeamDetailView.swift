@@ -92,7 +92,7 @@ struct TeamDetailView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
     }
     
@@ -148,7 +148,7 @@ struct TeamDetailView: View {
             Spacer()
         }
         .padding(16)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
         .padding(.horizontal, 16)
@@ -178,7 +178,7 @@ struct TeamDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
     }
@@ -220,7 +220,7 @@ struct TeamDetailView: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .shadow(color: Color.black.opacity(0.02), radius: 2, x: 0, y: 1)
     }
     
@@ -244,7 +244,7 @@ struct TeamDetailView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 40)
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .cornerRadius(14)
                 .padding(.horizontal, 16)
             } else {
@@ -316,7 +316,7 @@ struct TeamDetailView: View {
                         }
                         }
                         .padding(14)
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(14)
                         .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                         .padding(.horizontal, 16)
@@ -384,7 +384,7 @@ struct TeamDetailView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 40)
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .cornerRadius(14)
                 .padding(.horizontal, 16)
             } else {
@@ -429,7 +429,7 @@ struct TeamDetailView: View {
                         }
                     }
                     .padding(14)
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(14)
                     .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                     .padding(.horizontal, 16)

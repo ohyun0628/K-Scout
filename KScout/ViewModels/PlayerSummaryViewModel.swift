@@ -18,7 +18,7 @@ class PlayerSummaryViewModel: ObservableObject {
         
         if MockPlayerService.shared.useMockData {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let mockItems = MockPlayerService.shared.getMockPlayerDetail()
+                let mockItems = MockPlayerService.shared.getMockPlayerDetail().filter { $0.player.id == id }
                 allFetchedItems.append(contentsOf: mockItems)
                 self.processFetchedItems(allFetchedItems, error: finalError)
             }

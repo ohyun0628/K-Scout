@@ -43,7 +43,7 @@ struct SplashView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.white) // 필요시 다크모드 대응 배경색으로 변경 가능
+            .background(Color(.systemBackground)) // 필요시 다크모드 대응 배경색으로 변경 가능
             .onAppear {
                 // 2초(2.0) 대기 후 isActive를 true로 변경하여 화면 전환
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
