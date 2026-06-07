@@ -293,6 +293,7 @@ extension Player {
         self.name = KoreanTranslationService.translatePlayer(detailItem.player.name)
         self.photo = detailItem.player.photo
         self.teamName = KoreanTranslationService.translateTeam(stats.team.name)
+        self.leagueName = stats.league?.name
         
         self.goals = stats.goals?.total ?? 0
         self.assists = stats.goals?.assists ?? 0
