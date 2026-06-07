@@ -55,8 +55,9 @@ enum APIEndpoint {
             ]
         case .playerSearch(let query, let league, let season):
             let apiLeague = (league == 1) ? 292 : 293
+            let sanitizedQuery = query.components(separatedBy: "-").first ?? query
             return [
-                URLQueryItem(name: "search", value: query),
+                URLQueryItem(name: "search", value: sanitizedQuery),
                 URLQueryItem(name: "league", value: String(apiLeague)),
                 URLQueryItem(name: "season", value: String(season))
             ]
