@@ -65,7 +65,8 @@ struct PlayerDetailView: View {
                     
                     // 상세 스탯 정보 리스트 카드
                     VStack(spacing: 0) {
-                        Text("시즌 상세 기록")
+                        let leagueName = player.leagueName ?? "K리그"
+                        Text("\(leagueName) 통합 상세 기록")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(Color.brandNavy)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -193,7 +194,7 @@ struct PlayerDetailView: View {
 struct PlayerDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PlayerDetailView(player: Player(id: 1, name: "주민규", photo: nil, teamName: "울산 HD", goals: 14, assists: 3, shots: 48, passes: 320, defense: 12), season: 2024)
+            PlayerDetailView(player: Player(id: 1, name: "주민규", photo: nil, teamName: "울산 HD", leagueName: nil, goals: 14, assists: 3, shots: 48, passes: 320, defense: 12), season: 2024)
         }
     }
 }

@@ -14,8 +14,19 @@ struct SearchView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 0) {
-                    // 1. 공통 상단 헤더 타이틀 (시즌 선택 바인딩 연동)
-                    HeaderTitleView(title: "선수 검색", selectedSeason: $viewModel.selectedSeason)
+                    // 1. 공통 상단 헤더 타이틀 (시즌 선택 바인딩 제거 및 통산 스탯 표시)
+                    HeaderTitleView(title: "선수 검색")
+                        .overlay(
+                            Text("22~24 통합 스탯")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Color.brandNavy.opacity(0.8))
+                                .cornerRadius(12)
+                                .padding(.trailing, 20),
+                            alignment: .trailing
+                        )
                     
                     // 2. 커스텀 서치 바
                     HStack {
@@ -58,7 +69,7 @@ struct SearchView: View {
                                 .font(.system(size: 48))
                                 .foregroundColor(.gray.opacity(0.5))
                             
-                            Text("검색 결과와 일치하는 선수가 없습니다.")
+                            Text(viewModel.searchText.isEmpty ? "최근 검색 기록이 없습니다." : "검색 결과와 일치하는 선수가 없습니다.")
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(.gray)
                         }
@@ -66,14 +77,44 @@ struct SearchView: View {
                     } else {
                         ScrollView(showsIndicators: false) {
                             LazyVStack(spacing: 12) {
+                                // 최근 검색어일 경우 타이틀 표시
+                                if viewModel.searchText.isEmpty && !viewModel.filteredPlayers.isEmpty {
+                                    HStack {
+                                        Text("최근 검색 선수")
+                                            .font(.system(size: 14, weight: .bold))
+                                            .foregroundColor(.gray)
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            withAnimation {
+                                                viewModel.clearRecentSearches()
+                                            }
+                                        }) {
+                                            Text("전체 삭제")
+                                                .font(.system(size: 13))
+                                                .foregroundColor(.gray)
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.top, 4)
+                                    .padding(.bottom, 2)
+                                }
+                                
                                 ForEach(viewModel.filteredPlayers) { player in
-                                    Button(action: {
-                                        self.selectedPlayerId = player.id
-                                        self.showPlayerSummary = true
-                                    }) {
+                                    SwipeableRow(
+                                        isEnable: viewModel.searchText.isEmpty,
+                                        onDelete: {
+                                            viewModel.removeRecentSearch(player)
+                                        },
+                                        onTap: {
+                                            self.selectedPlayerId = player.id
+                                            self.showPlayerSummary = true
+                                            viewModel.addRecentSearch(player)
+                                        }
+                                    ) {
                                         playerRow(player)
                                     }
-                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                             .padding(.horizontal, 16)
@@ -84,7 +125,7 @@ struct SearchView: View {
             }
             .navigationBarHidden(true)
             .sheet(item: $selectedPlayerId) { id in
-                PlayerSummarySheet(playerId: id, season: viewModel.selectedSeason)
+                PlayerSummarySheet(playerId: id, season: 2024)
             }
         }
     }
@@ -189,6 +230,81 @@ struct SearchView: View {
             return Color(red: 0.0, green: 0.45, blue: 0.75)
         }
         return Color.brandNavy
+    }
+}
+
+struct SwipeableRow<Content: View>: View {
+    let isEnable: Bool
+    let onDelete: () -> Void
+    let onTap: () -> Void
+    let content: Content
+    
+    @State private var offset: CGFloat = 0
+    @State private var isSwiped: Bool = false
+    
+    init(isEnable: Bool, onDelete: @escaping () -> Void, onTap: @escaping () -> Void, @ViewBuilder content: () -> Content) {
+        self.isEnable = isEnable
+        self.onDelete = onDelete
+        self.onTap = onTap
+        self.content = content()
+    }
+    
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            if isEnable {
+                Button(action: {
+                    withAnimation {
+                        onDelete()
+                        offset = 0
+                        isSwiped = false
+                    }
+                }) {
+                    ZStack {
+                        Color.red
+                            .cornerRadius(16)
+                        Image(systemName: "trash.fill")
+                            .foregroundColor(.white)
+                            .font(.system(size: 20))
+                    }
+                    .frame(width: 70)
+                }
+            }
+            
+            Button(action: {
+                if isSwiped {
+                    withAnimation {
+                        offset = 0
+                        isSwiped = false
+                    }
+                } else {
+                    onTap()
+                }
+            }) {
+                content
+            }
+            .buttonStyle(PlainButtonStyle())
+            .offset(x: offset)
+            .gesture(
+                isEnable ? DragGesture()
+                    .onChanged { value in
+                        if value.translation.width < 0 && value.translation.height > -30 && value.translation.height < 30 {
+                            offset = value.translation.width
+                        }
+                    }
+                    .onEnded { value in
+                        withAnimation(.spring()) {
+                            if value.translation.width < -60 {
+                                offset = -80
+                                isSwiped = true
+                            } else {
+                                offset = 0
+                                isSwiped = false
+                            }
+                        }
+                    }
+                : nil
+            )
+        }
     }
 }
 

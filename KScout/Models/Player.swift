@@ -9,6 +9,7 @@ struct Player: Identifiable, Codable {
     let name: String
     let photo: String?
     let teamName: String
+    var leagueName: String?
     
     // 레이더 차트 비교용 데이터
     let goals: Int
@@ -37,15 +38,15 @@ struct Player: Identifiable, Codable {
     
     // Mock data for player search and favorites list
     static let mockPlayers: [Player] = [
-        Player(id: 34427, name: "주민규", photo: nil, teamName: "울산 HD", goals: 14, assists: 3, shots: 48, passes: 320, defense: 12),
-        Player(id: 34484, name: "세징야", photo: nil, teamName: "대구 FC", goals: 9, assists: 8, shots: 45, passes: 680, defense: 22),
-        Player(id: 2914, name: "이승우", photo: nil, teamName: "수원 FC", goals: 11, assists: 5, shots: 38, passes: 480, defense: 15),
-        Player(id: 2908, name: "나상호", photo: nil, teamName: "서울 FC", goals: 8, assists: 4, shots: 35, passes: 510, defense: 28),
-        Player(id: 34547, name: "강상우", photo: nil, teamName: "서울 FC", goals: 2, assists: 7, shots: 18, passes: 820, defense: 78),
-        Player(id: 34598, name: "송민규", photo: nil, teamName: "전북 현대", goals: 8, assists: 5, shots: 35, passes: 540, defense: 30),
-        Player(id: 51267, name: "제르소", photo: nil, teamName: "인천 유나이티드", goals: 7, assists: 6, shots: 28, passes: 450, defense: 25),
-        Player(id: 34822, name: "무고사", photo: nil, teamName: "인천 유나이티드", goals: 12, assists: 2, shots: 52, passes: 280, defense: 10),
-        Player(id: 25276, name: "일류첸코", photo: nil, teamName: "서울 FC", goals: 11, assists: 4, shots: 42, passes: 310, defense: 14),
-        Player(id: 34517, name: "조영욱", photo: nil, teamName: "서울 FC", goals: 6, assists: 3, shots: 24, passes: 410, defense: 35)
+        Player(id: 34427, name: "주민규", photo: nil, teamName: "울산 HD", leagueName: nil, goals: 14, assists: 3, shots: 48, passes: 320, defense: 12),
+        Player(id: 34484, name: "세징야", photo: nil, teamName: "대구 FC", leagueName: nil, goals: 9, assists: 8, shots: 45, passes: 680, defense: 22),
+        Player(id: 2914, name: "이승우", photo: nil, teamName: "수원 FC", leagueName: nil, goals: 11, assists: 5, shots: 38, passes: 480, defense: 15),
+        Player(id: 2908, name: "나상호", photo: nil, teamName: "서울 FC", leagueName: nil, goals: 8, assists: 4, shots: 35, passes: 510, defense: 28),
+        Player(id: 34547, name: "강상우", photo: nil, teamName: "서울 FC", leagueName: nil, goals: 2, assists: 7, shots: 18, passes: 820, defense: 78),
+        Player(id: 34598, name: "송민규", photo: nil, teamName: "전북 현대", leagueName: nil, goals: 8, assists: 5, shots: 35, passes: 540, defense: 30),
+        Player(id: 51267, name: "제르소", photo: nil, teamName: "인천 유나이티드", leagueName: nil, goals: 7, assists: 6, shots: 28, passes: 450, defense: 25),
+        Player(id: 34822, name: "무고사", photo: nil, teamName: "인천 유나이티드", leagueName: nil, goals: 12, assists: 2, shots: 52, passes: 280, defense: 10),
+        Player(id: 25276, name: "일류첸코", photo: nil, teamName: "서울 FC", leagueName: nil, goals: 11, assists: 4, shots: 42, passes: 310, defense: 14),
+        Player(id: 34517, name: "조영욱", photo: nil, teamName: "서울 FC", leagueName: nil, goals: 6, assists: 3, shots: 24, passes: 410, defense: 35)
     ]
 }

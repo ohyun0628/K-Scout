@@ -172,11 +172,10 @@ struct PlayerSummarySheet: View {
     
     private func seasonRecords(_ detail: PlayerDetailItem) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            let displaySeason = season
             let leagueName = detail.statistics.first?.league?.name ?? "K리그1"
             
             HStack(spacing: 6) {
-                Text("\(leagueName) \(String(displaySeason)) 시즌 기록")
+                Text("\(leagueName) 통합 기록")
                     .font(.system(size: 16, weight: .bold))
                 Image(systemName: "info.circle")
                     .font(.system(size: 13))
@@ -218,7 +217,7 @@ struct PlayerSummarySheet: View {
     
     private func convertToPlayer(_ detail: PlayerDetailItem?) -> Player {
         guard let detail = detail else {
-            return Player(id: 0, name: "-", photo: nil, teamName: "-", goals: 0, assists: 0, shots: 0, passes: 0, defense: 0)
+            return Player(id: 0, name: "-", photo: nil, teamName: "-", leagueName: nil, goals: 0, assists: 0, shots: 0, passes: 0, defense: 0)
         }
         let stats = detail.statistics.first
         return Player(
@@ -226,6 +225,7 @@ struct PlayerSummarySheet: View {
             name: detail.player.name,
             photo: detail.player.photo,
             teamName: KoreanTranslationService.translateTeam(stats?.team.name ?? "-"),
+            leagueName: stats?.league?.name,
             goals: stats?.goals?.total ?? 0,
             assists: stats?.goals?.assists ?? 0,
             shots: stats?.shots?.total ?? 0,

@@ -680,6 +680,8 @@ struct KoreanTranslationService {
         "jae-hee jeong": "정재희",
         "lee chung-yong": "이청용",
         "chung-yong lee": "이청용",
+        "ki sung-yueng": "기성용",
+        "sung-yueng ki": "기성용",
         "bruno mota": "브루노",
         "bruno lamas": "라마스",
         "yun ju-tae": "윤주태",
