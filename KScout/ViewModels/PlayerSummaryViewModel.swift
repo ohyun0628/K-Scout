@@ -76,7 +76,7 @@ class PlayerSummaryViewModel: ObservableObject {
                     }
                     
                     // 리그 이름을 통합 레이블에서 처리하기 좋게 K리그로 덮어씌움
-                    if baseStat.league?.name?.contains("Cup") == true {
+                    if baseStat.league?.name.contains("Cup") == true {
                         baseStat.league = LeagueInfo(id: 292, name: "K League 1", season: 2024)
                     }
                     

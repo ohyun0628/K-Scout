@@ -172,7 +172,6 @@ struct PlayerSummarySheet: View {
     
     private func seasonRecords(_ detail: PlayerDetailItem) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            let displaySeason = season
             let leagueName = detail.statistics.first?.league?.name ?? "K리그1"
             
             HStack(spacing: 6) {

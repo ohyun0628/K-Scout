@@ -146,7 +146,7 @@ class SearchViewModel: ObservableObject {
                             existingStat.passes = PassDetailedStats(total: totalPasses)
                             existingStat.tackles = TackleDetailedStats(total: totalTackles)
                             
-                            if existingStat.league?.name?.contains("Cup") == true, let validStat = kLeagueStats.last {
+                            if existingStat.league?.name.contains("Cup") == true, let validStat = kLeagueStats.last {
                                 existingStat.team = validStat.team
                                 existingStat.league = validStat.league
                             }
