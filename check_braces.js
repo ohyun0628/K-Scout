@@ -1,22 +1,21 @@
 const fs = require('fs');
 
-const content = fs.readFileSync('KScout/Views/Schedule/MatchDetailView.swift', 'utf8');
-const lines = content.split('\n');
-
-let level = 0;
-for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].split('//')[0];
-    let inString = false;
-    for (let j = 0; j < line.length; j++) {
-        if (line[j] === '"') inString = !inString;
-        if (!inString) {
-            if (line[j] === '{') level++;
-            else if (line[j] === '}') level--;
+function checkFile(filepath) {
+    const content = fs.readFileSync(filepath, 'utf8');
+    let depth = 0;
+    const lines = content.split('\n');
+    let output = '';
+    for (let i = 0; i < lines.length; i++) {
+        for (let j = 0; j < lines[i].length; j++) {
+            if (lines[i][j] === '{') depth++;
+            else if (lines[i][j] === '}') {
+                depth--;
+            }
         }
+        output += `${i+1}: D${depth} ${lines[i]}\n`;
     }
-    if (level < 0) {
-        console.log(`Unmatched } at line ${i + 1}`);
-        process.exit(1);
-    }
+    fs.writeFileSync(filepath + '.depth.txt', output);
 }
-console.log(`Final level: ${level}`);
+
+checkFile('KScout/ViewModels/SearchViewModel.swift');
+checkFile('KScout/ViewModels/PlayerSummaryViewModel.swift');

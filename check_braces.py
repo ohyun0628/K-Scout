@@ -1,33 +1,20 @@
 import sys
 
-def check_braces(filepath):
+def check_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-    
-    level = 0
+        
+    depth = 0
     for i, line in enumerate(lines):
-        clean = line.split('//')[0]
-        # Ignore strings
-        in_string = False
-        clean_no_str = ""
-        for char in clean:
-            if char == '"':
-                in_string = not in_string
-            if not in_string:
-                clean_no_str += char
-        
-        for char in clean_no_str:
+        for char in line:
             if char == '{':
-                level += 1
+                depth += 1
             elif char == '}':
-                level -= 1
-        
-        if level < 0:
-            print(f'Error: Too many closing braces at line {i+1}: {line.strip()}')
-            return
-            
-    print(f'Final brace level: {level}')
-    if level > 0:
-        print("Missing closing braces!")
+                depth -= 1
+                if depth < 0:
+                    print(f"Negative depth at line {i+1} in {filepath}")
+    
+    print(f"Final depth for {filepath}: {depth}")
 
-check_braces('KScout/Views/Schedule/MatchDetailView.swift')
+check_file('KScout/ViewModels/SearchViewModel.swift')
+check_file('KScout/ViewModels/PlayerSummaryViewModel.swift')
