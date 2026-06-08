@@ -574,9 +574,14 @@ class ScheduleViewModel: ObservableObject {
     }
     
     private func loadMockData(season: Int) {
+        if season == 2026 {
+            self.matches = DummyData2026.matches
+            return
+        }
+        
         var baseMatches: [MockMatch] = []
         
-        if season >= 2025 {
+        if season == 2025 {
             baseMatches = DummyData2025.matches
         } else {
             let l1 = [
