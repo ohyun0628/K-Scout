@@ -171,9 +171,13 @@ struct SignUpView: View {
                     // 7. 소셜 로그인 버튼들
                     VStack(spacing: 12) {
                         Button(action: {
-                            self.errorMessage = "구글 소셜 로그인은 다음 단계에서 연동될 예정입니다."
-                            self.isErrorText = false
-                            self.showError = true
+                            if MockPlayerService.shared.useMockData {
+                                authManager.isLoggedIn = true
+                            } else {
+                                self.errorMessage = "구글 소셜 로그인은 다음 단계에서 연동될 예정입니다."
+                                self.isErrorText = false
+                                self.showError = true
+                            }
                         }) {
                             HStack(spacing: 10) {
                                 Text("G")
@@ -196,9 +200,13 @@ struct SignUpView: View {
                         }
                         
                         Button(action: {
-                            self.errorMessage = "애플 소셜 로그인은 다음 단계에서 연동될 예정입니다."
-                            self.isErrorText = false
-                            self.showError = true
+                            if MockPlayerService.shared.useMockData {
+                                authManager.isLoggedIn = true
+                            } else {
+                                self.errorMessage = "애플 소셜 로그인은 다음 단계에서 연동될 예정입니다."
+                                self.isErrorText = false
+                                self.showError = true
+                            }
                         }) {
                             HStack(spacing: 10) {
                                 Image(systemName: "applelogo")
