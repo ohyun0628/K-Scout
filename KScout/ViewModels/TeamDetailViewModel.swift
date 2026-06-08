@@ -19,7 +19,7 @@ class TeamDetailViewModel: ObservableObject {
         self.errorMessage = nil
         
         // 2025시즌 더미 및 오프라인/API 키 미설정 모드인 경우 모의 데이터 로드
-        if season == 2025 || NetworkManager.shared.apiKey == "YOUR_API_KEY_HERE" || NetworkManager.shared.apiKey.isEmpty || MockPlayerService.shared.useMockData {
+        if season >= 2025 || NetworkManager.shared.apiKey == "YOUR_API_KEY_HERE" || NetworkManager.shared.apiKey.isEmpty || MockPlayerService.shared.useMockData {
             loadMockData()
             return
         }
