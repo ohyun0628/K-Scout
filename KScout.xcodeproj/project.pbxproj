@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-				FF0011223344556677889901 /* ClubInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889901 /* ClubInfo.swift */; };
+		FF0011223344556677889901 /* ClubInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889901 /* ClubInfo.swift */; };
 		FF0011223344556677889902 /* MockPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889902 /* MockPlayerService.swift */; };
 		FF0011223344556677889903 /* MatchDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889903 /* MatchDetailViewModel.swift */; };
 		FF0011223344556677889904 /* PlayerSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889904 /* PlayerSummaryViewModel.swift */; };
@@ -17,7 +17,7 @@
 		FF0011223344556677889908 /* PlayerSummarySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889908 /* PlayerSummarySheet.swift */; };
 		FF0011223344556677889909 /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889909 /* MatchDetailView.swift */; };
 		FF0011223344556677889910 /* RanderChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889910 /* RanderChartView.swift */; };
-CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */; };
+		CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */; };
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
 		CE7055422FBC2EDB00147E7F /* FavoriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */; };
 		CE7055002FBC2ECF00147E7E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */; };
@@ -65,7 +65,7 @@ CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFil
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-				EE0011223344556677889901 /* ClubInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models/ClubInfo.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889901 /* ClubInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models/ClubInfo.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889902 /* MockPlayerService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Services/MockPlayerService.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889903 /* MatchDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewModels/MatchDetailViewModel.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889904 /* PlayerSummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewModels/PlayerSummaryViewModel.swift"; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@ CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFil
 		EE0011223344556677889908 /* PlayerSummarySheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Player/PlayerSummarySheet.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889909 /* MatchDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Schedule/MatchDetailView.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889910 /* RanderChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Search/RanderChartView.swift"; sourceTree = "<group>"; };
-CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
+		CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteManager.swift; sourceTree = "<group>"; };
 		CE7054FF2FBC2ECF00147E7E /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -215,17 +215,17 @@ CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; file
 			children = (
 				CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */,
 				CEA59C552FBB26730028046D /* KScoutApp.swift */,
-																																											EE0011223344556677889910 /* RanderChartView.swift */,
-EE0011223344556677889909 /* MatchDetailView.swift */,
-EE0011223344556677889908 /* PlayerSummarySheet.swift */,
-EE0011223344556677889907 /* SharedComponents.swift */,
-EE0011223344556677889906 /* PlayerStatsGridView.swift */,
-EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */,
-EE0011223344556677889904 /* PlayerSummaryViewModel.swift */,
-EE0011223344556677889903 /* MatchDetailViewModel.swift */,
-EE0011223344556677889902 /* MockPlayerService.swift */,
-EE0011223344556677889901 /* ClubInfo.swift */,
-);
+				EE0011223344556677889910 /* RanderChartView.swift */,
+				EE0011223344556677889909 /* MatchDetailView.swift */,
+				EE0011223344556677889908 /* PlayerSummarySheet.swift */,
+				EE0011223344556677889907 /* SharedComponents.swift */,
+				EE0011223344556677889906 /* PlayerStatsGridView.swift */,
+				EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */,
+				EE0011223344556677889904 /* PlayerSummaryViewModel.swift */,
+				EE0011223344556677889903 /* MatchDetailViewModel.swift */,
+				EE0011223344556677889902 /* MockPlayerService.swift */,
+				EE0011223344556677889901 /* ClubInfo.swift */,
+			);
 			name = App;
 			path = "../../K-Scout/KScout/App";
 			sourceTree = "<group>";
@@ -398,7 +398,7 @@ EE0011223344556677889901 /* ClubInfo.swift */,
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-								FF0011223344556677889901 /* ClubInfo.swift in Sources */,
+				FF0011223344556677889901 /* ClubInfo.swift in Sources */,
 				FF0011223344556677889902 /* MockPlayerService.swift in Sources */,
 				FF0011223344556677889903 /* MatchDetailViewModel.swift in Sources */,
 				FF0011223344556677889904 /* PlayerSummaryViewModel.swift in Sources */,
@@ -408,7 +408,7 @@ EE0011223344556677889901 /* ClubInfo.swift */,
 				FF0011223344556677889908 /* PlayerSummarySheet.swift in Sources */,
 				FF0011223344556677889909 /* MatchDetailView.swift in Sources */,
 				FF0011223344556677889910 /* RanderChartView.swift in Sources */,
-CEA59C6F2FBB26730028046D /* APIEndpoint.swift in Sources */,
+				CEA59C6F2FBB26730028046D /* APIEndpoint.swift in Sources */,
 				CEA59C712FBB26730028046D /* RankingView.swift in Sources */,
 				CEA59C752FBB26730028046D /* RadarChartView.swift in Sources */,
 				CEA59C792FBB49350028046D /* LoginView.swift in Sources */,
