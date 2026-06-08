@@ -16,7 +16,6 @@
 		FF0011223344556677889907 /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889907 /* SharedComponents.swift */; };
 		FF0011223344556677889908 /* PlayerSummarySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889908 /* PlayerSummarySheet.swift */; };
 		FF0011223344556677889909 /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889909 /* MatchDetailView.swift */; };
-		FF0011223344556677889910 /* RanderChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889910 /* RanderChartView.swift */; };
 		CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */; };
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
 		CE7055422FBC2EDB00147E7F /* FavoriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */; };
@@ -74,7 +73,6 @@
 		EE0011223344556677889907 /* SharedComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Components/SharedComponents.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889908 /* PlayerSummarySheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Player/PlayerSummarySheet.swift"; sourceTree = "<group>"; };
 		EE0011223344556677889909 /* MatchDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Schedule/MatchDetailView.swift"; sourceTree = "<group>"; };
-		EE0011223344556677889910 /* RanderChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Search/RanderChartView.swift"; sourceTree = "<group>"; };
 		CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteManager.swift; sourceTree = "<group>"; };
@@ -195,8 +193,6 @@
 				EE0011223344556677889907 /* SharedComponents.swift */,
 				EE0011223344556677889908 /* PlayerSummarySheet.swift */,
 				EE0011223344556677889909 /* MatchDetailView.swift */,
-				EE0011223344556677889910 /* RanderChartView.swift */,
-
 				CEA59B9F2FBB1F0F0028046D /* Preview Content */,
 			);
 			path = KScout;
@@ -408,7 +404,6 @@
 				FF0011223344556677889907 /* SharedComponents.swift in Sources */,
 				FF0011223344556677889908 /* PlayerSummarySheet.swift in Sources */,
 				FF0011223344556677889909 /* MatchDetailView.swift in Sources */,
-				FF0011223344556677889910 /* RanderChartView.swift in Sources */,
 				CEA59C6F2FBB26730028046D /* APIEndpoint.swift in Sources */,
 				CEA59C712FBB26730028046D /* RankingView.swift in Sources */,
 				CEA59C752FBB26730028046D /* RadarChartView.swift in Sources */,
