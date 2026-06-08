@@ -186,6 +186,17 @@
 				CEA59C5D2FBB26730028046D /* Views */,
 				CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */,
 				CEA59BA22FBB1F0F0028046D /* Info.plist */,
+				EE0011223344556677889901 /* ClubInfo.swift */,
+				EE0011223344556677889902 /* MockPlayerService.swift */,
+				EE0011223344556677889903 /* MatchDetailViewModel.swift */,
+				EE0011223344556677889904 /* PlayerSummaryViewModel.swift */,
+				EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */,
+				EE0011223344556677889906 /* PlayerStatsGridView.swift */,
+				EE0011223344556677889907 /* SharedComponents.swift */,
+				EE0011223344556677889908 /* PlayerSummarySheet.swift */,
+				EE0011223344556677889909 /* MatchDetailView.swift */,
+				EE0011223344556677889910 /* RanderChartView.swift */,
+
 				CEA59B9F2FBB1F0F0028046D /* Preview Content */,
 			);
 			path = KScout;
@@ -215,16 +226,6 @@
 			children = (
 				CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */,
 				CEA59C552FBB26730028046D /* KScoutApp.swift */,
-				EE0011223344556677889910 /* RanderChartView.swift */,
-				EE0011223344556677889909 /* MatchDetailView.swift */,
-				EE0011223344556677889908 /* PlayerSummarySheet.swift */,
-				EE0011223344556677889907 /* SharedComponents.swift */,
-				EE0011223344556677889906 /* PlayerStatsGridView.swift */,
-				EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */,
-				EE0011223344556677889904 /* PlayerSummaryViewModel.swift */,
-				EE0011223344556677889903 /* MatchDetailViewModel.swift */,
-				EE0011223344556677889902 /* MockPlayerService.swift */,
-				EE0011223344556677889901 /* ClubInfo.swift */,
 			);
 			name = App;
 			path = "../../K-Scout/KScout/App";
