@@ -6,6 +6,7 @@ struct SearchView: View {
     @State private var selectedPlayerId: Int? = nil
     @State private var showPlayerSummary = false
     @State private var isPulsing = false
+    @State private var selectedSeason: Int = 2026
     
     var body: some View {
         NavigationView {
@@ -15,17 +16,31 @@ struct SearchView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 0) {
-                    // 1. 공통 상단 헤더 타이틀 (시즌 선택 바인딩 제거 및 통산 스탯 표시)
+                    // 1. 공통 상단 헤더 타이틀
                     HeaderTitleView(title: "선수 검색")
                         .overlay(
-                            Text("22~24 통합 스탯")
-                                .font(.system(size: 13, weight: .semibold))
+                            Menu {
+                                ForEach((2022...2026).reversed(), id: \.self) { year in
+                                    Button(action: {
+                                        selectedSeason = year
+                                    }) {
+                                        Text("\(String(year))년")
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text("\(String(selectedSeason))년")
+                                        .font(.system(size: 13, weight: .semibold))
+                                    Image(systemName: "chevron.down")
+                                        .font(.system(size: 10, weight: .bold))
+                                }
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
                                 .background(Color.brandNavy.opacity(0.8))
                                 .cornerRadius(12)
-                                .padding(.trailing, 20),
+                                .padding(.trailing, 20)
+                            },
                             alignment: .trailing
                         )
                     

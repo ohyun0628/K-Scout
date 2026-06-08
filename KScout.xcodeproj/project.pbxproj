@@ -46,6 +46,9 @@
 		CEA59C7E2FBB56400028046D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CEA59C7D2FBB56400028046D /* FirebaseAuth */; };
 		CE7055912FBC2EDC00147E7E /* KoreanTranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */; };
 		CE7055932FBC2EDC00147E7E /* DummyData2025.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055922FBC2EDC00147E7E /* DummyData2025.swift */; };
+		DE20242024202420242024202420242024 /* DummyData2024.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF20242024202420242024202420242024 /* DummyData2024.swift */; };
+		DE20232023202320232023202320232023 /* DummyData2023.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF20232023202320232023202320232023 /* DummyData2023.swift */; };
+		DE20222022202220222022202220222022 /* DummyData2022.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF20222022202220222022202220222022 /* DummyData2022.swift */; };
 		DE1111111111111111111111 /* DummyData2026.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2222222222222222222222 /* DummyData2026.swift */; };
 		CE7055952FBC2EDC00147E7E /* TeamDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */; };
 		CE7055972FBC2EDC00147E7E /* TeamDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */; };
@@ -92,6 +95,9 @@
 		CEA59C7A2FBB50380028046D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KoreanTranslationService.swift; sourceTree = "<group>"; };
 		CE7055922FBC2EDC00147E7E /* DummyData2025.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2025.swift; sourceTree = "<group>"; };
+		DF20242024202420242024202420242024 /* DummyData2024.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2024.swift; sourceTree = "<group>"; };
+		DF20232023202320232023202320232023 /* DummyData2023.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2023.swift; sourceTree = "<group>"; };
+		DF20222022202220222022202220222022 /* DummyData2022.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2022.swift; sourceTree = "<group>"; };
 		DE2222222222222222222222 /* DummyData2026.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2026.swift; sourceTree = "<group>"; };
 		CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamDetailViewModel.swift; sourceTree = "<group>"; };
 		CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamDetailView.swift; sourceTree = "<group>"; };
@@ -216,6 +222,9 @@
 				CEA59C5C2FBB26730028046D /* APIEndpoint.swift */,
 				CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */,
 				CE7055922FBC2EDC00147E7E /* DummyData2025.swift */,
+				DF20242024202420242024202420242024 /* DummyData2024.swift */,
+				DF20232023202320232023202320232023 /* DummyData2023.swift */,
+				DF20222022202220222022202220222022 /* DummyData2022.swift */,
 				DE2222222222222222222222 /* DummyData2026.swift */,
 			);
 			name = Services;
@@ -394,6 +403,9 @@
 				CE7055202FBC2EDB00147E7E /* PlayerDetailView.swift in Sources */,
 				CE7055912FBC2EDC00147E7E /* KoreanTranslationService.swift in Sources */,
 				CE7055932FBC2EDC00147E7E /* DummyData2025.swift in Sources */,
+				DE20242024202420242024202420242024 /* DummyData2024.swift in Sources */,
+				DE20232023202320232023202320232023 /* DummyData2023.swift in Sources */,
+				DE20222022202220222022202220222022 /* DummyData2022.swift in Sources */,
 				DE1111111111111111111111 /* DummyData2026.swift in Sources */,
 				CE7055952FBC2EDC00147E7E /* TeamDetailViewModel.swift in Sources */,
 				CE7055972FBC2EDC00147E7E /* TeamDetailView.swift in Sources */,

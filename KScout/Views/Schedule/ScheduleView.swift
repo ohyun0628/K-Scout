@@ -580,6 +580,15 @@ class ScheduleViewModel: ObservableObject {
         } else if season == 2025 {
             self.matches = DummyData2025.matches
             return
+        } else if season == 2024 {
+            self.matches = DummyData2024.matches
+            return
+        } else if season == 2023 {
+            self.matches = DummyData2023.matches
+            return
+        } else if season == 2022 {
+            self.matches = DummyData2022.matches
+            return
         }
         
         var baseMatches: [MockMatch] = []
