@@ -577,13 +577,12 @@ class ScheduleViewModel: ObservableObject {
         if season == 2026 {
             self.matches = DummyData2026.matches
             return
+        } else if season == 2025 {
+            self.matches = DummyData2025.matches
+            return
         }
         
         var baseMatches: [MockMatch] = []
-        
-        if season == 2025 {
-            baseMatches = DummyData2025.matches
-        } else {
             let l1 = [
                 MockMatch(homeTeam: "전북 현대 모터스", awayTeam: "울산 HD FC", homeScore: 2, awayScore: 1, status: "FT", time: "종료", stadium: "전주월드컵경기장", league: 1, dayOffset: 0),
                 MockMatch(homeTeam: "FC 서울", awayTeam: "포항 스틸러스", homeScore: 1, awayScore: 0, status: "FT", time: "종료", stadium: "서울월드컵경기장", league: 1, dayOffset: 0),
@@ -600,8 +599,7 @@ class ScheduleViewModel: ObservableObject {
                 MockMatch(homeTeam: "천안 시티 FC", awayTeam: "화성 FC", homeScore: 0, awayScore: 0, status: "FT", time: "종료", stadium: "천안종합운동장", league: 2, dayOffset: 1),
                 MockMatch(homeTeam: "경남 FC", awayTeam: "안산 그리너스", homeScore: 2, awayScore: 2, status: "FT", time: "종료", stadium: "창원축구센터", league: 2, dayOffset: -1)
             ]
-            baseMatches = l1 + l2
-        }
+        baseMatches = l1 + l2
         
         let calendar = Calendar.current
         var dateComponents = DateComponents()
