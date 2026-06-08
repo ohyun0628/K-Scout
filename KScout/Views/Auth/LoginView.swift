@@ -218,6 +218,11 @@ struct LoginView: View {
             return
         }
         
+        if MockPlayerService.shared.useMockData {
+            authManager.isLoggedIn = true
+            return
+        }
+        
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = error.localizedDescription
