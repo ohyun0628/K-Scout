@@ -484,7 +484,7 @@ class ScheduleViewModel: ObservableObject {
             return
         }
         
-        if season == 2025 {
+        if season == 2025 || MockPlayerService.shared.useMockData {
             self.loadMockData(season: season)
             self.isLoading = false
             return
