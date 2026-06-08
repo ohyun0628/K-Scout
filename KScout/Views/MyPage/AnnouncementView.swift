@@ -143,7 +143,7 @@ struct AnnouncementView: View {
                                     .background(Color(.systemGray6).opacity(0.4))
                                 }
                             }
-                            .background(Color.white)
+                            .background(Color(.systemBackground))
                             .cornerRadius(16)
                             .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
                             .padding(.horizontal, 16)

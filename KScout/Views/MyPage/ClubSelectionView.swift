@@ -38,7 +38,7 @@ struct ClubSelectionView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .cornerRadius(12)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
@@ -88,7 +88,7 @@ struct ClubSelectionView: View {
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
-                                .background(Color.white)
+                                .background(Color(.systemBackground))
                                 .cornerRadius(16)
                                 .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                             }

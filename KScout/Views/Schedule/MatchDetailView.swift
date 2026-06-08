@@ -80,7 +80,7 @@ struct MatchDetailView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
     }
     
@@ -153,7 +153,7 @@ struct MatchDetailView: View {
             tabButton(title: "라인업", index: 1)
             tabButton(title: "기록", index: 2)
         }
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.02), radius: 2, x: 0, y: 1)
         .padding(.horizontal, 16)
@@ -435,7 +435,7 @@ struct MatchDetailView: View {
         } // End VStack
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.02), radius: 4, x: 0, y: 2)
     }
@@ -534,7 +534,7 @@ struct MatchDetailView: View {
                             }
                         }
                         .padding(12)
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(10)
                         .shadow(color: Color.black.opacity(0.02), radius: 2, x: 0, y: 1)
                         
@@ -676,7 +676,7 @@ struct MatchDetailView: View {
                 .font(.system(size: 11, weight: .bold))
                 .foregroundColor(color)
                 .frame(width: 22, height: 22)
-                .background(Color.white)
+                .background(Color(.systemBackground))
                 .overlay(RoundedRectangle(cornerRadius: 3).stroke(color.opacity(0.5), lineWidth: 1))
         }
     }

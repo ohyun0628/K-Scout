@@ -42,7 +42,7 @@ struct AnnouncementWriteView: View {
                             .padding()
                             .toggleStyle(SwitchToggleStyle(tint: .red))
                         }
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(16)
                         .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                         .padding(.horizontal, 16)
@@ -62,7 +62,7 @@ struct AnnouncementWriteView: View {
                             Divider()
                         }
                         .padding()
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(16)
                         .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                         .padding(.horizontal, 16)
@@ -87,7 +87,7 @@ struct AnnouncementWriteView: View {
                                 .padding(.top, 4)
                         }
                         .padding()
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(16)
                         .shadow(color: Color.black.opacity(0.02), radius: 6, x: 0, y: 3)
                         .padding(.horizontal, 16)

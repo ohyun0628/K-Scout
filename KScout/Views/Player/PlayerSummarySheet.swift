@@ -96,28 +96,41 @@ struct PlayerSummarySheet: View {
     }
     
     private func profileHeader(_ detail: PlayerDetailItem) -> some View {
-        VStack(spacing: 12) {
-            ZStack(alignment: .bottomTrailing) {
-                RemoteImageView(
-                    urlString: detail.player.photo ?? "",
-                    size: 90,
-                    fallback: AnyView(Circle().fill(Color.gray.opacity(0.1)).overlay(Image(systemName: "person.fill").font(.system(size: 40)).foregroundColor(.gray.opacity(0.5)))),
-                    isCircle: true
-                )
-                
-                if let teamLogo = detail.statistics.first?.team.logo {
+        let translatedTeamName = KoreanTranslationService.translateTeam(detail.statistics.first?.team.name ?? "")
+        let teamColor = logoColor(for: translatedTeamName)
+        
+        return VStack(spacing: 0) {
+            ZStack(alignment: .bottom) {
+                // Background Gradient
+                LinearGradient(gradient: Gradient(colors: [teamColor.opacity(0.5), teamColor.opacity(0.1), .white]), startPoint: .top, endPoint: .bottom)
+                    .frame(height: 100)
+                    .cornerRadius(16)
+                    
+                ZStack(alignment: .bottomTrailing) {
                     RemoteImageView(
-                        urlString: teamLogo,
-                        size: 28,
-                        fallback: AnyView(Circle().fill(Color.white)),
+                        urlString: detail.player.photo ?? "",
+                        size: 90,
+                        fallback: AnyView(Circle().fill(Color.gray.opacity(0.1)).overlay(Image(systemName: "person.fill").font(.system(size: 40)).foregroundColor(.gray.opacity(0.5)))),
                         isCircle: true
                     )
-                    .background(Color.white)
-                    .clipShape(Circle())
-                    .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-                    .offset(x: 4, y: 4)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
+                    
+                    if let teamLogo = detail.statistics.first?.team.logo {
+                        RemoteImageView(
+                            urlString: teamLogo,
+                            size: 28,
+                            fallback: AnyView(Circle().fill(Color.white)),
+                            isCircle: true
+                        )
+                        .background(Color(.systemBackground))
+                        .clipShape(Circle())
+                        .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: 2)
+                        .offset(x: 4, y: 4)
+                    }
                 }
+                .offset(y: 30) // Shift avatar down slightly over the edge
             }
+            .padding(.bottom, 40) // Make space for the shifted avatar
             
             Text(KoreanTranslationService.translatePlayer(detail.player.name))
                 .font(.system(size: 22, weight: .bold))
@@ -182,8 +195,6 @@ struct PlayerSummarySheet: View {
                     .foregroundColor(.gray)
             }
             
-            Divider()
-            
             let stats = detail.statistics.first
             let apps = stats?.games?.appearences ?? 0
             let goals = stats?.goals?.total ?? 0
@@ -192,27 +203,45 @@ struct PlayerSummarySheet: View {
             let passes = stats?.passes?.total ?? 0
             let tackles = stats?.tackles?.total ?? 0
             
-            VStack(spacing: 16) {
-                recordRow(title: "경기", value: "\(apps)")
-                recordRow(title: "득점", value: "\(goals)")
-                recordRow(title: "도움", value: "\(assists)")
-                recordRow(title: "슈팅", value: "\(shots)")
-                recordRow(title: "패스", value: "\(passes)")
-                recordRow(title: "태클", value: "\(tackles)")
+            let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+            
+            LazyVGrid(columns: columns, spacing: 12) {
+                statCard(icon: "figure.run", title: "경기", value: "\(apps)")
+                statCard(icon: "soccerball", title: "득점", value: "\(goals)")
+                statCard(icon: "shoe.2", title: "도움", value: "\(assists)")
+                statCard(icon: "flame.fill", title: "슈팅", value: "\(shots)")
+                statCard(icon: "arrow.left.and.right", title: "패스", value: "\(passes)")
+                statCard(icon: "shield.fill", title: "태클", value: "\(tackles)")
             }
             .padding(.top, 4)
         }
     }
     
-    private func recordRow(title: String, value: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 15))
-                .foregroundColor(.gray)
+    private func statCard(icon: String, title: String, value: String) -> some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(Color.brandNavy.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundColor(Color.brandNavy)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.gray)
+                Text(value)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.primary)
+            }
             Spacer()
-            Text(value)
-                .font(.system(size: 15, weight: .medium))
         }
+        .padding(12)
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
     }
     
     private func convertToPlayer(_ detail: PlayerDetailItem?) -> Player {
@@ -232,5 +261,38 @@ struct PlayerSummarySheet: View {
             passes: stats?.passes?.total ?? 0,
             defense: stats?.tackles?.total ?? 0
         )
+    }
+    
+    // K리그 실전 매칭을 위한 팀별 브랜드 컬러 매핑 함수
+    private func logoColor(for teamName: String) -> Color {
+        if teamName.contains("울산") {
+            return Color(red: 0.0, green: 0.2, blue: 0.6)
+        } else if teamName.contains("전북") {
+            return Color(red: 0.1, green: 0.6, blue: 0.1)
+        } else if teamName.contains("포항") {
+            return Color(red: 0.1, green: 0.1, blue: 0.1)
+        } else if teamName.contains("수원 FC") {
+            return Color(red: 0.05, green: 0.15, blue: 0.35)
+        } else if teamName.contains("수원 삼성") {
+            return Color(red: 0.0, green: 0.3, blue: 0.8)
+        } else if teamName.contains("서울") {
+            return Color(red: 0.8, green: 0.1, blue: 0.1)
+        } else if teamName.contains("광주") {
+            return Color(red: 0.9, green: 0.8, blue: 0.2)
+        } else if teamName.contains("인천") {
+            return Color(red: 0.1, green: 0.2, blue: 0.8)
+        } else if teamName.contains("제주") {
+            return Color(red: 0.9, green: 0.4, blue: 0.1)
+        } else if teamName.contains("대전") {
+            return Color(red: 0.4, green: 0.1, blue: 0.2)
+        } else if teamName.contains("대구") {
+            return Color(red: 0.4, green: 0.7, blue: 0.9)
+        } else if teamName.contains("강원") {
+            return Color(red: 0.9, green: 0.5, blue: 0.1)
+        } else if teamName.contains("김천") {
+            return Color(red: 0.8, green: 0.1, blue: 0.2)
+        } else {
+            return Color.brandNavy
+        }
     }
 }

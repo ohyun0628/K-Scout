@@ -257,7 +257,7 @@ struct ScheduleHeaderView: View {
         .padding(.horizontal, 20)
         .padding(.top, 20)
         .padding(.bottom, 12)
-        .background(Color.white)
+        .background(Color(.systemBackground))
     }
 }
 

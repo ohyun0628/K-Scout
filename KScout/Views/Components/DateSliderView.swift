@@ -71,7 +71,7 @@ struct DateSliderView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 10)
             }
-            .background(Color.white)
+            .background(Color(.systemBackground))
             .overlay(
                 Divider()
                     .background(Color.gray.opacity(0.2))

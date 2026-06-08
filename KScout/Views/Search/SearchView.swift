@@ -5,6 +5,7 @@ struct SearchView: View {
     
     @State private var selectedPlayerId: Int? = nil
     @State private var showPlayerSummary = false
+    @State private var isPulsing = false
     
     var body: some View {
         NavigationView {
@@ -64,14 +65,29 @@ struct SearchView: View {
                         Spacer()
                     } else if viewModel.filteredPlayers.isEmpty {
                         Spacer()
-                        VStack(spacing: 12) {
-                            Image(systemName: "person.fill.questionmark")
-                                .font(.system(size: 48))
-                                .foregroundColor(.gray.opacity(0.5))
+                        VStack(spacing: 20) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.brandNavy.opacity(0.05))
+                                    .frame(width: 120, height: 120)
+                                    .scaleEffect(isPulsing ? 1.1 : 0.95)
+                                    .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: isPulsing)
+                                    .onAppear { isPulsing = true }
+                                
+                                Image(systemName: viewModel.searchText.isEmpty ? "magnifyingglass" : "person.fill.questionmark")
+                                    .font(.system(size: 44))
+                                    .foregroundColor(Color.brandNavy.opacity(0.6))
+                            }
                             
-                            Text(viewModel.searchText.isEmpty ? "최근 검색 기록이 없습니다." : "검색 결과와 일치하는 선수가 없습니다.")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundColor(.gray)
+                            VStack(spacing: 8) {
+                                Text(viewModel.searchText.isEmpty ? "검색해 볼 선수를 찾아보세요" : "일치하는 선수가 없습니다")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundColor(.primary)
+                                
+                                Text(viewModel.searchText.isEmpty ? "이청용, 주민규 등을 검색해보세요." : "이름의 철자가 정확한지 확인해보세요.")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
+                            }
                         }
                         Spacer()
                     } else {
@@ -146,15 +162,13 @@ struct SearchView: View {
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.primary)
                 
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(logoColor(for: player.teamName))
-                        .frame(width: 8, height: 8)
-                    
-                    Text(player.teamName)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.gray)
-                }
+                Text(player.teamName)
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(logoColor(for: player.teamName))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(logoColor(for: player.teamName).opacity(0.12))
+                    .cornerRadius(6)
             }
             
             Spacer()
@@ -172,7 +186,7 @@ struct SearchView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.015), radius: 6, x: 0, y: 3)
     }
