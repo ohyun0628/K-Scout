@@ -43,7 +43,7 @@ struct AnnouncementView: View {
             return true
         }
         // 2. 실제 운영 환경에서는 로그인된 유저의 이메일이 관리자 계정인지 확인
-        if let email = FirebaseAuth.Auth.auth().currentUser?.email, email == "admin@kscout.com" {
+        if let email = FirebaseAuth.Auth.auth().currentUser?.email, email == "test@abc.com" {
             return true
         }
         return false
