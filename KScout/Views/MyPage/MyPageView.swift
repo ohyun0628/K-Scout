@@ -90,19 +90,23 @@ struct MyPageView: View {
                             .padding(.horizontal)
                         
                         HStack(spacing: 16) {
-                            Button("취소") {
+                            Button(action: {
                                 withAnimation { showNicknameAlert = false }
+                            }) {
+                                Text("취소")
+                                    .foregroundColor(.gray)
+                                    .frame(maxWidth: .infinity)
                             }
-                            .foregroundColor(.gray)
-                            .frame(maxWidth: .infinity)
                             
-                            Button("변경") {
+                            Button(action: {
                                 withAnimation { showNicknameAlert = false }
                                 changeNickname()
+                            }) {
+                                Text("변경")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.brandNavy)
+                                    .frame(maxWidth: .infinity)
                             }
-                            .fontWeight(.bold)
-                            .foregroundColor(.brandNavy)
-                            .frame(maxWidth: .infinity)
                         }
                         .padding(.top, 10)
                     }
