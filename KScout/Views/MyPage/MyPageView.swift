@@ -68,19 +68,56 @@ struct MyPageView: View {
                         accountSection
                     }
                 }
+                
+                // 커스텀 닉네임 변경 모달 오버레이 (iOS 15 완벽 호환)
+                if showNicknameAlert {
+                    Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            withAnimation { showNicknameAlert = false }
+                        }
+                    
+                    VStack(spacing: 20) {
+                        Text("닉네임 변경")
+                            .font(.headline)
+                        
+                        Text("사용하실 새로운 닉네임을 입력해주세요.")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                        TextField("새로운 닉네임", text: $newNickname)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                        
+                        HStack(spacing: 16) {
+                            Button("취소") {
+                                withAnimation { showNicknameAlert = false }
+                            }
+                            .foregroundColor(.gray)
+                            .frame(maxWidth: .infinity)
+                            
+                            Button("변경") {
+                                withAnimation { showNicknameAlert = false }
+                                changeNickname()
+                            }
+                            .fontWeight(.bold)
+                            .foregroundColor(.brandNavy)
+                            .frame(maxWidth: .infinity)
+                        }
+                        .padding(.top, 10)
+                    }
+                    .padding(24)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(radius: 20)
+                    .padding(.horizontal, 40)
+                    .transition(.opacity.combined(with: .scale))
+                }
             }
             .navigationTitle("마이페이지")
             .navigationBarTitleDisplayMode(.inline)
-            // 단일 얼럿 처리로 컴파일 부하 최적화
             .alert(item: $activeAlert) { alertType in
                 makeAlert(for: alertType)
-            }
-            .alert("닉네임 변경", isPresented: $showNicknameAlert) {
-                TextField("새로운 닉네임", text: $newNickname)
-                Button("취소", role: .cancel) { }
-                Button("변경", action: changeNickname)
-            } message: {
-                Text("사용하실 새로운 닉네임을 입력해주세요.")
             }
         }
     }
