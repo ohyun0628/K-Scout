@@ -101,17 +101,12 @@ class RankingViewModel: ObservableObject {
         self.isLoading = true
         self.errorMessage = nil
         
-        if season == 2026 {
-            self.standings = []
-            self.playerRankings = []
-            self.isLoading = false
-            return
-        }
-        
-        if season == 2025 {
-            self.standings = DummyData2025.standings
-            self.playerRankings = DummyData2025.playerRankings
-            self.isLoading = false
+        if season >= 2025 || MockPlayerService.shared.useMockData {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.standings = DummyData2025.standings
+                self.playerRankings = DummyData2025.playerRankings
+                self.isLoading = false
+            }
             return
         }
         

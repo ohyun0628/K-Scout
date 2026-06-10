@@ -17,11 +17,13 @@ class MatchDetailViewModel: ObservableObject {
     }
     
     func fetchMatchDetails() {
-        guard let apiId = match.apiId else {
-            // Fallback to mock data if it's a mock match
+        if MockPlayerService.shared.useMockData || match.apiId == nil {
+            // Fallback to mock data
             generateMockDetails()
             return
         }
+        
+        guard let apiId = match.apiId else { return }
         
         self.isLoading = true
         self.errorMessage = nil

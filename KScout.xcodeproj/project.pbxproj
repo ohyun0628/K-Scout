@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF0011223344556677889901 /* ClubInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889901 /* ClubInfo.swift */; };
+		FF0011223344556677889902 /* MockPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889902 /* MockPlayerService.swift */; };
+		FF0011223344556677889903 /* MatchDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889903 /* MatchDetailViewModel.swift */; };
+		FF0011223344556677889904 /* PlayerSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889904 /* PlayerSummaryViewModel.swift */; };
+		FF0011223344556677889905 /* PlayerStatsDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */; };
+		FF0011223344556677889906 /* PlayerStatsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889906 /* PlayerStatsGridView.swift */; };
+		FF0011223344556677889907 /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889907 /* SharedComponents.swift */; };
+		FF0011223344556677889908 /* PlayerSummarySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889908 /* PlayerSummarySheet.swift */; };
+		FF0011223344556677889909 /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0011223344556677889909 /* MatchDetailView.swift */; };
 		CE7054FC2FBC2EB900147E7E /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */; };
 		CE7054FE2FBC2EC300147E7E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7054FD2FBC2EC300147E7E /* AuthManager.swift */; };
 		CE7055422FBC2EDB00147E7F /* FavoriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */; };
@@ -46,11 +55,24 @@
 		CEA59C7E2FBB56400028046D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CEA59C7D2FBB56400028046D /* FirebaseAuth */; };
 		CE7055912FBC2EDC00147E7E /* KoreanTranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */; };
 		CE7055932FBC2EDC00147E7E /* DummyData2025.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055922FBC2EDC00147E7E /* DummyData2025.swift */; };
+		DE20242024202420242024202420242024 /* DummyData2024.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF20242024202420242024202420242024 /* DummyData2024.swift */; };
+		DE20232023202320232023202320232023 /* DummyData2023.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF20232023202320232023202320232023 /* DummyData2023.swift */; };
+		DE20222022202220222022202220222022 /* DummyData2022.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF20222022202220222022202220222022 /* DummyData2022.swift */; };
+		DE1111111111111111111111 /* DummyData2026.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2222222222222222222222 /* DummyData2026.swift */; };
 		CE7055952FBC2EDC00147E7E /* TeamDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */; };
 		CE7055972FBC2EDC00147E7E /* TeamDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE0011223344556677889901 /* ClubInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models/ClubInfo.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889902 /* MockPlayerService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Services/MockPlayerService.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889903 /* MatchDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewModels/MatchDetailViewModel.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889904 /* PlayerSummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewModels/PlayerSummaryViewModel.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Components/PlayerStatsDetailSheet.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889906 /* PlayerStatsGridView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Components/PlayerStatsGridView.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889907 /* SharedComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Components/SharedComponents.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889908 /* PlayerSummarySheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Player/PlayerSummarySheet.swift"; sourceTree = "<group>"; };
+		EE0011223344556677889909 /* MatchDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/Schedule/MatchDetailView.swift"; sourceTree = "<group>"; };
 		CE7054FB2FBC2EB900147E7E /* Color+Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		CE7054FD2FBC2EC300147E7E /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		CE7055412FBC2EDB00147E7F /* FavoriteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteManager.swift; sourceTree = "<group>"; };
@@ -91,6 +113,10 @@
 		CEA59C7A2FBB50380028046D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KoreanTranslationService.swift; sourceTree = "<group>"; };
 		CE7055922FBC2EDC00147E7E /* DummyData2025.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2025.swift; sourceTree = "<group>"; };
+		DF20242024202420242024202420242024 /* DummyData2024.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2024.swift; sourceTree = "<group>"; };
+		DF20232023202320232023202320232023 /* DummyData2023.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2023.swift; sourceTree = "<group>"; };
+		DF20222022202220222022202220222022 /* DummyData2022.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2022.swift; sourceTree = "<group>"; };
+		DE2222222222222222222222 /* DummyData2026.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DummyData2026.swift; sourceTree = "<group>"; };
 		CE7055942FBC2EDC00147E7E /* TeamDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamDetailViewModel.swift; sourceTree = "<group>"; };
 		CE7055962FBC2EDC00147E7E /* TeamDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -158,6 +184,15 @@
 				CEA59C5D2FBB26730028046D /* Views */,
 				CEA59B9D2FBB1F0F0028046D /* Assets.xcassets */,
 				CEA59BA22FBB1F0F0028046D /* Info.plist */,
+				EE0011223344556677889901 /* ClubInfo.swift */,
+				EE0011223344556677889902 /* MockPlayerService.swift */,
+				EE0011223344556677889903 /* MatchDetailViewModel.swift */,
+				EE0011223344556677889904 /* PlayerSummaryViewModel.swift */,
+				EE0011223344556677889905 /* PlayerStatsDetailSheet.swift */,
+				EE0011223344556677889906 /* PlayerStatsGridView.swift */,
+				EE0011223344556677889907 /* SharedComponents.swift */,
+				EE0011223344556677889908 /* PlayerSummarySheet.swift */,
+				EE0011223344556677889909 /* MatchDetailView.swift */,
 				CEA59B9F2FBB1F0F0028046D /* Preview Content */,
 			);
 			path = KScout;
@@ -214,6 +249,10 @@
 				CEA59C5C2FBB26730028046D /* APIEndpoint.swift */,
 				CE7055902FBC2EDC00147E7E /* KoreanTranslationService.swift */,
 				CE7055922FBC2EDC00147E7E /* DummyData2025.swift */,
+				DF20242024202420242024202420242024 /* DummyData2024.swift */,
+				DF20232023202320232023202320232023 /* DummyData2023.swift */,
+				DF20222022202220222022202220222022 /* DummyData2022.swift */,
+				DE2222222222222222222222 /* DummyData2026.swift */,
 			);
 			name = Services;
 			path = "../../K-Scout/KScout/Services";
@@ -356,6 +395,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF0011223344556677889901 /* ClubInfo.swift in Sources */,
+				FF0011223344556677889902 /* MockPlayerService.swift in Sources */,
+				FF0011223344556677889903 /* MatchDetailViewModel.swift in Sources */,
+				FF0011223344556677889904 /* PlayerSummaryViewModel.swift in Sources */,
+				FF0011223344556677889905 /* PlayerStatsDetailSheet.swift in Sources */,
+				FF0011223344556677889906 /* PlayerStatsGridView.swift in Sources */,
+				FF0011223344556677889907 /* SharedComponents.swift in Sources */,
+				FF0011223344556677889908 /* PlayerSummarySheet.swift in Sources */,
+				FF0011223344556677889909 /* MatchDetailView.swift in Sources */,
 				CEA59C6F2FBB26730028046D /* APIEndpoint.swift in Sources */,
 				CEA59C712FBB26730028046D /* RankingView.swift in Sources */,
 				CEA59C752FBB26730028046D /* RadarChartView.swift in Sources */,
@@ -391,6 +439,10 @@
 				CE7055202FBC2EDB00147E7E /* PlayerDetailView.swift in Sources */,
 				CE7055912FBC2EDC00147E7E /* KoreanTranslationService.swift in Sources */,
 				CE7055932FBC2EDC00147E7E /* DummyData2025.swift in Sources */,
+				DE20242024202420242024202420242024 /* DummyData2024.swift in Sources */,
+				DE20232023202320232023202320232023 /* DummyData2023.swift in Sources */,
+				DE20222022202220222022202220222022 /* DummyData2022.swift in Sources */,
+				DE1111111111111111111111 /* DummyData2026.swift in Sources */,
 				CE7055952FBC2EDC00147E7E /* TeamDetailViewModel.swift in Sources */,
 				CE7055972FBC2EDC00147E7E /* TeamDetailView.swift in Sources */,
 			);
