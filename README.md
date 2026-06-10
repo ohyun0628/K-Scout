@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Swift-5.9+-F05138?style=flat&logo=swift&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Swift-5.7+-F05138?style=flat&logo=swift&logoColor=white"/>
   <img src="https://img.shields.io/badge/SwiftUI-blue?style=flat&logo=swift&logoColor=white"/>
-  <img src="https://img.shields.io/badge/iOS-16%2B-black?style=flat&logo=apple&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Xcode-15%2B-147EFB?style=flat&logo=xcode&logoColor=white"/>
+  <img src="https://img.shields.io/badge/iOS-15%2B-black?style=flat&logo=apple&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Xcode-14%2B-147EFB?style=flat&logo=xcode&logoColor=white"/>
   <img src="https://img.shields.io/badge/API-Football-00A651?style=flat"/>
 </p>
 
@@ -31,7 +31,7 @@ K-Scout은 K리그 팬들과 전력 분석관을 위해 기획된 **모바일 �
 | Platform | iOS (iPhone) |
 | Language | Swift 5.9+ |
 | Framework | SwiftUI |
-| IDE | Xcode 15+ |
+| IDE | Xcode 12.5+ |
 | API | API-Football (api-sports.io) & Local Mock DB |
 | Developer | 권오현 (2171053) |
 | Course | iOS Programming — Hansung University |
