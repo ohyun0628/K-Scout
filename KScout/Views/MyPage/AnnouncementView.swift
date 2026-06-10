@@ -1,5 +1,5 @@
 import SwiftUI
-
+import FirebaseAuth
 struct Announcement: Identifiable, Codable {
     var id = UUID()
     let title: String
@@ -38,9 +38,15 @@ struct AnnouncementView: View {
     
     // 관리자 여부 확인 연산 프로퍼티
     private var isAdmin: Bool {
-        // 이메일에 admin이 포함되어 있거나, 테스트 편의를 위해 항상 활성화할 수도 있습니다.
-        // 여기서는 이메일에 "admin"이 들어가 있거나, 시뮬레이터 테스트를 위해 항상 글쓰기를 노출합니다.
-        return true
+        // 1. 오프라인 시연(Mock) 모드일 때는 기능 시연을 위해 항상 활성화
+        if MockPlayerService.shared.useMockData {
+            return true
+        }
+        // 2. 실제 운영 환경에서는 로그인된 유저의 이메일이 관리자 계정인지 확인
+        if let email = FirebaseAuth.Auth.auth().currentUser?.email, email == "admin@kscout.com" {
+            return true
+        }
+        return false
     }
     
     var body: some View {
