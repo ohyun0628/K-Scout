@@ -24,22 +24,26 @@ struct MyPageView: View {
     // 사용자 설정 영구 저장용 AppStorage
     @AppStorage("favoriteClub") private var favoriteClub = "선택 안 함"
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
+    @AppStorage("mockNickname") private var mockNickname = "K-Scout 회원님"
     @ObservedObject private var favoriteManager = FavoriteManager.shared
     
     // UI 제어 상태 변수
     @State private var activeAlert: MyPageAlert? = nil
+    @State private var showNicknameAlert = false
+    @State private var newNickname = ""
     
     // MARK: - Computed Properties for Safety (컴파일러 타입 추론 보조)
     
     private var userInitial: String {
-        if let name = authManager.currentUser?.displayName, let first = name.first {
-            return String(first)
-        }
-        return "K"
+        let name = userDisplayName
+        return name.first.map { String($0) } ?? "K"
     }
     
     private var userDisplayName: String {
-        authManager.currentUser?.displayName ?? "K-Scout 회원님"
+        if MockPlayerService.shared.useMockData {
+            return mockNickname
+        }
+        return authManager.currentUser?.displayName ?? "K-Scout 회원님"
     }
     
     private var userEmail: String {
@@ -64,10 +68,58 @@ struct MyPageView: View {
                         accountSection
                     }
                 }
+                
+                // 커스텀 닉네임 변경 모달 오버레이 (iOS 15 완벽 호환)
+                if showNicknameAlert {
+                    Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            withAnimation { showNicknameAlert = false }
+                        }
+                    
+                    VStack(spacing: 20) {
+                        Text("닉네임 변경")
+                            .font(.headline)
+                        
+                        Text("사용하실 새로운 닉네임을 입력해주세요.")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                        TextField("새로운 닉네임", text: $newNickname)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                        
+                        HStack(spacing: 16) {
+                            Button(action: {
+                                withAnimation { showNicknameAlert = false }
+                            }) {
+                                Text("취소")
+                                    .foregroundColor(.gray)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            
+                            Button(action: {
+                                withAnimation { showNicknameAlert = false }
+                                changeNickname()
+                            }) {
+                                Text("변경")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.brandNavy)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .padding(.top, 10)
+                    }
+                    .padding(24)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(radius: 20)
+                    .padding(.horizontal, 40)
+                    .transition(.opacity.combined(with: .scale))
+                }
             }
             .navigationTitle("마이페이지")
             .navigationBarTitleDisplayMode(.inline)
-            // 단일 얼럿 처리로 컴파일 부하 최적화
             .alert(item: $activeAlert) { alertType in
                 makeAlert(for: alertType)
             }
@@ -173,9 +225,32 @@ struct MyPageView: View {
         .padding(.horizontal, 16)
     }
     
-    // 3. 앱 설정 그룹 (선호 구단 / 알림 설정)
+    // 3. 앱 설정 그룹 (닉네임 변경 / 선호 구단 / 알림 설정)
     private var settingsSection: some View {
         VStack(spacing: 0) {
+            Button(action: {
+                newNickname = userDisplayName
+                showNicknameAlert = true
+            }) {
+                HStack {
+                    Image(systemName: "person.text.rectangle")
+                        .foregroundColor(.brandNavy)
+                        .frame(width: 24)
+                    Text("닉네임 변경")
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Text(userDisplayName)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Image(systemName: "chevron.right")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                }
+                .padding()
+            }
+            
+            Divider().padding(.horizontal)
+            
             NavigationLink(destination: ClubSelectionView()) {
                 HStack {
                     if favoriteClub != "선택 안 함" {
@@ -410,6 +485,29 @@ struct MyPageView: View {
             if let error = error {
                 activeAlert = .general(message: "보안상 재인증이 필요합니다. 다시 로그인 후 시도해주세요. (\(error.localizedDescription))")
             } else {
+                authManager.checkLoginState()
+            }
+        }
+    }
+    
+    private func changeNickname() {
+        guard !newNickname.isEmpty else { return }
+        
+        if MockPlayerService.shared.useMockData {
+            mockNickname = newNickname
+            activeAlert = .general(message: "닉네임이 성공적으로 변경되었습니다. (오프라인 모드)")
+            return
+        }
+        
+        guard let user = Auth.auth().currentUser else { return }
+        let changeRequest = user.createProfileChangeRequest()
+        changeRequest.displayName = newNickname
+        changeRequest.commitChanges { error in
+            if let error = error {
+                activeAlert = .general(message: "오류가 발생했습니다: \(error.localizedDescription)")
+            } else {
+                activeAlert = .general(message: "닉네임이 성공적으로 변경되었습니다.")
+                // 강제 렌더링 업데이트를 위해 로그아웃 없이 상태만 갱신
                 authManager.checkLoginState()
             }
         }

@@ -1,5 +1,5 @@
 import SwiftUI
-
+import FirebaseAuth
 struct Announcement: Identifiable, Codable {
     var id = UUID()
     let title: String
@@ -17,30 +17,36 @@ struct AnnouncementView: View {
     // 기본 공지사항 목업 리스트
     let defaultAnnouncements = [
         Announcement(
-            title: "K-Scout 모바일 서비스 정식 출시 안내",
-            date: "2026.05.19",
-            content: "안녕하세요, K-Scout 관리자입니다.\n\n대한민국 K리그 최고의 축구 데이터를 제공하는 K-Scout 서비스가 정식 출시되었습니다!\n선수 검색, 리그 순위, 경기 일정 조회 및 나만의 관심 선수 리포트 기능까지 다양한 스카우팅 시스템을 경험해 보세요.\n\n앞으로도 더 정교하고 정확한 데이터를 분석하여 제공해 드리겠습니다. 많은 사랑 부탁드립니다. 감사합니다.",
+            title: "[업데이트] K-Scout 정식 출시 및 V1.0 업데이트 안내",
+            date: "2026.06.14",
+            content: "안녕하세요, K-Scout 팀입니다.\n\n대한민국 K리그 최고의 축구 데이터를 제공하는 K-Scout 모바일 서비스(V1.0)가 정식 출시되었습니다!\n2022년부터 2026년까지의 K리그 전 시즌 경기 일정 및 선수 스카우팅 리포트를 제공합니다.\n\n앞으로도 더 정교하고 정확한 데이터를 분석하여 제공해 드리겠습니다. 많은 사랑 부탁드립니다. 감사합니다.",
             isImportant: true
         ),
         Announcement(
-            title: "[안내] 실시간 K리그2 선수 기록 데이터 연동 지연 해결",
-            date: "2026.05.15",
-            content: "K리그2 주말 경기 일부 데이터 연동 지연 오류에 대한 복구가 완료되었습니다.\n\n현재 정상적으로 데이터 리포트를 조회하실 수 있으며, 서버의 안정성 확보를 위해 백엔드 모니터링 강도를 높였습니다.\n이용에 불편을 드려 죄송합니다.",
+            title: "[기능 안내] 오프라인 환경(Mock 데이터) 완벽 지원 안내",
+            date: "2026.06.12",
+            content: "K-Scout은 언제 어디서나 끊김 없이 데이터를 확인할 수 있도록 설계되었습니다.\n\n데이터 네트워크가 끊어지거나 API 통신이 원활하지 않은 상황에서도, 앱 내부에 내장된 대규모 로컬 데이터베이스(Mock DB) 모드로 자동 전환되어 무중단 서비스를 제공합니다.\n오프라인 상태에서도 안심하고 스카우팅 데이터를 분석해 보세요!",
             isImportant: false
         ),
         Announcement(
-            title: "선수 가치 산정 모델(KS-Value) 알고리즘 업데이트 공지",
-            date: "2026.05.10",
-            content: "K-Scout만의 고유 데이터 인덱스인 KS-Value의 평가 알고리즘이 업데이트되었습니다.\n\n공격 지표뿐만 아니라 수비 가담률, 스프린트 횟수, 압박 횟수 등 정교한 수비 공헌 지표의 가중치를 조율하여 수비진 선수들의 평점을 더욱 현실적으로 보정하였습니다.\n자세한 가중치 공식은 순위 탭 가이드를 참고해 주세요.",
+            title: "[기능 안내] 선수 스탯 '육각형 레이더 차트' 시각화 기능 추가",
+            date: "2026.06.10",
+            content: "선수 상세 분석 페이지에 '육각형 레이더 차트' 기능이 새롭게 추가되었습니다.\n\n득점, 도움, 슛, 패스, 수비 등 5가지 주요 지표를 직관적인 도형 그래프로 시각화하여, 해당 선수의 강점과 약점을 한눈에 파악할 수 있습니다.\n선수 검색 기능을 통해 직접 확인해 보세요.",
             isImportant: false
         )
     ]
     
     // 관리자 여부 확인 연산 프로퍼티
     private var isAdmin: Bool {
-        // 이메일에 admin이 포함되어 있거나, 테스트 편의를 위해 항상 활성화할 수도 있습니다.
-        // 여기서는 이메일에 "admin"이 들어가 있거나, 시뮬레이터 테스트를 위해 항상 글쓰기를 노출합니다.
-        return true
+        // 1. 오프라인 시연(Mock) 모드일 때는 기능 시연을 위해 항상 활성화
+        if MockPlayerService.shared.useMockData {
+            return true
+        }
+        // 2. 실제 운영 환경에서는 로그인된 유저의 이메일이 관리자 계정인지 확인
+        if let email = FirebaseAuth.Auth.auth().currentUser?.email, email == "test@abc.com" {
+            return true
+        }
+        return false
     }
     
     var body: some View {
@@ -185,7 +191,7 @@ struct AnnouncementView: View {
     // MARK: - 로컬 저장소 CRUD 연동
     
     private func loadAnnouncements() {
-        if let data = UserDefaults.standard.data(forKey: "kscout_announcements"),
+        if let data = UserDefaults.standard.data(forKey: "kscout_announcements_v2"),
            let decoded = try? JSONDecoder().decode([Announcement].self, from: data) {
             self.announcements = decoded
         } else {
@@ -197,7 +203,7 @@ struct AnnouncementView: View {
     
     private func saveToStorage(_ list: [Announcement]) {
         if let encoded = try? JSONEncoder().encode(list) {
-            UserDefaults.standard.set(encoded, forKey: "kscout_announcements")
+            UserDefaults.standard.set(encoded, forKey: "kscout_announcements_v2")
         }
     }
     
