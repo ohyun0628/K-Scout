@@ -143,6 +143,7 @@ struct ScheduleView: View {
             }
             .navigationBarHidden(true)
         }
+        }
         .navigationViewStyle(StackNavigationViewStyle())
         .alert(isPresented: $showAlert) {
             Alert(
