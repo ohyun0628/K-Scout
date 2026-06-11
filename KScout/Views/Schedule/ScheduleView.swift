@@ -24,10 +24,11 @@ struct ScheduleView: View {
     }
     
     var body: some View {
-        ZStack {
-            // 그레이 베이스 백그라운드 (#F2F4F7과 유사한 색상)
-            Color(UIColor.systemGroupedBackground)
-                .edgesIgnoringSafeArea(.all)
+        NavigationView {
+            ZStack {
+                // 그레이 베이스 백그라운드 (#F2F4F7과 유사한 색상)
+                Color(UIColor.systemGroupedBackground)
+                    .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
                 // 1. 네이버 스포츠 스타일 중앙 정렬 헤더
@@ -140,8 +141,9 @@ struct ScheduleView: View {
                     }
                 }
             }
+            .navigationBarHidden(true)
         }
-        .navigationBarHidden(true)
+        .navigationViewStyle(StackNavigationViewStyle())
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("경기 알림 설정"),
