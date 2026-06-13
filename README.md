@@ -126,8 +126,7 @@ iOS App (MVVM)
 
 ## 🎥 Demo Video
 
-[![K-SCOUT 시연 동영상](https://youtu.be/uhc21nUUQlY)
-*(이미지를 클릭하시면 3분 이내의 앱 시연 유튜브 동영상으로 이동합니다)*
+https://youtu.be/uhc21nUUQlY
 
 ---
 
